@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet href="http://moise.sourceforge.net/xml/os.xsl" type="text/xsl" ?>
+
+<organisational-specification
+    id="organization"
+    os-version="0.8"
+
+    xmlns='http://moise.sourceforge.net/os'
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:schemaLocation='http://moise.sourceforge.net/os
+                        http://moise.sourceforge.net/xml/os.xsd' >
+
+<structural-specification>
+
+<role-definitions>
+    <role id="Monarca" />
+    <role id="Babá" />
+    <role id="Sentinela" />
+    <role id="Exploradora" />
+</role-definitions>
+
+<group-specification id="colmeia">
+    <roles>
+        <role id="Monarca" min="1" max="1"/>
+        <role id="Babá" min="0"/>
+        <role id="Sentinela" min="0"/>
+        <role id="Exploradora" min="0"/>
+    </roles>
+    
+    <formation-constraints>
+       <compatibility from="Babá" to="Sentinela" bi-dir="true"/>
+       <compatibility from="Sentinela" to="Exploradora" bi-dir="true"/>
+       <compatibility from="Exploradora" to="Babá" bi-dir="true"/>
+    </formation-constraints>
+</group-specification>
+</structural-specification>
+
+<functional-specification>
+    <scheme id="sobreviver">
+        <goal id="sobrevivencia">
+            <plan operator="parallel">
+                <goal id="alimentação">
+                	<plan operator="parallel">
+                		<goal id="controleEstoquePolen">
+                			<plan operator="sequence">
+                				<goal id="coletarPólen">
+                					<plan operator="sequence">
+                						<goal id="procurarPolen"/>
+                						<goal id="trazerPolen"/>
+                					</plan>
+                				</goal>
+                				<goal id="estocarPolen"/>
+                			</plan>
+                		</goal>
+                		<goal id="fabricarMel"/>
+                		<goal id="alimentarse"/>
+                		<goal id="alimentarRainha"/>
+                	</plan>
+                </goal>
+                
+                <goal id="renovaçãoEnxame">
+                	<plan operator="parallel">
+                		<goal id="porOvos"/>
+                		<goal id="alimentarLarvas"/>
+                	</plan>
+                </goal>
+                
+                <goal id="controleTemperatura">
+                	<plan operator="choice">
+                		<goal id="aquecer"/>
+                		<goal id="resfriar"/>
+                	</plan>
+                </goal>
+            </plan>
+        </goal>
+
+		<mission id="mAlimentacao">
+			<goal id="alimentação"/>
+		</mission>
+        <mission id="mRenovacao">
+			<goal id="renovaçãoEnxame"/>
+		</mission>
+        <mission id="mTemperatura">
+			<goal id="controleTemperatura"/>
+		</mission>
+		
+		<!-- caso alimentarse nao funcionar, fazer em missao separada -->
+		
+        <mission id="mExploradora">
+            <goal id="procurarPolen"/>
+            <goal id="trazerPolen"/>
+            <goal id="estocarPolen"/>
+            <goal id="alimentarse"/>
+        </mission>
+        <mission id="mSentinela">
+            <goal id="aquecer"/>
+            <goal id="resfriar"/>
+            <goal id="alimentarse"/>
+        </mission>
+        <mission id="mBabá">
+        	<goal id="fabricarMel"/>
+        	<goal id="alimentarRainha"/>
+        	<goal id="alimentarLarvas"/>
+            <goal id="alimentarse"/>
+        </mission>
+        <mission id="mRainha">
+        	<goal id="porOvos"/>
+        </mission>
+    </scheme>
+</functional-specification>
+
+<normative-specification>
+    <!--
+       setup of Moise properties (e.g. role compatibility) handling (regimented or not)
+
+       when value = "fail", the platform ensures that the property is not broken (the property is thus regiment)
+       when value = "prohibition", violations are produced when the property is not followed by the agents
+       when value = "ignore", no norm is produced 
+
+       possible properties are defined in https://github.com/moise-lang/moise/blob/master/src/main/java/ora4mas/nopl/tools/os2nopl.java
+
+       some examples follow
+    -->
+    <!-- properties>
+        <property id="default_management"  value="fail" />
+        <property id="role_compatibility"  value="prohibition" />
+        <property id="mission_cardinality" value="prohibition" />
+    </properties-->
+
+    <!-- the norms of the application -->
+    <norm id="nExploradora" type="obligation" role="Exploradora" mission="mExploradora"/>
+    <norm id="nSentinela" type="obligation" role="Sentinela" mission="mSentinela"/>
+    <norm id="nBabá" type="obligation" role="Babá" mission="mBabá"/>
+    
+    <norm id="nRainha" type="obligation" role="Monarca" mission="mRainha"/>    
+    <norm id="nAlimentação" type="obligation" role="Monarca" mission="mAlimentacao"/>
+    <norm id="nRenovação" type="obligation" role="Monarca" mission="mRenovacao"/>
+    <norm id="nTemperatura" type="obligation" role="Monarca" mission="mTemperatura"/>
+    
+</normative-specification>
+
+</organisational-specification>

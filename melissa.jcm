@@ -17,7 +17,7 @@ mas melissa {
     agent worker {
     	join: beeEnvironment
     	focus: map, hive
-    	instances: 30
+    	instances: 5
     }
     
     agent queen {
@@ -29,6 +29,14 @@ mas melissa {
     	artifact map: artifact.MapArtifact
     	artifact hive: artifact.HiveArtifact
     }
+   
+    organisation colmeia : organisation.xml {
+        group colmeia : colmeia {
+            players: queen queen
+            		 worker worker
+            //debug
+        }
+    }  
 
     // agent source path
     asl-path: src/agt
