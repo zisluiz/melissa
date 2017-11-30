@@ -8,28 +8,27 @@ pollenField2(0, 300, 60, 170).
 pollenField3(400, 0, 40, 40).
 pollenField4(759, 230, 40, 40).
 
+
 /* Initial goals */
 
 !start.
 
 /* Plans */
 
-+!start <- .wait(3000); .my_name(A); 
++!start 
+<-	.wait(3000);
+	.my_name(A); 
 	.delete("worker",A,N);
-	
 	if (N <= 3) {
 		registerBee(feeder, 10);
+	} else { if (N <= 5) {
+		registerBee(sentinel, 20);
 	} else {
-		if (N <= 5) {
-			registerBee(sentinel, 20);
-		} else {
-			registerBee(worker, 50);
-			setPosition(math.round(761+math.random(30)), 449);
-			.wait(1000);
-			!searchHoney;
-		}
-	}
-.
+		registerBee(worker, 50);
+		setPosition(math.round(761+math.random(30)), 449);
+		.wait(1000);
+		!searchHoney;
+	}}.
 
 +!searchHoney : pollenField4(X, Y, WIDTH, HEIGHT) <-
 	for ( .range(I,Y + HEIGHT, 450)) {
@@ -54,6 +53,4 @@ pollenField4(759, 230, 40, 40).
 
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }
-
-// uncomment the include below to have an agent compliant with its organisation
-//{ include("$jacamoJar/templates/org-obedient.asl") }
+{ include("$jacamoJar/templates/org-obedient.asl") }

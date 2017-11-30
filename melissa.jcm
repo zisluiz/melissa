@@ -29,6 +29,14 @@ mas melissa {
     	artifact map: artifact.MapArtifact
     	artifact hive: artifact.HiveArtifact
     }
+   
+    organisation colmeia : organisation.xml {
+        group colmeia : colmeia {
+            players: queen queen
+            		 worker worker
+            //debug
+        }
+    }  
 
     // agent source path
     asl-path: src/agt

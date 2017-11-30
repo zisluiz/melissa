@@ -47,7 +47,7 @@ public class MapArtifact extends Artifact {
 	@OPERATION
 	void setPosition(int x, int y) {
 		Environment.getInstance().setPosition(getCurrentOpAgentId().getAgentName(), x, y);
-	}	
+	}
 	
 	@INTERNAL_OPERATION
 	void dayChange() {
@@ -60,5 +60,5 @@ public class MapArtifact extends Artifact {
 			
 			day.updateValue(newDay);
 		}
-	}		
+	}	
 }
