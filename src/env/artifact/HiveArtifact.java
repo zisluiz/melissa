@@ -15,7 +15,7 @@ public class HiveArtifact extends Artifact {
 	void init() {
 		defineObsProperty("honey", 0);
 		defineObsProperty("temperature", 0);
-		defineObsProperty("countLarva", 0);
+		defineObsProperty("larvas", 0);
 	}
 	
 	@OPERATION

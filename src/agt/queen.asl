@@ -12,7 +12,7 @@
 <-  .wait(3000); 
 	registerBee(queen, 100); 
 	honeyStart(100);
-	!startOrg;
+	//!startOrg;
 	!createLarva.
 
 +!startOrg
