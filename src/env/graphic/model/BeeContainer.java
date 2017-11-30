@@ -16,11 +16,11 @@ public abstract class BeeContainer {
 		this.id = id;
 	}
 	
-	synchronized public void addBee(BeeGraphic bee) {
+	public void addBee(BeeGraphic bee) {
 		bees.add(bee);
 	}
 	
-	synchronized public void removeBee(BeeGraphic bee) {
+	public void removeBee(BeeGraphic bee) {
 		bees.remove(bee);
 	}	
 	

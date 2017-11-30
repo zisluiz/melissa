@@ -6,6 +6,9 @@ import cartago.Artifact;
 import cartago.OPERATION;
 import graphic.Environment;
 import model.Hive;
+import model.exception.CannotDepositOnThisPositionException;
+import model.exception.NoLongerHiveException;
+import model.exception.NoPollenCollectedException;
 
 public class HiveArtifact extends Artifact {
 
@@ -34,6 +37,11 @@ public class HiveArtifact extends Artifact {
 	
 	@OPERATION
 	void delivery() {
-		Environment.getInstance().delivery(getCurrentOpAgentId().getAgentName());
+		try {
+			Environment.getInstance().delivery(getCurrentOpAgentId().getAgentName());
+		} catch (CannotDepositOnThisPositionException | NoLongerHiveException | NoPollenCollectedException e) {
+//			e.printStackTrace();
+			failed(e.getMessage());
+		}
 	}	
 }

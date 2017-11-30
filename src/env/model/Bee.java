@@ -3,8 +3,7 @@ package model;
 public class Bee {
 	private String id;
 	private int age;
-	private int x;
-	private int y;
+	private Position position = new Position();
 	private int pollenCollected;
 
 	public Bee(String id, int age) {
@@ -13,8 +12,7 @@ public class Bee {
 	}
 	
 	public void setPosition(int x, int y) {
-		this.x = x;
-		this.y = y;
+		this.position.setXY(x, y);
 	}
 	
 	public String getId() {
@@ -25,12 +23,8 @@ public class Bee {
 		return age;
 	}
 	
-	public int getX() {
-		return x;
-	}
-	
-	public int getY() {
-		return y;
+	public Position getPosition() {
+		return position;
 	}
 
 	public void setPollenCollected(int ammount) {

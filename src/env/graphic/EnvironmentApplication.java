@@ -1,11 +1,8 @@
 package graphic;
 
-import java.util.concurrent.CountDownLatch;
-
 import graphic.model.HiveGraphic;
 import graphic.model.PollenFieldGraphic;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Task;
@@ -23,15 +20,15 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Hive;
+import model.JavaFXConcurrent;
 import model.enumeration.HoneySupply;
 import model.enumeration.PollenSupply;
 
 public class EnvironmentApplication extends Application {
-	public static final CountDownLatch latch = new CountDownLatch(1);
 	public static EnvironmentApplication instance = null;
 	private int width;
 	private int height;
-	private Group root;
+	private Group ground;
 
 	private Text labelNumberTemp;
 	private Text labelNumberBeeQueen;
@@ -44,6 +41,16 @@ public class EnvironmentApplication extends Application {
 	private Rectangle rectangleHoneyOrange;
 	private Rectangle rectangleHoneyRed;
 	private Color colorWhite = Color.web("white", 1);
+	
+	private Color colorBlack = Color.web("black", 1);
+	private Color colorRed = Color.web("red", 1);
+	private Color colorOrange = Color.web("rgb(255,126,38)", 1);
+	private Color colorYellowStrong = Color.web("rgb(255,202,14)", 1);
+	private Color colorGreen = Color.web("green", 1);
+	private Color colorYellow = Color.web("yellow", 1);
+	
+	
+	
 	private Font font = new Font(14);
 	private Text time;
 	private Text day;
@@ -58,32 +65,26 @@ public class EnvironmentApplication extends Application {
 		setStartUpTest(this);
 	}
 
-    public static EnvironmentApplication waitForStartUpTest() {
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    public static EnvironmentApplication getInstance() {
         return instance;
     }
 
     public static void setStartUpTest(EnvironmentApplication newInstance) {
     	instance = newInstance;
-        latch.countDown();
     }
 
     @Override
     public void start(Stage stage) throws Exception {
     	System.out.println("Starting graphics");
-    	
-		root = new Group();
+
+    	Group root = new Group();
 		this.width = Integer.valueOf(getParameters().getRaw().get(0));
 		this.height = Integer.valueOf(getParameters().getRaw().get(1));
 		Scene scene = new Scene(root,  width+230, height, Color.BLACK);
 		stage.setScene(scene);
 		
-		createHive();
-		createPollenFields();
+		root.getChildren().add(createHive());
+		root.getChildren().add(createPollenFields());
 		
 		Text labelTime = new Text(690, 16, "Tempo: ");
 		labelTime.setFill(colorWhite);
@@ -105,34 +106,41 @@ public class EnvironmentApplication extends Application {
 		day.setFont(font);
 		root.getChildren().add(day);		
 		
-		Rectangle spaceLabel = createRectangle(20, 600, "white", 800, 0);
+		Rectangle spaceLabel = createRectangle(20, 600, colorWhite, 800, 0);
 		root.getChildren().add(spaceLabel);		
 		
-		createLabels();
+		root.getChildren().add(createLabels());
+		
+		ground = new Group();
+		root.getChildren().add(ground);
 		
         stage.show();
         
         startTimer();
     }
 
-	private void createLabels() {
+	private Group createLabels() {
+		Group group = new Group();
 		Image labels = new Image("file:labels.png");
 		ImageView labelsView = new ImageView(labels);
 		labelsView.setLayoutX(828);
 		labelsView.setLayoutY(20);
-		root.getChildren().add(labelsView);
+		group.getChildren().add(labelsView);
+		
+		return group;
 	}
 
-	private void createPollenFields() {
+	private Group createPollenFields() {
+		Group group = new Group();
 		Rectangle foodSource1 = createRectangle(150, 200, PollenSupply.HIGH.getColor(), 0, 0);
-		root.getChildren().add(foodSource1);
+		group.getChildren().add(foodSource1);
 		
 		Rectangle foodSource2 = createRectangle(60, 170, PollenSupply.HIGH.getColor(), 0, 300);
-		root.getChildren().add(foodSource2);
+		group.getChildren().add(foodSource2);
 		Rectangle foodSource3 = createRectangle(40, 40, PollenSupply.HIGH.getColor(), 400, 0);
-		root.getChildren().add(foodSource3);
+		group.getChildren().add(foodSource3);
 		Rectangle foodSource4 = createRectangle(40, 40, PollenSupply.HIGH.getColor(), 759, 230);
-		root.getChildren().add(foodSource4);
+		group.getChildren().add(foodSource4);
 		
 		PollenFieldGraphic pollenField1 = new PollenFieldGraphic(foodSource1, "pollenField1", 2000, 2000);
 		PollenFieldGraphic pollenField2 = new PollenFieldGraphic(foodSource2, "pollenField2", 1000, 1000);
@@ -145,18 +153,24 @@ public class EnvironmentApplication extends Application {
 		pollenFieldResolver.createPollenField("pollenField3", pollenField3);
 		pollenFieldResolver.createPollenField("pollenField4", pollenField4);
 		Environment.getInstance().getMapResolver().addContainers(hiveGraphic, pollenField1, pollenField2, pollenField3, pollenField4);
+		
+		return group;
 	}
 
-	private void createHive() {
-		Rectangle hive = createRectangle(150, 150, "yellow", 649, 449);
-		root.getChildren().add(hive);
+	private Group createHive() {
+		Group group = new Group();
+		Rectangle hive = createRectangle(150, 150, colorYellow, 649, 449);
+		group.getChildren().add(hive);
 		hiveGraphic = new HiveGraphic(hive, "hive");
-		createHiveInformation();
+		
+		group.getChildren().add(createHiveInformation());
+		return group;
 	}
 	
-	private void createHiveInformation() {
-		Rectangle rectangleInfo = createRectangle(70, 130, "black", 726, 460);
-		root.getChildren().add(rectangleInfo);		
+	private Group createHiveInformation() {
+		Group group = new Group();
+		Rectangle rectangleInfo = createRectangle(70, 130, colorBlack, 726, 460);
+		group.getChildren().add(rectangleInfo);		
 		
 		Text labelTemp = new Text(731, 473, "Temp: ");
 		labelTemp.setFill(colorWhite);
@@ -167,96 +181,98 @@ public class EnvironmentApplication extends Application {
 		Text labelTemp2 = new Text(785, 473, "º");
 		labelTemp2.setFill(colorWhite);
 		labelTemp2.setFont(font);
-		root.getChildren().add(labelTemp);		
-		root.getChildren().add(labelNumberTemp);		
-		root.getChildren().add(labelTemp2);		
+		group.getChildren().add(labelTemp);		
+		group.getChildren().add(labelNumberTemp);		
+		group.getChildren().add(labelTemp2);		
 		
 		Circle circleBeeQueen = new Circle(4, Color.web("rgb(158,76,158)", 1));
 		circleBeeQueen.setLayoutX(736);
 		circleBeeQueen.setLayoutY(486);		
-		root.getChildren().add(circleBeeQueen);	
+		group.getChildren().add(circleBeeQueen);	
 		labelNumberBeeQueen = new Text(746, 490, "0");
 		labelNumberBeeQueen.setFill(colorWhite);
 		labelNumberBeeQueen.setFont(font);	
-		root.getChildren().add(labelNumberBeeQueen);	
+		group.getChildren().add(labelNumberBeeQueen);	
 		
 		Circle circleBeeFeeder = new Circle(4, Color.web("rgb(156,207,224)", 1));
 		circleBeeFeeder.setLayoutX(736);
 		circleBeeFeeder.setLayoutY(506);		
-		root.getChildren().add(circleBeeFeeder);	
+		group.getChildren().add(circleBeeFeeder);	
 		labelNumberBeeFeeder = new Text(746, 510, "0");
 		labelNumberBeeFeeder.setFill(colorWhite);
 		labelNumberBeeFeeder.setFont(font);	
-		root.getChildren().add(labelNumberBeeFeeder);	
+		group.getChildren().add(labelNumberBeeFeeder);	
 		
 		Circle circleBeeSentinel = new Circle(4, Color.web("rgb(60,61,205)", 1));
 		circleBeeSentinel.setLayoutX(736);
 		circleBeeSentinel.setLayoutY(526);		
-		root.getChildren().add(circleBeeSentinel);	
+		group.getChildren().add(circleBeeSentinel);	
 		labelNumberBeeSentinel = new Text(746, 530, "0");
 		labelNumberBeeSentinel.setFill(colorWhite);
 		labelNumberBeeSentinel.setFont(font);	
-		root.getChildren().add(labelNumberBeeSentinel);		
+		group.getChildren().add(labelNumberBeeSentinel);		
 		
 		Circle circleBeeWorker = new Circle(4, Color.web("rgb(255,128,35)", 1));
 		circleBeeWorker.setLayoutX(736);
 		circleBeeWorker.setLayoutY(546);		
-		root.getChildren().add(circleBeeWorker);	
+		group.getChildren().add(circleBeeWorker);	
 		labelNumberBeeWorker = new Text(746, 550, "0");
 		labelNumberBeeWorker.setFill(colorWhite);
 		labelNumberBeeWorker.setFont(font);	
-		root.getChildren().add(labelNumberBeeWorker);	
+		group.getChildren().add(labelNumberBeeWorker);	
 		
 		Circle circleBeeLarva = new Circle(4, Color.web("rgb(193,193,193)", 1));
 		circleBeeLarva.setLayoutX(736);
 		circleBeeLarva.setLayoutY(566);		
-		root.getChildren().add(circleBeeLarva);	
+		group.getChildren().add(circleBeeLarva);	
 		labelNumberBeeLarva = new Text(746, 570, "0");
 		labelNumberBeeLarva.setFill(colorWhite);
 		labelNumberBeeLarva.setFont(font);	
-		root.getChildren().add(labelNumberBeeLarva);
+		group.getChildren().add(labelNumberBeeLarva);
 		
 
-		Rectangle rectangleHoney = createRectangle(25, 48, "black", 666, 460);
+		Rectangle rectangleHoney = createRectangle(25, 48,colorBlack, 666, 460);
 		rectangleHoney.setStrokeType(StrokeType.OUTSIDE);
 		Color greyBorder = Color.web("rgb(137,137,137)", 1);
 		rectangleHoney.setStroke(greyBorder);
 		rectangleHoney.setStrokeWidth(1);
-		root.getChildren().add(rectangleHoney);	
+		group.getChildren().add(rectangleHoney);	
 		
 		Line line1Honey = new Line(666, 472, 691, 472);
 		line1Honey.setStrokeType(StrokeType.OUTSIDE);
 		line1Honey.setStroke(greyBorder);
 		line1Honey.setStrokeWidth(1);		
-		root.getChildren().add(line1Honey);	
+		group.getChildren().add(line1Honey);	
 
 		Line line2Honey = new Line(666, 484, 691, 484);
 		line2Honey.setStrokeType(StrokeType.OUTSIDE);
 		line2Honey.setStroke(greyBorder);
 		line2Honey.setStrokeWidth(1);		
-		root.getChildren().add(line2Honey);	
+		group.getChildren().add(line2Honey);	
 		
 		Line line3Honey = new Line(666, 496, 691, 496);
 		line3Honey.setStrokeType(StrokeType.OUTSIDE);
 		line3Honey.setStroke(greyBorder);
 		line3Honey.setStrokeWidth(1);		
-		root.getChildren().add(line3Honey);	
+		group.getChildren().add(line3Honey);	
 		
-		rectangleHoneyGreen = createRectangle(25, 12, "green", 666, 460);
-//		root.getChildren().add(rectangleHoneyGreen);	
+		rectangleHoneyGreen = createRectangle(25, 12, colorBlack, 666, 460);
+		group.getChildren().add(rectangleHoneyGreen);	
 		
-		rectangleHoneyYellow = createRectangle(25, 10, "rgb(255,202,14)", 666, 473);
-//		root.getChildren().add(rectangleHoneyYellow);
+		rectangleHoneyYellow = createRectangle(25, 10, colorBlack, 666, 473);
+		group.getChildren().add(rectangleHoneyYellow);
 		
-		rectangleHoneyOrange = createRectangle(25, 10, "rgb(255,126,38)", 666, 485);
-//		root.getChildren().add(rectangleHoneyOrange);
+		rectangleHoneyOrange = createRectangle(25, 10, colorBlack, 666, 485);
+		group.getChildren().add(rectangleHoneyOrange);
 		
-		rectangleHoneyRed = createRectangle(25, 11, "red", 666, 497);
-//		root.getChildren().add(rectangleHoneyRed);			
+		rectangleHoneyRed = createRectangle(25, 11, colorBlack, 666, 497);
+		group.getChildren().add(rectangleHoneyRed);	
+		
+		return group;
 	}
 
-	private Rectangle createRectangle(int width, int height, String color, int x, int y) {
-		Rectangle rectangle = new Rectangle(width, height, Color.web(color, 1));
+	private Rectangle createRectangle(int width, int height, Color color, int x, int y) {
+		Rectangle rectangle = new Rectangle(width, height, color);
 		rectangle.setLayoutX(x);
 		rectangle.setLayoutY(y);
 		return rectangle;
@@ -293,24 +309,38 @@ public class EnvironmentApplication extends Application {
 		labelNumberBeeWorker.setText(Hive.getInstance().getWorkers().size()+"");
 	}
 	
-	public void updateHoneyStatus() {
-		HoneySupply status = Hive.getInstance().getStatus();
-		root.getChildren().removeAll(rectangleHoneyGreen, rectangleHoneyOrange, rectangleHoneyRed, rectangleHoneyYellow);
+	public void updateHoneyStatus(HoneySupply newStatus) {
 		
-		switch (status) {
+		switch (newStatus) {
 		case EMPTY:
+			rectangleHoneyRed.setFill(colorBlack);
+			rectangleHoneyOrange.setFill(colorBlack);
+			rectangleHoneyYellow.setFill(colorBlack);
+			rectangleHoneyGreen.setFill(colorBlack);
 			break;
 		case LOW:
-			root.getChildren().add(rectangleHoneyRed);
+			rectangleHoneyRed.setFill(colorRed);
+			rectangleHoneyOrange.setFill(colorBlack);
+			rectangleHoneyYellow.setFill(colorBlack);
+			rectangleHoneyGreen.setFill(colorBlack);
 			break;
 		case MEDIUM:
-			root.getChildren().addAll(rectangleHoneyOrange, rectangleHoneyRed);
+			rectangleHoneyRed.setFill(colorRed);
+			rectangleHoneyOrange.setFill(colorOrange);
+			rectangleHoneyYellow.setFill(colorBlack);
+			rectangleHoneyGreen.setFill(colorBlack);
 			break;
 		case HIGH:
-			root.getChildren().addAll(rectangleHoneyOrange, rectangleHoneyRed, rectangleHoneyYellow);
+			rectangleHoneyRed.setFill(colorRed);
+			rectangleHoneyOrange.setFill(colorOrange);
+			rectangleHoneyYellow.setFill(colorYellowStrong);
+			rectangleHoneyGreen.setFill(colorBlack);
 			break;
 		case FULL:
-			root.getChildren().addAll(rectangleHoneyGreen, rectangleHoneyOrange, rectangleHoneyRed, rectangleHoneyYellow);
+			rectangleHoneyRed.setFill(colorRed);
+			rectangleHoneyOrange.setFill(colorOrange);
+			rectangleHoneyYellow.setFill(colorYellowStrong);
+			rectangleHoneyGreen.setFill(colorGreen);
 			break;			
 		}
 	}
@@ -331,9 +361,18 @@ public class EnvironmentApplication extends Application {
                     String min = minute <= 9 ? "0" + minute : minute + "";
                     String sec = second <= 9 ? "0" + second : second + "";
 
-                    Platform.runLater(() -> {
-                        time.setText(min + ":" + sec);
-                    });
+//                    Platform.runLater(() -> {
+//                        time.setText(min + ":" + sec);
+//                    });
+                    
+                    JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
+						
+						@Override
+						public void run() {
+							time.setText(min + ":" + sec);
+						}
+					});
+                    
                     Thread.sleep(1000);
 
                 }
@@ -342,26 +381,26 @@ public class EnvironmentApplication extends Application {
         };
         new Thread(t).start();
 
-    }	
+	}
 
 	public void updateDay(int newDay) {
 		day.setText(newDay+"");
 	}
 
-	public void removeNode(Node node) {
+	public void removeBee(Node node) {
 		try {
-			root.getChildren().remove(node);
+			ground.getChildren().remove(node);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void addNode(Node node) {
-		root.getChildren().add(node);
+	public void addBee(Node node) {
+		ground.getChildren().add(node);
 	}
 
 	public void updatePollenFieldStatus(String pollenFieldId) {
 		PollenFieldGraphic pollenField = Environment.getInstance().getPollenFieldResolver().getPollenField(pollenFieldId);
-		pollenField.getRectangle().setFill(Color.web(pollenField.getPollenField().getStatus().getColor(), 1));
+		pollenField.getRectangle().setFill(pollenField.getPollenField().getStatus().getColor());
 	}
 }

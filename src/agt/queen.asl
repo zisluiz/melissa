@@ -8,7 +8,7 @@
 
 /* Plans */
 
-+!start <-  .wait(3000); registerBee(queen, 100); honeyStart(100); !createLarva.
++!start <- .wait(3000); registerBee(queen, 100); honeyStart(100); !createLarva.
 
 +!createLarva <- createLarva; .wait(1000); !createLarva.
 

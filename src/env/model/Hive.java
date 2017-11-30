@@ -106,7 +106,7 @@ public class Hive {
 		return bee;
 	}
 
-	public void addHoney(int ammount) {
+	synchronized public void addHoney(int ammount) {
 		honey = honey + ammount;
 	}
 	

@@ -8,8 +8,10 @@ import cartago.OPERATION;
 import cartago.ObsProperty;
 import graphic.Environment;
 import model.enumeration.Direction;
+import model.exception.CannotCollectOnThisPositionException;
 import model.exception.InvalidMovimentException;
 import model.exception.MovimentOutOfBoundsException;
+import model.exception.NoLongerPollenFieldException;
 import model.exception.PollenIsOverException;
 
 public class MapArtifact extends Artifact {
@@ -25,20 +27,19 @@ public class MapArtifact extends Artifact {
 	void move(String direction) {
 		try {
 			Environment.getInstance().moveBee(getCurrentOpAgentId().getAgentName(), Direction.valueOf(direction.toUpperCase()));
-		} catch (MovimentOutOfBoundsException e) {
-			failed(e.getMessage());
-		} catch (InvalidMovimentException e) {
+		} catch (MovimentOutOfBoundsException | InvalidMovimentException e) {
+//			e.printStackTrace();
 			failed(e.getMessage());
 		}
-		
-		await_time(10);
+		await_time(20);
 	}
 	
 	@OPERATION
 	void collect(String pollenFieldId) {
 		try {
 			Environment.getInstance().collect(pollenFieldId, getCurrentOpAgentId().getAgentName());
-		} catch (PollenIsOverException e) {
+		} catch (PollenIsOverException | NoLongerPollenFieldException | CannotCollectOnThisPositionException e) {
+//			e.printStackTrace();
 			failed(e.getMessage());
 		}
 	}	

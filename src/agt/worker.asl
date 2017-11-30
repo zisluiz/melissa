@@ -8,7 +8,6 @@ pollenField2(0, 300, 60, 170).
 pollenField3(400, 0, 40, 40).
 pollenField4(759, 230, 40, 40).
 
-
 /* Initial goals */
 
 !start.
@@ -16,41 +15,42 @@ pollenField4(759, 230, 40, 40).
 /* Plans */
 
 +!start <- .wait(3000); .my_name(A); 
-.delete("worker",A,N);
-
-if (N <= 3) {
-	registerBee(feeder, 10);
-} else {
-	if (N <= 5) {
-		registerBee(sentinel, 20);
+	.delete("worker",A,N);
+	
+	if (N <= 3) {
+		registerBee(feeder, 10);
 	} else {
-		registerBee(worker, 50);
-		setPosition(math.round(759+math.random(36)), 448);
-		!collectHoney;
+		if (N <= 5) {
+			registerBee(sentinel, 20);
+		} else {
+			registerBee(worker, 50);
+			setPosition(math.round(761+math.random(30)), 449);
+			.wait(1000);
+			!searchHoney;
+		}
 	}
-}
 .
 
-+!move <- move(right); .wait(20); !move.
-
-
-+!collectHoney : pollenField4(X, Y, WIDTH, HEIGHT) <-
-   for ( .range(I,Y + HEIGHT, 448)) {
-        move(up);
-     }
++!searchHoney : pollenField4(X, Y, WIDTH, HEIGHT) <-
+	for ( .range(I,Y + HEIGHT, 450)) {
+		move(up);
+	}
+	     
+	!collectHoney;
+	     
+	for ( .range(J,Y + HEIGHT, 450)) {
+		move(down);
+	}     
+	     
+	!delivery;
      
-     collect(pollenField4);
-     
-   for ( .range(I,Y + HEIGHT, 448)) {
-        move(down);
-     }     
-     
-     delivery;
-     !collectHoney;
-.
+ !searchHoney.
 
--!collectHoney[error(ia_failed)].
--!collectHoney[error_msg(M)].
+-!searchHoney[error(ia_failed)].
+-!searchHoney[error_msg(M)]/* <- .print("Error: ", M) */.
+
++!collectHoney <- collect(pollenField4).
++!delivery <- delivery.
 
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }

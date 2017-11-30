@@ -11,7 +11,7 @@ import model.Bee;
 public class BeeResolver {
 	private Map<String, BeeGraphic> beeCircles = new HashMap<String, BeeGraphic>();
 
-	synchronized public Circle createBee(Bee bee, int positionX, int positionY) {
+	public Circle createBee(Bee bee, int positionX, int positionY) {
 		Circle circle = new Circle(4, Color.web("rgb(255,128,35)", 1));
 		circle.setLayoutX(positionX);
 		circle.setLayoutY(positionY);
@@ -20,7 +20,7 @@ public class BeeResolver {
 		return circle;
 	}
 
-	synchronized public BeeGraphic getBee(String beeId) {
+	public BeeGraphic getBee(String beeId) {
 		return beeCircles.get(beeId);
 	}
 }

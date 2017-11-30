@@ -2,18 +2,25 @@ package graphic;
 
 import graphic.model.BeeContainer;
 import graphic.model.BeeGraphic;
+import graphic.model.PollenFieldGraphic;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.shape.Circle;
 import model.Bee;
 import model.Hive;
+import model.JavaFXConcurrent;
 import model.PollenField;
+import model.Position;
 import model.RandomUtils;
 import model.enumeration.Direction;
 import model.enumeration.HoneySupply;
 import model.enumeration.PollenSupply;
+import model.exception.CannotCollectOnThisPositionException;
+import model.exception.CannotDepositOnThisPositionException;
 import model.exception.InvalidMovimentException;
 import model.exception.MovimentOutOfBoundsException;
+import model.exception.NoLongerHiveException;
+import model.exception.NoLongerPollenFieldException;
+import model.exception.NoPollenCollectedException;
 import model.exception.PollenIsOverException;
 
 public class Environment {
@@ -48,50 +55,63 @@ public class Environment {
 		//System.out.println("Random position: ("+hiveX+","+hiveMaxX+"),("+hiveY+","+hiveMaxY+") randomized: ("+x+","+y+")");
 		
 		bee.setPosition(x, y);
-		mapResolver.addBee(bee.getId(), x, y);
-		Circle beeGraphic = beeResolver.createBee(bee, x, y);
+		beeResolver.createBee(bee, x, y);
 		//root.getChildren().add(beeGraphic);
 	}
 
-	synchronized public void moveBee(String beeId, Direction direction) throws MovimentOutOfBoundsException, InvalidMovimentException {
+	public void moveBee(String beeId, Direction direction) throws MovimentOutOfBoundsException, InvalidMovimentException {
 		validateMoviment(beeId, direction);
-		//System.out.println("Moving bee "+beeId+" to "+direction.toString());
+//		System.out.println("Moving bee "+beeId+" to "+direction.toString());
 		BeeGraphic beeGraphic = beeResolver.getBee(beeId);
 		Bee bee = beeGraphic.getBee();
 		
-		boolean beforeInsideContainer = mapResolver.hasContainer(bee.getX(), bee.getY());
+		boolean beforeInsideContainer = mapResolver.hasContainer(bee.getPosition());
 		
-		mapResolver.moveBee(beeId, direction);
+		mapResolver.moveBee(bee, direction);
+
+		boolean afterInsideContainer = mapResolver.hasContainer(bee.getPosition());
+		boolean removeNode = false;
+		boolean addNode = false;
 		
-		boolean afterInsideContainer = mapResolver.hasContainer(bee.getX(), bee.getY());
 		
 		if (!beforeInsideContainer && afterInsideContainer) {
-			BeeContainer beeContainer = mapResolver.getContainer(bee.getX(), bee.getY());
+			BeeContainer beeContainer = mapResolver.getContainer(bee.getPosition());
 			beeGraphic.setInsideContainer(beeContainer);
 			beeContainer.addBee(beeGraphic);
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {			
-					EnvironmentApplication.instance.removeNode(beeGraphic.getCircle());
-				}
-			});
+			
+//			System.out.println("Removing node "+beeId);
+			removeNode = true;
 		} else if (beforeInsideContainer && !afterInsideContainer) {
 			BeeContainer beeContainer = beeGraphic.getInsideContainer();
 			beeGraphic.setInsideContainer(null);
 			beeContainer.removeBee(beeGraphic);
 			
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {			
-					EnvironmentApplication.instance.addNode(beeGraphic.getCircle());
-				}
-			});
+//			System.out.println("Adding node "+beeId);
+			addNode = true;
 		}
+		
+		final boolean removeNodeFinal = removeNode;
+		final boolean addeNodeFinal = addNode;
+		
+		JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
+			
+			@Override
+			public void run() {
+				beeGraphic.getCircle().setLayoutX(bee.getPosition().getX());
+				beeGraphic.getCircle().setLayoutY(bee.getPosition().getY());
+				
+				if (removeNodeFinal)
+					EnvironmentApplication.instance.removeBee(beeGraphic.getCircle());
+				
+				if (addeNodeFinal)
+					EnvironmentApplication.instance.addBee(beeGraphic.getCircle());				
+			}
+		});		
 	}
 
 	private void validateMoviment(String beeId, Direction direction) throws MovimentOutOfBoundsException, InvalidMovimentException {
 		BeeGraphic beeGraphic = beeResolver.getBee(beeId);
-		int x = beeGraphic.getBee().getX(), y = beeGraphic.getBee().getY();
+		int x = beeGraphic.getBee().getPosition().getX(), y = beeGraphic.getBee().getPosition().getY();
 		
 		if (direction.equals(Direction.LEFT))
 			x--;
@@ -122,27 +142,17 @@ public class Environment {
 
 	public void createLarva() {
 		Hive.getInstance().createLarva();
-		
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				EnvironmentApplication map = EnvironmentApplication.waitForStartUpTest();
-				map.updateLarvaCount();
-				
-			}
-		});		
+		EnvironmentApplication.getInstance().updateLarvaCount();
 	}
 
 	public void setHoneyStart(int ammount) {
 		Hive.getInstance().setHoney(ammount);
-		
-		Platform.runLater(new Runnable() {
+		JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
 			@Override
-			public void run() {
-				EnvironmentApplication map = EnvironmentApplication.waitForStartUpTest();
-				map.updateHoneyStatus();
+			public void run() {	
+				EnvironmentApplication.getInstance().updateHoneyStatus(Hive.getInstance().getStatus());
 			}
-		});		
+		});
 	}
 
 	public void registerBee(String beeId, String type, int age) {
@@ -160,34 +170,19 @@ public class Environment {
 			bee = hive.createQueen(beeId, age);
 		}
 		
-		EnvironmentApplication map = EnvironmentApplication.waitForStartUpTest();
+		EnvironmentApplication map = EnvironmentApplication.getInstance();
 		addBee(bee);
 		map.updateBeeCount();		
-		
-//		Platform.runLater(new Runnable() {
-//			@Override
-//			public void run() {
-//				BeeEnvironment map = BeeEnvironment.waitForStartUpTest();
-//				map.addBee(bee);
-//				map.updateBeeCount();
-//			}
-//		});		
 	}
 
 	public void changeDay(int newDay) {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				EnvironmentApplication map = EnvironmentApplication.waitForStartUpTest();
-				map.updateDay(newDay);
-			}
-		});				
+		EnvironmentApplication.getInstance().updateDay(newDay);
 	}
 
 	public void launchGraphicApplication(int width, int height) {
 		this.width = width;
 		this.height = height;
-		this.mapResolver = new MapResolver(beeResolver, pollenFieldResolver, width, height);
+		this.mapResolver = new MapResolver(beeResolver, width, height);
 		
 		new Thread(() -> {
 			Application.launch(EnvironmentApplication.class, width+"", height+"");
@@ -195,14 +190,18 @@ public class Environment {
 	}
 
 	public void setPosition(String beeId, int x, int y) {
-		Platform.runLater(new Runnable() {
+//		System.out.println("Setting position bee: "+beeId+" x: "+x+" y: "+y);
+		Circle circle = mapResolver.setPositionBee(beeId, x, y);
+		
+		JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
 			@Override
-			public void run() {
-				System.out.println("Setting position bee: "+beeId+" x: "+x+" y: "+y);
-				EnvironmentApplication map = EnvironmentApplication.waitForStartUpTest();
-				map.addNode(mapResolver.setPositionBee(beeId, x, y));
+			public void run() {	
+				if (beeResolver.getBee(beeId).isInsideContainer())
+					EnvironmentApplication.getInstance().removeBee(circle);
+				else
+					EnvironmentApplication.getInstance().addBee(circle);
 			}
-		});		
+		});
 	}
 
 	public BeeResolver getBeeResolver() {
@@ -217,42 +216,63 @@ public class Environment {
 		return pollenFieldResolver;
 	}
 
-	synchronized public void collect(String pollenFieldId, String beeId) throws PollenIsOverException {
-		PollenField pollenField = pollenFieldResolver.getPollenField(pollenFieldId).getPollenField();
+	public void collect(String pollenFieldId, String beeId) throws PollenIsOverException, NoLongerPollenFieldException, CannotCollectOnThisPositionException {
+//		System.out.println("Beee "+beeId+" trying to collect on field "+pollenFieldId);
+		BeeGraphic beeGraphic = beeResolver.getBee(beeId);
+		PollenFieldGraphic pollenFieldGraphic = pollenFieldResolver.getPollenField(pollenFieldId);
+		
+		if (!beeGraphic.isInsideContainer())
+			throw new CannotCollectOnThisPositionException("Bee isn't inside pollen field!");
+		else if (!beeGraphic.getInsideContainer().equals(pollenFieldGraphic)) 
+			throw new NoLongerPollenFieldException("Bee isn't on this pollen field!");
+		
+//		System.out.println("Beee "+beeId+" is collecting on field "+pollenFieldId);
+		
+		PollenField pollenField = pollenFieldGraphic.getPollenField();
 		PollenSupply statusBefore = pollenField.getStatus();
 		
 		int ammount = pollenField.collect();
-		beeResolver.getBee(beeId).getBee().setPollenCollected(ammount);
+		beeGraphic.getBee().setPollenCollected(ammount);
 		
 		PollenSupply statusAfter = pollenField.getStatus();
 		
 		if (!statusBefore.equals(statusAfter)) {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					EnvironmentApplication map = EnvironmentApplication.waitForStartUpTest();
-					map.updatePollenFieldStatus(pollenFieldId);
-				}
-			});	
+			EnvironmentApplication.getInstance().updatePollenFieldStatus(pollenFieldId);
 		}
 	}
 
-	public void delivery(String beeId) {
-		HoneySupply statusBefore = Hive.getInstance().getStatus();
+	public void delivery(String beeId) throws CannotDepositOnThisPositionException, NoLongerHiveException, NoPollenCollectedException {
+//		System.out.println("Beee "+beeId+" delivering on hive");
+		BeeGraphic beeGraphic = beeResolver.getBee(beeId);
+		
+		if (!beeGraphic.isInsideContainer())
+			throw new CannotDepositOnThisPositionException("Bee isn't inside field!");
+		else if (!beeGraphic.getInsideContainer().equals(mapResolver.getHive())) 
+			throw new NoLongerHiveException("Bee isn't on Hive!");
 		
 		int ammount = beeResolver.getBee(beeId).getBee().takePollenCollected();
+		
+		if (ammount <= 0)
+			throw new NoPollenCollectedException("No one pollen is collected!");
+		
+		HoneySupply statusBefore = Hive.getInstance().getStatus();
+		
+		
 		Hive.getInstance().addHoney(ammount);
 		
 		HoneySupply statusAfter = Hive.getInstance().getStatus();
 		
 		if (!statusBefore.equals(statusAfter)) {
-			Platform.runLater(new Runnable() {
+			JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
 				@Override
-				public void run() {
-					EnvironmentApplication map = EnvironmentApplication.waitForStartUpTest();
-					map.updateHoneyStatus();;
+				public void run() {	
+					EnvironmentApplication.getInstance().updateHoneyStatus(Hive.getInstance().getStatus());
 				}
-			});	
+			});
 		}
+	}
+
+	public Position getPosition(String beeId) {
+		return beeResolver.getBee(beeId).getBee().getPosition();
 	}
 }
