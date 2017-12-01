@@ -1,14 +1,6 @@
 // Agent sample_agent in project melissa
 
 /* Initial beliefs and rules */
-// x, y, width, height
-hive(649, 449, 150, 150).
-
-pollenField1(0, 0, 150, 200).
-pollenField2(0, 300, 60, 170).
-pollenField3(400, 0, 40, 40).
-pollenField4(759, 230, 40, 40).
-
 energia(100).
 lifespan(45).
 niceTemperature(25).
@@ -39,12 +31,12 @@ ta_frio(T) :-
 <-	.my_name(N);
 	?play(N,R,colmeia);
 	if (R == baba) {
-		registerBee(feeder, 10);	
+		registerBee(feeder);	
 	} else {
 		if (R == sentinela) {
-			registerBee(sentinel, 20);	
+			registerBee(sentinel);	
 		} else {
-			registerBee(worker, 50);
+			registerBee(worker);
 			setPosition(math.round(761+math.random(30)), 449); /*esse comando serve apenas pra minha lógica de subir e descer funcione, 
 			quando elas se registram, elas já são posicionadas dentro da colmeia em pontos aleatorios*/
 		}			
@@ -128,15 +120,19 @@ ta_frio(T) :-
 <-	lookupArtifact("Hive",AId);
 	focus(AId);
 	
-	X = math.floor(math.random(Width));
-	Y = math.floor(math.random(Heigth));
-	move(X,Y);
+	.findall(r(ID, X, Y, WIDTH, HEIGHT), pollenField("pollenField4", X, Y, WIDTH, HEIGHT),List);
 	
-    /*  
+	.print("X: ",List);
+	
+//	X = math.floor(math.random(Width));
+//	Y = math.floor(math.random(Heigth));
+//	move(X,Y);
+	
+      
 	for ( .range(I,Y + HEIGHT, 450)) {
 		move(up);
 	}
-	*/
+	
 	
 	!collectHoney;
 	!trazerPolen[scheme(Sch)].
@@ -145,10 +141,10 @@ ta_frio(T) :-
 -!procurarPolen[error_msg(M)]     <- .print("Error in: ",M).
 
 
-+!trazerPolen[scheme(Sch)] : pollenField4(X, Y, WIDTH, HEIGHT)
++!trazerPolen[scheme(Sch)]
    <- lookupArtifact("Hive",AId);
       focus(AId);
-      
+    ?pollenField(pollenField4, X, Y, WIDTH, HEIGHT);
 	for ( .range(J,Y + HEIGHT, 450)) {
 		move(down);
 	}

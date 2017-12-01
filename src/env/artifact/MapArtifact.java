@@ -2,10 +2,6 @@
 
 package artifact;
 
-import java.util.List;
-
-import com.sun.javafx.geom.Rectangle;
-
 import cartago.Artifact;
 import cartago.INTERNAL_OPERATION;
 import cartago.OPERATION;
@@ -23,36 +19,26 @@ public class MapArtifact extends Artifact {
 	private static final int AVERAGE_TEMPERATURE = 25;
 	private static final int TERMIC_AMPLITUDE = 10;
 	
-	private List<Rectangle> pollenFields;
-	
 	void init() {
+		Environment.getInstance().launchGraphicApplication(800, 600);
+		
 		defineObsProperty("day", 0);
 		defineObsProperty("extTemperature", 25);
-		Environment.getInstance().launchGraphicApplication(800, 600);
-		execInternalOp("createPolenFields");
+		
+		// x, y, width, height
+		defineObsProperty("hive", 649,449,150,150);
+		
+		defineObsProperty("pollenField", "pollenField1",0,0,150,200);
+		defineObsProperty("pollenField", "pollenField2",0, 300, 60, 170);
+		defineObsProperty("pollenField", "pollenField3",400, 0, 40, 40);
+		defineObsProperty("pollenField", "pollenField4",759, 230, 40, 40);
+		
+	//	defineObsProperty("pollenField", "(pollenField1,0,0,150,200)", "(pollenField2, 0, 300, 60, 170)", "(pollenField3, 400, 0, 40, 40)", "(pollenField4, 759, 230, 40, 40)");
+		
 		execInternalOp("dayChange");
 		execInternalOp("temperatureChange");
 	}
 
-	@INTERNAL_OPERATION
-	void createPolenFields() {
-		pollenFields.add(new Rectangle(0, 0, 150, 200));
-		pollenFields.add(new Rectangle(0, 300, 60, 170));
-		pollenFields.add(new Rectangle(400, 0, 40, 40));
-		pollenFields.add(new Rectangle(759, 230, 40, 40));
-	}
-	
-	boolean posInField(int x0, int y0) {
-		for(Rectangle rec : pollenFields) {
-			if(rec.x < x0 && x0 < (rec.x + rec.width)) {
-				if(rec.y < y0 && y0 < (rec.y + rec.height)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
 	@OPERATION
 	void move(String direction) {
 		try {

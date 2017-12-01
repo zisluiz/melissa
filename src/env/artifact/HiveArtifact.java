@@ -112,8 +112,8 @@ public class HiveArtifact extends Artifact {
 	}	
 	
 	@OPERATION
-	void registerBee(String type, int age) {
-		Environment.getInstance().registerBee(getCurrentOpAgentId().getAgentName(), type, age);
+	void registerBee(String type) {
+		Environment.getInstance().registerBee(getCurrentOpAgentId().getAgentName(), type);
 	}
 	
 	@OPERATION

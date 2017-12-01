@@ -18,9 +18,9 @@ energia(1000).
 	focus(SchArtId);
 	addScheme(SchName);  // set the group as responsible for the scheme
 	commitMission(mRainha)[artifact_id(SchArtId)];
-	commitMission(mAlimentacao);
-	commitMission(mRenovacao);
-	commitMission(mTemperatura).
+	commitMission(mAlimentacao)[artifact_id(SchArtId)];
+	commitMission(mRenovacao)[artifact_id(SchArtId)];
+	commitMission(mTemperatura)[artifact_id(SchArtId)].
 	
 +!start[scheme(Sch)]                        // plan for the goal start defined in the scheme
 <- 	makeArtifact("Hive", "artifact.HiveArtifact", [], HiveId); // create the hive artifact
@@ -34,7 +34,7 @@ energia(1000).
 	.wait(6000).
 	
 +!registerBee[scheme(Sch)]
-<-	registerBee(queen, 100); 
+<-	registerBee(queen); 
 	hiveStart.
 		
 /* Management Plans */		

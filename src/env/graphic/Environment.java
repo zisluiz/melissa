@@ -187,24 +187,30 @@ public class Environment {
 		Hive.getInstance().setPolen(ammount);
 	}
 	
-	public void registerBee(String beeId, String type, int age) {
+	public void registerBee(String beeId, String type) {
 		System.out.println("Registering bee "+beeId);
 		Hive hive = Hive.getInstance();
 		Bee bee = null;
 		
 		if (type.equals("sentinel")) {
-			bee = hive.createSentinel(beeId, age);
+			bee = hive.createSentinel(beeId);
 		} else if (type.equals("worker")) {
-			bee = hive.createWorker(beeId, age);
+			bee = hive.createWorker(beeId);
 		} else if (type.equals("queen")) {
-			bee = hive.createQueen(beeId, age);
+			bee = hive.createQueen(beeId);
 		} else {
-			bee = hive.createFeeder(beeId, age);
+			bee = hive.createFeeder(beeId);
 		}
 		
 		EnvironmentApplication map = EnvironmentApplication.getInstance();
 		addBee(bee);
-		map.updateBeeCount();		
+		
+		JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
+			@Override
+			public void run() {			
+				map.updateBeeCount();		
+			}
+		});			
 	}
 
 	public void changeDay(int newDay) {

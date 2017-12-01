@@ -6,9 +6,8 @@ public class Bee {
 	private Position position = new Position();
 	private int pollenCollected;
 
-	public Bee(String id, int age) {
+	public Bee(String id) {
 		this.id = id;
-		this.age = age;
 	}
 	
 	public void setPosition(int x, int y) {

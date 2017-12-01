@@ -37,7 +37,7 @@ public class Test {
 			Thread t1 = new Thread(new Runnable() {
 				public void run() {
 					String beeId = "bee"+id;
-					instance.registerBee(beeId, "worker", 10);
+					instance.registerBee(beeId, "worker");
 					instance.setPosition(beeId, 761+RandomUtils.getRandom(0, 30), 449);
 
 					for (int z = 0; z < 3; z++) {

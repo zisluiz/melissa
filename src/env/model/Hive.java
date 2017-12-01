@@ -109,26 +109,26 @@ public class Hive {
 		larvas.add(new Larva(0));
 	}
 
-	public Bee createFeeder(String id, int age) {
-		Bee bee = new Bee(id, age);
+	public Bee createFeeder(String id) {
+		Bee bee = new Bee(id);
 		feeders.add(bee);
 		return bee;
 	}
 
-	public Bee createSentinel(String id, int age) {
-		Bee bee = new Bee(id, age);
+	public Bee createSentinel(String id) {
+		Bee bee = new Bee(id);
 		sentinels.add(bee);
 		return bee;
 	}
 
-	public Bee createWorker(String id, int age) {
-		Bee bee = new Bee(id, age);
+	public Bee createWorker(String id) {
+		Bee bee = new Bee(id);
 		workers.add(bee);
 		return bee;
 	}
 
-	public Bee createQueen(String id, int age) {
-		Bee bee = new Bee(id, age);
+	public Bee createQueen(String id) {
+		Bee bee = new Bee(id);
 		queens.add(bee);
 		return bee;
 	}
