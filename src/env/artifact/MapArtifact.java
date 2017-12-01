@@ -72,7 +72,6 @@ public class MapArtifact extends Artifact {
 			int newDay = day.intValue()+1;
 			
 			Environment.getInstance().changeDay(newDay);
-			
 			day.updateValue(newDay);
 		}
 	}	

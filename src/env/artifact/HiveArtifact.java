@@ -28,12 +28,30 @@ public class HiveArtifact extends Artifact {
 	
 	@OPERATION
 	void aquecer() {
-		
+		ObsProperty h = getObsProperty("heaters");
+		h.updateValue(h.intValue()+1);
+		updateTemp();
 	}
 	
 	@OPERATION
 	void resfriar() {
-		
+		ObsProperty c = getObsProperty("coolers");
+		c.updateValue(c.intValue()+1);
+		updateTemp();
+	}
+	
+	@OPERATION
+	void stop_aquecer() {
+		ObsProperty h = getObsProperty("heaters");
+		h.updateValue(h.intValue()-1);
+		updateTemp();
+	}
+	
+	@OPERATION
+	void stop_resfriar() {
+		ObsProperty c = getObsProperty("coolers");
+		c.updateValue(c.intValue()-1);
+		updateTemp();
 	}
 	
 	@OPERATION
@@ -85,23 +103,29 @@ public class HiveArtifact extends Artifact {
 		}
 	}
 	
+	@OPERATION
+	void updateTemp() {
+		int extTemp = Environment.getInstance().getExtTemperature();
+		ObsProperty intTemp = getObsProperty("intTemperature");
+		ObsProperty heaters = getObsProperty("heaters");
+		ObsProperty coolers = getObsProperty("coolers");
+		int heat = heaters.intValue();
+		int cool = coolers.intValue();
+		
+		int ammount = extTemp + heat - cool;
+		
+		if (ammount != intTemp.intValue()) {
+			intTemp.updateValue(ammount);
+			Environment.getInstance().setIntTemp(ammount);
+		}		
+	}
+	
 	@INTERNAL_OPERATION
 	void temperatureChange() {
 		while(true){
-			await_time(DELAY_TIME);
-			int extTemp = Environment.getInstance().getExtTemperature();
-			ObsProperty intTemp = getObsProperty("intTemperature");
-			ObsProperty heaters = getObsProperty("heaters");
-			ObsProperty coolers = getObsProperty("coolers");
-			int heat = heaters.intValue();
-			int cool = coolers.intValue();
+			await_time((int)(DELAY_TIME/10));
 			
-			int ammount = extTemp + heat - cool;
-			
-			if (ammount != intTemp.intValue()) {
-				intTemp.updateValue(ammount);
-				Environment.getInstance().setIntTemp(ammount);
-			}
+			updateTemp();
 		}
-	}	
+	}
 }
