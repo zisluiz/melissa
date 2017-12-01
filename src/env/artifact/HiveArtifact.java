@@ -88,7 +88,7 @@ public class HiveArtifact extends Artifact {
 	@INTERNAL_OPERATION
 	void temperatureChange() {
 		while(true){
-			await_time(DELAY_TIME);
+			await_time((int)(DELAY_TIME/10));
 			int extTemp = Environment.getInstance().getExtTemperature();
 			ObsProperty intTemp = getObsProperty("intTemperature");
 			ObsProperty heaters = getObsProperty("heaters");
