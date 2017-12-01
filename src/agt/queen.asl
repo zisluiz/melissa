@@ -35,8 +35,7 @@ energia(1000).
 	
 +!registerBee[scheme(Sch)]
 <-	registerBee(queen, 100); 
-	honeyStart(100);
-	tempStart(25).
+	hiveStart.
 		
 /* Management Plans */		
 		

@@ -2,6 +2,10 @@
 
 package artifact;
 
+import java.util.List;
+
+import com.sun.javafx.geom.Rectangle;
+
 import cartago.Artifact;
 import cartago.INTERNAL_OPERATION;
 import cartago.OPERATION;
@@ -19,14 +23,25 @@ public class MapArtifact extends Artifact {
 	private static final int AVERAGE_TEMPERATURE = 25;
 	private static final int TERMIC_AMPLITUDE = 10;
 	
+	private List<Rectangle> pollenFields;
+	
 	void init() {
 		defineObsProperty("day", 0);
 		defineObsProperty("extTemperature", 25);
 		Environment.getInstance().launchGraphicApplication(800, 600);
+		execInternalOp("createPolenFields");
 		execInternalOp("dayChange");
 		execInternalOp("temperatureChange");
 	}
 
+	@INTERNAL_OPERATION
+	void createPolenFields() {
+		pollenFields.add(new Rectangle(0, 0, 150, 200));
+		pollenFields.add(new Rectangle(0, 300, 60, 170));
+		pollenFields.add(new Rectangle(400, 0, 40, 40));
+		pollenFields.add(new Rectangle(759, 230, 40, 40));
+	}
+	
 	@OPERATION
 	void move(String direction) {
 		try {

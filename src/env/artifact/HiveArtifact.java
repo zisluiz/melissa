@@ -2,6 +2,8 @@
 
 package artifact;
 
+import com.sun.javafx.geom.Rectangle;
+
 import cartago.Artifact;
 import cartago.INTERNAL_OPERATION;
 import cartago.OPERATION;
@@ -15,6 +17,7 @@ import model.exception.NoPollenCollectedException;
 
 public class HiveArtifact extends Artifact {
 	private static final long DELAY_TIME = 10000;
+	
 	void init() {
 		defineObsProperty("polen", 0);
 		defineObsProperty("honey", 0);
@@ -22,9 +25,29 @@ public class HiveArtifact extends Artifact {
 		defineObsProperty("larvas", 0);
 		defineObsProperty("heaters", 0);
 		defineObsProperty("coolers", 0);
+		defineObsProperty("x", 0);
+		defineObsProperty("y", 0);
+		defineObsProperty("width", 0);
+		defineObsProperty("heigth", 0);
 		
 		execInternalOp("temperatureChange");
 	}
+	
+	@OPERATION
+	void hiveStart() {
+		honeyStart(100);
+		polenStart(100);
+		tempStart(25);
+		dimStart(649, 449, 150, 150);
+	}
+	
+	void dimStart(int x, int y, int width, int heigth) {
+		updateObsProperty("x", x);
+		updateObsProperty("y", y);
+		updateObsProperty("width", width);
+		updateObsProperty("heigth", heigth);
+	}
+
 	
 	@OPERATION
 	void aquecer() {

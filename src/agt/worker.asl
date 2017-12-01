@@ -124,13 +124,19 @@ ta_frio(T) :-
 
 /* Explorer Plans */
 	
-+!procurarPolen[scheme(Sch)] : pollenField4(X, Y, WIDTH, HEIGHT)
-   <- lookupArtifact("Hive",AId);
-      focus(AId);
-      
++!procurarPolen[scheme(Sch)]
+<-	lookupArtifact("Hive",AId);
+	focus(AId);
+	
+	X = math.floor(math.random(Width));
+	Y = math.floor(math.random(Heigth));
+	move(X,Y);
+	
+    /*  
 	for ( .range(I,Y + HEIGHT, 450)) {
 		move(up);
 	}
+	*/
 	
 	!collectHoney;
 	!trazerPolen[scheme(Sch)].

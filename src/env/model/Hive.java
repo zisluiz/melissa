@@ -3,6 +3,8 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.javafx.geom.Rectangle;
+
 import model.enumeration.HoneySupply;
 import model.exception.InsufficientHoneyException;
 import model.exception.InsufficientPolenException;
@@ -22,6 +24,8 @@ public class Hive {
 
 	private int honey;
 	private int polen;
+	
+	private Rectangle hive;
 
 	private Hive() {
 	}
@@ -44,6 +48,18 @@ public class Hive {
 			instance = new Hive();
 		
 		return instance;
+	}
+	
+	public Rectangle getHiveRect() {
+		return hive;
+	}
+	
+	public void setHiveRect(Rectangle rect) {
+		hive = rect;
+	}
+	
+	public void setHiveRect(int x, int y, int width, int heigth) {
+		hive = new Rectangle(x, y, width, heigth);
 	}
 
 	public int getTemperature() {
