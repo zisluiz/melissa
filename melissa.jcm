@@ -19,17 +19,17 @@ mas melissa {
     } 
        
     agent worker : worker.asl {
-    	instances: 2
+    	instances: 10
     	roles: baba in colmeia
     }
     
      agent worker : worker.asl {
-    	instances: 4
+    	instances: 10
     	roles: sentinela in colmeia
     }   
     
       agent worker : worker.asl {
-    	instances: 10
+    	instances: 20
     	roles: exploradora in colmeia
     }   
     

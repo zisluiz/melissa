@@ -16,11 +16,15 @@ import model.exception.PollenIsOverException;
 
 public class MapArtifact extends Artifact {
 	private static final long DELAY_TIME = 10000;
+	private static final int AVERAGE_TEMPERATURE = 25;
+	private static final int TERMIC_AMPLITUDE = 10;
 	
 	void init() {
 		defineObsProperty("day", 0);
+		defineObsProperty("externalTemperature", 25);
 		Environment.getInstance().launchGraphicApplication(800, 600);
 		execInternalOp("dayChange");
+		execInternalOp("temperatureChange");
 	}
 
 	@OPERATION
@@ -59,6 +63,23 @@ public class MapArtifact extends Artifact {
 			Environment.getInstance().changeDay(newDay);
 			
 			day.updateValue(newDay);
+		}
+	}	
+	
+	@INTERNAL_OPERATION
+	void temperatureChange() {
+		while (true) {
+			await_time(DELAY_TIME);
+			ObsProperty day = getObsProperty("day");
+			int today = day.intValue();
+			
+			int month = today % 12; // para estacoes do ano
+			int newTemperature = (int)(AVERAGE_TEMPERATURE + TERMIC_AMPLITUDE * Math.sin(2*Math.PI*(month/12.)));
+			
+			Environment.getInstance().changeTemp(newTemperature);
+
+			ObsProperty temperature = getObsProperty("externalTemperature");
+			temperature.updateValue(newTemperature);
 		}
 	}	
 }

@@ -160,14 +160,14 @@ public class Environment {
 		Hive hive = Hive.getInstance();
 		Bee bee = null;
 		
-		if (type.equals("feeder")) {
-			bee = hive.createFeeder(beeId, age);
-		} else if (type.equals("sentinel")) {
+		if (type.equals("sentinel")) {
 			bee = hive.createSentinel(beeId, age);
 		} else if (type.equals("worker")) {
 			bee = hive.createWorker(beeId, age);
 		} else if (type.equals("queen")) {
 			bee = hive.createQueen(beeId, age);
+		} else {
+			bee = hive.createFeeder(beeId, age);
 		}
 		
 		EnvironmentApplication map = EnvironmentApplication.getInstance();
@@ -177,6 +177,10 @@ public class Environment {
 
 	public void changeDay(int newDay) {
 		EnvironmentApplication.getInstance().updateDay(newDay);
+	}
+
+	public void changeTemp(int newTemp) {
+		EnvironmentApplication.getInstance().updateTemp(newTemp);
 	}
 
 	public void launchGraphicApplication(int width, int height) {

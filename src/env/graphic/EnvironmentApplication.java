@@ -56,6 +56,7 @@ public class EnvironmentApplication extends Application {
 	private Text day;
 	private HiveGraphic hiveGraphic;
 	
+	private Text extTemp;
     private BooleanProperty stop = new SimpleBooleanProperty(false);
     private int second = 0;
     private int minute = 0;
@@ -101,12 +102,22 @@ public class EnvironmentApplication extends Application {
 		labelDay.setFont(font);
 		root.getChildren().add(labelDay);
 		
-		day = new Text(740, 30, "0");
+		day = new Text(780, 30, "0");
 		day.setFill(colorWhite);
 		day.setFont(font);
-		root.getChildren().add(day);		
+		root.getChildren().add(day);	
 		
-		Rectangle spaceLabel = createRectangle(20, 600, colorWhite, 800, 0);
+		Text labelExtTemp = new Text(690, 44, "Temperature: ");
+		labelExtTemp.setFill(colorWhite);
+		labelExtTemp.setFont(font);
+		root.getChildren().add(labelExtTemp);
+		
+		extTemp = new Text(780, 44, "25°");
+		extTemp.setFill(colorWhite);
+		extTemp.setFont(font);
+		root.getChildren().add(extTemp);		
+		
+		Rectangle spaceLabel = createRectangle(20, 600, colorWhite, 810, 0);
 		root.getChildren().add(spaceLabel);		
 		
 		root.getChildren().add(createLabels());
@@ -178,7 +189,7 @@ public class EnvironmentApplication extends Application {
 		labelNumberTemp = new Text(771, 473, "0");
 		labelNumberTemp.setFill(colorWhite);
 		labelNumberTemp.setFont(font);
-		Text labelTemp2 = new Text(785, 473, "º");
+		Text labelTemp2 = new Text(785, 473, "°");
 		labelTemp2.setFill(colorWhite);
 		labelTemp2.setFont(font);
 		group.getChildren().add(labelTemp);		
@@ -347,44 +358,39 @@ public class EnvironmentApplication extends Application {
 	
 	private void startTimer() {
         Task t = new Task() {
-
             @Override
             protected Object call() throws Exception {
                 while (!stop.get()) {
                     second++;
-
                     if (second == 60) {
                         minute++;
                         second = 0;
                     }
-
                     String min = minute <= 9 ? "0" + minute : minute + "";
                     String sec = second <= 9 ? "0" + second : second + "";
-
 //                    Platform.runLater(() -> {
 //                        time.setText(min + ":" + sec);
 //                    });
-                    
                     JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
-						
 						@Override
 						public void run() {
 							time.setText(min + ":" + sec);
 						}
 					});
-                    
                     Thread.sleep(1000);
-
                 }
                 return null;
             }
         };
         new Thread(t).start();
-
 	}
 
 	public void updateDay(int newDay) {
 		day.setText(newDay+"");
+	}
+
+	public void updateTemp(int newTemp) {
+		extTemp.setText(newTemp+"°");
 	}
 
 	public void removeBee(Node node) {

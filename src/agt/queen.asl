@@ -2,18 +2,13 @@
 
 /* Initial beliefs and rules */
 
+energia(1000).
+
 /* Initial goals */
 
 !startOrg(1).
 
-/* Plans */
-
-/*+!start 
-<-  .wait(3000); 
-	registerBee(queen, 100); 
-	honeyStart(100);
-	//!startOrg;
-	!createLarva. */
+/* Organisational Plans */
 
 +!startOrg(Id)
 <-  .concat("sch_",Id,SchName);
@@ -22,14 +17,17 @@
 	.my_name(Me); setOwner(Me)[artifact_id(SchArtId)];  // I am the owner of this scheme!
 	focus(SchArtId);
 	addScheme(SchName);  // set the group as responsible for the scheme
-	commitMission(mRainha)[artifact_id(SchArtId)].
+	commitMission(mRainha)[artifact_id(SchArtId)];
+	commitMission(mAlimentacao);
+	commitMission(mRenovacao);
+	commitMission(mTemperatura).
 	
 +!start[scheme(Sch)]                        // plan for the goal start defined in the scheme
-<- 	makeArtifact("Hive", "artifact.HiveArtifact", [], HiveId); // create the auction artifact
+<- 	makeArtifact("Hive", "artifact.HiveArtifact", [], HiveId); // create the hive artifact
     focus(HiveId);  // place observable properties of ArtId into a name space
     .print("Starting hive artifact");
       
-  	makeArtifact("Map", "artifact.MapArtifact", [], MapId); // create the auction artifact
+  	makeArtifact("Map", "artifact.MapArtifact", [], MapId); // create the map artifact
     focus(MapId);  // place observable properties of ArtId into a name space
     .print("Starting map artifact");
 	
@@ -39,7 +37,14 @@
 <-	registerBee(queen, 100); 
 	honeyStart(100).
 		
-      
+/* Management Plans */		
+		
++!alimentacao.
++!renovacaoEnxame.
++!controleTemperatura.
+		
+/* Renew Plans */
+		
 +!porOvos[scheme(Sch)]   
 <-	createLarva;
 	.wait(1000);

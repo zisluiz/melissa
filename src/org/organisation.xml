@@ -81,15 +81,15 @@
             </plan>
         </goal>
 
-<!-- 		<mission id="mAlimentacao">
+ 		<mission id="mAlimentacao">
 			<goal id="alimentacao"/>
 		</mission>
         <mission id="mRenovacao">
-			<goal id="renovaçãoEnxame"/>
+			<goal id="renovacaoEnxame"/>
 		</mission>
         <mission id="mTemperatura">
 			<goal id="controleTemperatura"/>
-		</mission> -->
+		</mission> 
 		
 		<!-- caso alimentarse nao funcionar, fazer em missao separada -->
 		
@@ -145,9 +145,9 @@
     <norm id="nBaba" type="obligation" role="baba" mission="mBaba"/>
     <norm id="nRainha" type="permission" role="monarca" mission="mRainha"/>    
     
-<!--     <norm id="nAlimentação" type="obligation" role="Monarca" mission="mAlimentacao"/> -->
-<!--     <norm id="nRenovação" type="obligation" role="Monarca" mission="mRenovacao"/> -->
-<!--     <norm id="nTemperatura" type="obligation" role="Monarca" mission="mTemperatura"/> -->
+    <norm id="nAlimentacao" type="obligation" role="monarca" mission="mAlimentacao"/>
+    <norm id="nRenovacao" type="obligation" role="monarca" mission="mRenovacao"/>
+    <norm id="nTemperatura" type="obligation" role="monarca" mission="mTemperatura"/>
     
 </normative-specification>
 

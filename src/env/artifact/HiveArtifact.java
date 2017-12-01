@@ -19,6 +19,15 @@ public class HiveArtifact extends Artifact {
 	}
 	
 	@OPERATION
+	void aquecer() {
+		
+	}
+	
+	void resfriar() {
+		
+	}
+	
+	@OPERATION
 	void honeyStart(int ammount) {
 		Environment.getInstance().setHoneyStart(ammount);
 		updateObsProperty("honey", ammount);

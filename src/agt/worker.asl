@@ -3,23 +3,29 @@
 /* Initial beliefs and rules */
 // x, y, width, height
 hive(649, 449, 150, 150).
+
 pollenField1(0, 0, 150, 200).
 pollenField2(0, 300, 60, 170).
 pollenField3(400, 0, 40, 40).
 pollenField4(759, 230, 40, 40).
 
+energia(100).
+lifespan(45).
+
 /* Initial goals */
 
-/* Plans */
+/* Organisational Plans */
+
 +obligation(Ag,Norm,committed(Ag,Mission,Scheme),Deadline)
     : .my_name(Ag)
    <- //.print("I am obliged to commit to ",Mission," on ",Scheme);
       commitMission(Mission)[artifact_name(Scheme)].
 
+/*   Basic Plans  */
+
 +!registerBee[scheme(Sch)]
 <-	.my_name(N);
 	?play(N,R,colmeia);
-
 	if (R == baba) {
 		registerBee(feeder, 10);	
 	} else {
@@ -31,7 +37,29 @@ pollenField4(759, 230, 40, 40).
 			quando elas se registram, elas já são posicionadas dentro da colmeia em pontos aleatorios*/
 		}			
 	}.
-	
+
++!alimentarse.
+
+/*   Baba Plans   */
+
++!fabricarMel.
+
++!alimentarRainha.
+
++!alimentarLarvas.
+
+/* Sentinel Plans */
+
++!aquecer.
++!resfriar.
+/*
++!aquecer : temperature(low)
+<-	aquecer.
+
++!resfriar: temperature(high)
+<- resfriar.
+ */
+/* Explorer Plans */
 	
 +!procurarPolen[scheme(Sch)] : pollenField4(X, Y, WIDTH, HEIGHT)
    <- lookupArtifact("Hive",AId);
