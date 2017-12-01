@@ -13,30 +13,31 @@
 */
 
 mas melissa {
-
-    agent worker {
-    	join: beeEnvironment
-    	focus: map, hive
-    	instances: 6
+    agent queen : queen.asl {
+    	instances: 1
+    	roles: monarca in colmeia
+    } 
+       
+    agent worker : worker.asl {
+    	instances: 2
+    	roles: baba in colmeia
     }
     
-    agent queen {
-    	join: beeEnvironment
-    	focus: map, hive
-    }    
+     agent worker : worker.asl {
+    	instances: 4
+    	roles: sentinela in colmeia
+    }   
     
-    workspace beeEnvironment {
-    	artifact map: artifact.MapArtifact
-    	artifact hive: artifact.HiveArtifact
-    }
-   
-    /*organisation colmeia : organisation.xml {
-        group colmeia : colmeia {
-            players: queen queen
-            		 worker worker
+      agent worker : worker.asl {
+    	instances: 10
+    	roles: exploradora in colmeia
+    }   
+    
+    organisation colmeiaOrg : organisation.xml {
+        group colmeia : colmeiaGroup {
             //debug
         }
-    }*/
+    }
 
     // agent source path
     asl-path: src/agt

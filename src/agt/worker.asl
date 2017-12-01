@@ -8,45 +8,65 @@ pollenField2(0, 300, 60, 170).
 pollenField3(400, 0, 40, 40).
 pollenField4(759, 230, 40, 40).
 
-
 /* Initial goals */
 
-!start.
-
 /* Plans */
++obligation(Ag,Norm,committed(Ag,Mission,Scheme),Deadline)
+    : .my_name(Ag)
+   <- //.print("I am obliged to commit to ",Mission," on ",Scheme);
+      commitMission(Mission)[artifact_name(Scheme)].
 
-+!start 
-<-	.wait(3000);
-	.my_name(A); 
-	.delete("worker",A,N);
-	if (N <= 3) {
-		registerBee(feeder, 10);
-	} else { if (N <= 5) {
-		registerBee(sentinel, 20);
++!registerBee[scheme(Sch)]
+<-	.my_name(N);
+	?play(N,R,colmeia);
+
+	if (R == baba) {
+		registerBee(feeder, 10);	
 	} else {
-		registerBee(worker, 50);
-		setPosition(math.round(761+math.random(30)), 449);
-		.wait(1000);
-		!searchHoney;
-	}}.
-
-+!searchHoney : pollenField4(X, Y, WIDTH, HEIGHT) <-
+		if (R == sentinela) {
+			registerBee(sentinel, 20);	
+		} else {
+			registerBee(worker, 50);
+			setPosition(math.round(761+math.random(30)), 449); /*esse comando serve apenas pra minha lógica de subir e descer funcione, 
+			quando elas se registram, elas já são posicionadas dentro da colmeia em pontos aleatorios*/
+		}			
+	}.
+	
+	
++!procurarPolen[scheme(Sch)] : pollenField4(X, Y, WIDTH, HEIGHT)
+   <- lookupArtifact("Hive",AId);
+      focus(AId);
+      
 	for ( .range(I,Y + HEIGHT, 450)) {
 		move(up);
 	}
-	     
+	
 	!collectHoney;
-	     
+	!trazerPolen[scheme(Sch)].
+
+-!procurarPolen[error(ia_failed)] <- .print("Não consegui procurar!").
+-!procurarPolen[error_msg(M)]     <- .print("Error in: ",M).
+
+
++!trazerPolen[scheme(Sch)] : pollenField4(X, Y, WIDTH, HEIGHT)
+   <- lookupArtifact("Hive",AId);
+      focus(AId);
+      
 	for ( .range(J,Y + HEIGHT, 450)) {
 		move(down);
-	}     
-	     
-	!delivery;
-     
- !searchHoney.
+	}
+	
+	!estocarPolen[scheme(Sch)].
 
--!searchHoney[error(ia_failed)].
--!searchHoney[error_msg(M)]/* <- .print("Error: ", M) */.
+-!trazerPolen[error(ia_failed)] <- .print("I didn't in!").
+-!trazerPolen[error_msg(M)]     <- .print("Error in: ",M).
+
++!estocarPolen[scheme(Sch)] <-
+	!delivery;
+	!procurarPolen[scheme(Sch)].
+
+-!estocarPolen[error(ia_failed)].
+-!estocarPolen[error_msg(M)]/* <- .print("Error: ", M) */.
 
 +!collectHoney <- collect(pollenField4).
 +!delivery <- delivery.

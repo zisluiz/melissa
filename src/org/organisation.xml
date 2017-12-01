@@ -3,7 +3,7 @@
 <?xml-stylesheet href="http://moise.sourceforge.net/xml/os.xsl" type="text/xsl" ?>
 
 <organisational-specification
-    id="organization"
+    id="organisation"
     os-version="0.8"
 
     xmlns='http://moise.sourceforge.net/os'
@@ -14,98 +14,109 @@
 <structural-specification>
 
 <role-definitions>
-    <role id="Monarca" />
-    <role id="Babá" />
-    <role id="Sentinela" />
-    <role id="Exploradora" />
+    <role id="monarca" />
+    <role id="baba" />
+    <role id="sentinela" />
+    <role id="exploradora" />
 </role-definitions>
 
-<group-specification id="colmeia">
+<group-specification id="colmeiaGroup">
     <roles>
-        <role id="Monarca" min="1" max="1"/>
-        <role id="Babá" min="0"/>
-        <role id="Sentinela" min="0"/>
-        <role id="Exploradora" min="0"/>
+        <role id="monarca" min="1" max="1"/>
+        <role id="baba" min="1"/>
+        <role id="sentinela" min="1"/>
+        <role id="exploradora" min="1"/>
     </roles>
     
     <formation-constraints>
-       <compatibility from="Babá" to="Sentinela" bi-dir="true"/>
-       <compatibility from="Sentinela" to="Exploradora" bi-dir="true"/>
-       <compatibility from="Exploradora" to="Babá" bi-dir="true"/>
+       <compatibility from="baba" to="sentinela" bi-dir="true"/>
+       <compatibility from="sentinela" to="exploradora" bi-dir="true"/>
+       <compatibility from="exploradora" to="baba" bi-dir="true"/>
     </formation-constraints>
 </group-specification>
 </structural-specification>
 
 <functional-specification>
-    <scheme id="sobreviver">
+    <scheme id="doSimulation">
         <goal id="sobrevivencia">
-            <plan operator="parallel">
-                <goal id="alimentação">
-                	<plan operator="parallel">
-                		<goal id="controleEstoquePolen">
-                			<plan operator="sequence">
-                				<goal id="coletarPólen">
-                					<plan operator="sequence">
-                						<goal id="procurarPolen"/>
-                						<goal id="trazerPolen"/>
-                					</plan>
-                				</goal>
-                				<goal id="estocarPolen"/>
-                			</plan>
-                		</goal>
-                		<goal id="fabricarMel"/>
-                		<goal id="alimentarse"/>
-                		<goal id="alimentarRainha"/>
-                	</plan>
-                </goal>
-                
-                <goal id="renovaçãoEnxame">
-                	<plan operator="parallel">
-                		<goal id="porOvos"/>
-                		<goal id="alimentarLarvas"/>
-                	</plan>
-                </goal>
-                
-                <goal id="controleTemperatura">
-                	<plan operator="choice">
-                		<goal id="aquecer"/>
-                		<goal id="resfriar"/>
-                	</plan>
-                </goal>
+        	<plan operator="sequence">
+        		<goal id="start"/>
+        		<goal id="registerBee" />
+        		<goal id="beeLife">
+		            <plan operator="parallel">
+		                <goal id="alimentacao">
+		                	<plan operator="parallel">
+		                		<goal id="controleEstoquePolen">
+		                			<plan operator="sequence">
+		                				<goal id="coletarPolen">
+		                					<plan operator="sequence">
+		                						<goal id="procurarPolen"/>
+		                						<goal id="trazerPolen"/>
+		                					</plan>
+		                				</goal>
+		                				<goal id="estocarPolen"/>
+		                			</plan>
+		                		</goal>
+		                		<goal id="fabricarMel"/>
+		                		<goal id="alimentarse"/>
+		                		<goal id="alimentarRainha"/>
+		                	</plan>
+		                </goal>
+		                
+		                <goal id="renovacaoEnxame">
+		                	<plan operator="parallel">
+		                		<goal id="porOvos"/>
+		                		<goal id="alimentarLarvas"/>
+		                	</plan>
+		                </goal>
+		                
+		                <goal id="controleTemperatura">
+		                	<plan operator="choice">
+		                		<goal id="aquecer"/>
+		                		<goal id="resfriar"/>
+		                	</plan>
+		                </goal>
+		            </plan>
+	            </goal>
             </plan>
         </goal>
 
-		<mission id="mAlimentacao">
-			<goal id="alimentação"/>
+<!-- 		<mission id="mAlimentacao">
+			<goal id="alimentacao"/>
 		</mission>
         <mission id="mRenovacao">
 			<goal id="renovaçãoEnxame"/>
 		</mission>
         <mission id="mTemperatura">
 			<goal id="controleTemperatura"/>
-		</mission>
+		</mission> -->
 		
 		<!-- caso alimentarse nao funcionar, fazer em missao separada -->
 		
-        <mission id="mExploradora">
+        <mission id="mExploradora" min="1">
+       		<goal id="registerBee"/>
             <goal id="procurarPolen"/>
             <goal id="trazerPolen"/>
             <goal id="estocarPolen"/>
             <goal id="alimentarse"/>
         </mission>
-        <mission id="mSentinela">
+        <mission id="mSentinela" min="1">
+        	<goal id="registerBee"/>
             <goal id="aquecer"/>
             <goal id="resfriar"/>
             <goal id="alimentarse"/>
         </mission>
-        <mission id="mBabá">
+        <mission id="mBaba" min="1">
+        	<goal id="registerBee"/>
         	<goal id="fabricarMel"/>
         	<goal id="alimentarRainha"/>
         	<goal id="alimentarLarvas"/>
             <goal id="alimentarse"/>
         </mission>
-        <mission id="mRainha">
+        <mission id="mRainha" min="1" max="1">
+        	<goal id="registerBee"/>
         	<goal id="porOvos"/>
+        	<goal id="start"/>
         </mission>
     </scheme>
 </functional-specification>
@@ -129,14 +140,14 @@
     </properties-->
 
     <!-- the norms of the application -->
-    <norm id="nExploradora" type="obligation" role="Exploradora" mission="mExploradora"/>
-    <norm id="nSentinela" type="obligation" role="Sentinela" mission="mSentinela"/>
-    <norm id="nBabá" type="obligation" role="Babá" mission="mBabá"/>
+    <norm id="nExploradora" type="obligation" role="exploradora" mission="mExploradora"/>
+    <norm id="nSentinela" type="obligation" role="sentinela" mission="mSentinela"/>
+    <norm id="nBaba" type="obligation" role="baba" mission="mBaba"/>
+    <norm id="nRainha" type="permission" role="monarca" mission="mRainha"/>    
     
-    <norm id="nRainha" type="obligation" role="Monarca" mission="mRainha"/>    
-    <norm id="nAlimentação" type="obligation" role="Monarca" mission="mAlimentacao"/>
-    <norm id="nRenovação" type="obligation" role="Monarca" mission="mRenovacao"/>
-    <norm id="nTemperatura" type="obligation" role="Monarca" mission="mTemperatura"/>
+<!--     <norm id="nAlimentação" type="obligation" role="Monarca" mission="mAlimentacao"/> -->
+<!--     <norm id="nRenovação" type="obligation" role="Monarca" mission="mRenovacao"/> -->
+<!--     <norm id="nTemperatura" type="obligation" role="Monarca" mission="mTemperatura"/> -->
     
 </normative-specification>
 
