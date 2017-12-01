@@ -11,6 +11,18 @@ pollenField4(759, 230, 40, 40).
 
 energia(100).
 lifespan(45).
+niceTemperature(25).
+
+/* Rules */
+
+ta_quente(T) :-
+	niceTemperature(NT) &
+	T > NT + 1.
+
+ta_frio(T) :-
+	niceTemperature(NT) &
+	T < NT - 1.
+	
 
 /* Initial goals */
 
@@ -66,15 +78,50 @@ lifespan(45).
 
 /* Sentinel Plans */
 
-+!aquecer.
-+!resfriar.
-/*
-+!aquecer : temperature(low)
-<-	aquecer.
++!aquecer : resfriando
+<- 	.wait(100+math.random(200));
+	lookupArtifact("Hive",AId);
+	focus(AId);
+	if(intTemperature(T)[artifact_id(AId)] & ta_frio(T)) {
+		stop_resfriar;
+		-resfriando
+	};
+	!aquecer.
 
-+!resfriar: temperature(high)
-<- resfriar.
- */
++!aquecer : not aquecendo
+<- 	.wait(100+math.random(200));
+	lookupArtifact("Hive",AId);
+	focus(AId);
+	if(intTemperature(T)[artifact_id(AId)] & ta_frio(T)) {
+		aquecer;
+		+aquecendo
+	};
+	!aquecer.
+	
++!aquecer <- .wait(100+math.random(200)); !aquecer.
+
++!resfriar: aquecendo
+<- 	.wait(100+math.random(200));
+	lookupArtifact("Hive",AId);
+	focus(AId);
+	if(intTemperature(T)[artifact_id(AId)] & ta_quente(T)) {
+		stop_aquecer;
+		-aquecendo
+	};
+	!resfriar.
+
++!resfriar: not resfriando
+<- 	.wait(100+math.random(200));
+	lookupArtifact("Hive",AId);
+	focus(AId);
+	if(intTemperature(T)[artifact_id(AId)] & ta_quente(T)) {
+		resfriar;
+		+resfriando
+	};
+	!resfriar.
+	
++!resfriar <- .wait(100+math.random(200)); !resfriar.
+
 /* Explorer Plans */
 	
 +!procurarPolen[scheme(Sch)] : pollenField4(X, Y, WIDTH, HEIGHT)
