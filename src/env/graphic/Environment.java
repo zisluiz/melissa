@@ -154,7 +154,7 @@ public class Environment {
 			}
 		});
 	}
-
+	
 	public void registerBee(String beeId, String type, int age) {
 		System.out.println("Registering bee "+beeId);
 		Hive hive = Hive.getInstance();
@@ -179,8 +179,13 @@ public class Environment {
 		EnvironmentApplication.getInstance().updateDay(newDay);
 	}
 
-	public void changeTemp(int newTemp) {
-		EnvironmentApplication.getInstance().updateTemp(newTemp);
+	public void setIntTemp(int newTemp) {
+		Hive.getInstance().setTemperature(newTemp);
+		EnvironmentApplication.getInstance().updateIntTemperature(newTemp);
+	}
+
+	public void changeExtTemp(int newTemp) {
+		EnvironmentApplication.getInstance().updateExtTemp(newTemp);
 	}
 
 	public void launchGraphicApplication(int width, int height) {

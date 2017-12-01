@@ -308,6 +308,10 @@ public class EnvironmentApplication extends Application {
 	public void setHeight(int height) {
 		this.height = height;
 	}
+	
+	public void updateIntTemperature(int ammount) {
+		labelNumberTemp.setText(ammount+"°");
+	}
 
 	public void updateLarvaCount() {
 		labelNumberBeeLarva.setText(Hive.getInstance().getLarvas().size()+"");
@@ -389,7 +393,7 @@ public class EnvironmentApplication extends Application {
 		day.setText(newDay+"");
 	}
 
-	public void updateTemp(int newTemp) {
+	public void updateExtTemp(int newTemp) {
 		extTemp.setText(newTemp+"°");
 	}
 

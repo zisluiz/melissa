@@ -21,7 +21,7 @@ public class MapArtifact extends Artifact {
 	
 	void init() {
 		defineObsProperty("day", 0);
-		defineObsProperty("externalTemperature", 25);
+		defineObsProperty("extTemperature", 25);
 		Environment.getInstance().launchGraphicApplication(800, 600);
 		execInternalOp("dayChange");
 		execInternalOp("temperatureChange");
@@ -76,9 +76,9 @@ public class MapArtifact extends Artifact {
 			int month = today % 12; // para estacoes do ano
 			int newTemperature = (int)(AVERAGE_TEMPERATURE + TERMIC_AMPLITUDE * Math.sin(2*Math.PI*(month/12.)));
 			
-			Environment.getInstance().changeTemp(newTemperature);
+			Environment.getInstance().changeExtTemp(newTemperature);
 
-			ObsProperty temperature = getObsProperty("externalTemperature");
+			ObsProperty temperature = getObsProperty("extTemperature");
 			temperature.updateValue(newTemperature);
 		}
 	}	
