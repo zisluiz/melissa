@@ -3,6 +3,7 @@ package graphic.test;
 import graphic.Environment;
 import model.JavaFXConcurrent;
 import model.Position;
+import model.RandomUtils;
 import model.enumeration.Direction;
 import model.exception.CannotCollectOnThisPositionException;
 import model.exception.CannotDepositOnThisPositionException;
@@ -24,78 +25,98 @@ public class Test {
 			e.printStackTrace();
 		}
 
-		instance.registerBee("1", "worker", 10);
-		instance.setPosition("1", 790, 449);
+		for (int i = 0; i < 1000; i++) {
+			final int id = i;
+			
+			try {
+				Thread.sleep(30);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}			
+			
+			Thread t1 = new Thread(new Runnable() {
+				public void run() {
+					String beeId = "bee"+id;
+					instance.registerBee(beeId, "worker", 10);
+					instance.setPosition(beeId, 761+RandomUtils.getRandom(0, 30), 449);
 
-		for (int z = 0; z < 3; z++) {
-			for (int y = 0; y < 180; y++) {
-				
-				JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
-					@Override
-					public void run() {
+					for (int z = 0; z < 3; z++) {
+						for (int y = 0; y < 180; y++) {
+
+							JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
+								@Override
+								public void run() {
+									try {
+										instance.moveBee(beeId, Direction.UP);
+									} catch (MovimentOutOfBoundsException | InvalidMovimentException e) {
+										e.printStackTrace();
+									}
+								}
+							});
+
+							try {
+								Thread.sleep(50);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+						Position position = instance.getPosition(beeId);
+						System.out.println("X: " + position.getX() + ", Y: " + position.getY());
+
 						try {
-							instance.moveBee("1", Direction.UP);
-						} catch (MovimentOutOfBoundsException | InvalidMovimentException e) {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
-					}
-				});
-	
-				try {
-					Thread.sleep(50);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}			
-			}
-			Position position = instance.getPosition("1");
-			System.out.println("X: "+position.getX()+", Y: "+position.getY());
-			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}		
-			
-			try {
-				instance.collect("pollenField4", "1");
-			} catch (PollenIsOverException | NoLongerPollenFieldException | CannotCollectOnThisPositionException e) {
-				e.printStackTrace();
-			}
-			
-			for (int y = 0; y < 180; y++) {
-				
-				JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
-					@Override
-					public void run() {
+
 						try {
-							instance.moveBee("1", Direction.DOWN);
-						} catch (MovimentOutOfBoundsException | InvalidMovimentException e) {
+							instance.collect("pollenField4", beeId);
+						} catch (PollenIsOverException | NoLongerPollenFieldException
+								| CannotCollectOnThisPositionException e) {
 							e.printStackTrace();
 						}
+
+						for (int y = 0; y < 180; y++) {
+
+							JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
+								@Override
+								public void run() {
+									try {
+										instance.moveBee(beeId, Direction.DOWN);
+									} catch (MovimentOutOfBoundsException | InvalidMovimentException e) {
+										e.printStackTrace();
+									}
+								}
+							});
+
+							try {
+								Thread.sleep(50);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+
+						try {
+							instance.delivery(beeId);
+						} catch (CannotDepositOnThisPositionException | NoLongerHiveException
+								| NoPollenCollectedException e) {
+							e.printStackTrace();
+						}
+						;
+
+						position = instance.getPosition(beeId);
+						System.out.println("X: " + position.getX() + ", Y: " + position.getY());
 					}
-				});
-	
-				try {
-					Thread.sleep(50);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}			
-			}	
-			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}				
-			
-			try {
-				instance.delivery("1");
-			} catch (CannotDepositOnThisPositionException | NoLongerHiveException | NoPollenCollectedException e) {
-				e.printStackTrace();
-			};
-		
-			position = instance.getPosition("1");
-			System.out.println("X: "+position.getX()+", Y: "+position.getY());		
+				}
+			});
+			t1.start();
 		}
+
 	}
 }
