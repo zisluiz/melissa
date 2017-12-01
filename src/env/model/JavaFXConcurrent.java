@@ -18,21 +18,23 @@ public class JavaFXConcurrent {
 
 		Runnable task = new Runnable() {
 			public void run() {
-				Queue<Runnable> copy = new LinkedBlockingQueue<>();
-				
-				while (!getUpdates().isEmpty())
-					copy.add(getUpdates().poll());
-				
-				getUpdates().clear();
-				
-				if (!copy.isEmpty()) {
-					Platform.runLater(new Runnable() {
-						@Override
-						public void run() {
-							while (!copy.isEmpty())
-								copy.poll().run();;
-						}
-					});				
+				if (!getUpdates().isEmpty()) {
+					Queue<Runnable> copy = new LinkedBlockingQueue<>();
+					
+					while (!getUpdates().isEmpty())
+						copy.add(getUpdates().poll());
+					
+					getUpdates().clear();
+					
+					if (!copy.isEmpty()) {
+						Platform.runLater(new Runnable() {
+							@Override
+							public void run() {
+								while (!copy.isEmpty())
+									copy.poll().run();;
+							}
+						});				
+					}
 				}
 			}
 		};

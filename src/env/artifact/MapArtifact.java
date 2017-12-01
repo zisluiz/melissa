@@ -39,6 +39,17 @@ public class MapArtifact extends Artifact {
 	}
 	
 	@OPERATION
+	void move(int x, int y) {
+		try {
+			Environment.getInstance().moveBee(getCurrentOpAgentId().getAgentName(), x, y);
+		} catch (MovimentOutOfBoundsException | InvalidMovimentException e) {
+//			e.printStackTrace();
+			failed(e.getMessage());
+		}
+		await_time(20);
+	}	
+	
+	@OPERATION
 	void collect(String pollenFieldId) {
 		try {
 			Environment.getInstance().collect(pollenFieldId, getCurrentOpAgentId().getAgentName());
@@ -49,7 +60,7 @@ public class MapArtifact extends Artifact {
 	}	
 	
 	@OPERATION
-	void setPosition(int x, int y) {
+	public void setPosition(int x, int y) {
 		Environment.getInstance().setPosition(getCurrentOpAgentId().getAgentName(), x, y);
 	}
 	

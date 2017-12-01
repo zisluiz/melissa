@@ -69,6 +69,23 @@ public class Environment {
 		
 		mapResolver.moveBee(bee, direction);
 
+		postMoviment(beeGraphic, bee, beforeInsideContainer);		
+	}
+	
+	public void moveBee(String beeId, int x, int y) throws MovimentOutOfBoundsException, InvalidMovimentException {
+		validateMoviment(x ,y);
+//		System.out.println("Moving bee "+beeId+" to "+direction.toString());
+		BeeGraphic beeGraphic = beeResolver.getBee(beeId);
+		Bee bee = beeGraphic.getBee();
+		
+		boolean beforeInsideContainer = mapResolver.hasContainer(bee.getPosition());
+		
+		bee.setPosition(x, y);
+
+		postMoviment(beeGraphic, bee, beforeInsideContainer);
+	}		
+
+	private void postMoviment(BeeGraphic beeGraphic, Bee bee, boolean beforeInsideContainer) {
 		boolean afterInsideContainer = mapResolver.hasContainer(bee.getPosition());
 		boolean removeNode = false;
 		boolean addNode = false;
@@ -106,9 +123,9 @@ public class Environment {
 				if (addeNodeFinal)
 					EnvironmentApplication.instance.addBee(beeGraphic.getCircle());				
 			}
-		});		
+		});
 	}
-
+	
 	private void validateMoviment(String beeId, Direction direction) throws MovimentOutOfBoundsException, InvalidMovimentException {
 		BeeGraphic beeGraphic = beeResolver.getBee(beeId);
 		int x = beeGraphic.getBee().getPosition().getX(), y = beeGraphic.getBee().getPosition().getY();
@@ -122,6 +139,10 @@ public class Environment {
 		else if (direction.equals(Direction.DOWN))
 			y++;
 		
+		validateMoviment(x, y);
+	}
+
+	private void validateMoviment(int x, int y) throws MovimentOutOfBoundsException {
 		if (x < 0 || x >= width)
 			throw new MovimentOutOfBoundsException("Moving to invalid x ("+x+") coordinate.");
 		else if (y < 0 || y >= height)
