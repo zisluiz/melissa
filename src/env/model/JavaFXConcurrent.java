@@ -39,16 +39,16 @@ public class JavaFXConcurrent {
 			}
 		};
 
-		scheduler.scheduleAtFixedRate(task, 0, 20, TimeUnit.MILLISECONDS);
-	}
-	
-	public void addUpdate(Runnable runnable) {
-		updates.add(runnable);
+		scheduler.scheduleAtFixedRate(task, 0, 10, TimeUnit.MILLISECONDS);
 	}
 	
 //	public void addUpdate(Runnable runnable) {
-//		Platform.runLater(runnable);	
-//	}	
+//		updates.add(runnable);
+//	}
+	
+	public void addUpdate(Runnable runnable) {
+		Platform.runLater(runnable);	
+	}	
 
 	public Queue<Runnable> getUpdates() {
 		return updates;

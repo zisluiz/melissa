@@ -28,6 +28,7 @@ public class Environment {
 	private static Environment instance = null;
 	private int width;
 	private int height;
+	private int extTemperature;
 	private BeeResolver beeResolver;
 	private PollenFieldResolver pollenFieldResolver;
 	private MapResolver mapResolver;
@@ -211,6 +212,7 @@ public class Environment {
 	}
 
 	public void changeExtTemp(int newTemp) {
+		this.extTemperature = newTemp;
 		EnvironmentApplication.getInstance().updateExtTemp(newTemp);
 	}
 
@@ -316,5 +318,9 @@ public class Environment {
 	
 	public Position getPosition(String beeId) {
 		return beeResolver.getBee(beeId).getBee().getPosition();
+	}
+	
+	public int getExtTemperature() {
+		return extTemperature;
 	}
 }
