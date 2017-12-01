@@ -42,7 +42,23 @@ lifespan(45).
 
 /*   Baba Plans   */
 
-+!fabricarMel.
++!fabricarMel
+<-	!tryPolen;	
+	.wait(100);
+	!fabricarMel.
+
+@tryPolen [atomic]
++!tryPolen
+<- 	lookupArtifact("Hive",AId);
+	focus(AId);
+	if(polen(P)[artifact_id(AId)] & P>1) {
+		processPolen;
+		.print("Polen processado!")
+	}.
+
+-!fabricarMel
+<-	.wait(500);
+	!fabricarMel.
 
 +!alimentarRainha.
 

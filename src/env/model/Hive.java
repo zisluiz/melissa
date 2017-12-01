@@ -5,10 +5,12 @@ import java.util.List;
 
 import model.enumeration.HoneySupply;
 import model.exception.InsufficientHoneyException;
+import model.exception.InsufficientPolenException;
 
 public class Hive {
 	private static Hive instance;
 	private static int maxHoney = 1000;
+	private static int maxPolen = 1000;
 
 	private int temperature;
 
@@ -19,6 +21,7 @@ public class Hive {
 	private List<Larva> larvas = new ArrayList<>();
 
 	private int honey;
+	private int polen;
 
 	private Hive() {
 	}
@@ -66,6 +69,14 @@ public class Hive {
 	public void setHoney(int honey) {
 		this.honey = honey;
 	}	
+	
+	public int getPolen() {
+		return polen;
+	}
+	
+	public void setPolen(int polen) {
+		this.polen = polen;
+	}
 	
 	public List<Bee> getQueens() {
 		return queens;
@@ -115,5 +126,16 @@ public class Hive {
 			honey = honey - ammount;
 		} else
 			throw new InsufficientHoneyException("The honey is gone.");
+	}	
+
+	synchronized public void addPolen(int ammount) {
+		polen = polen + ammount;
+	}
+	
+	synchronized public void subPolen(int ammount) throws InsufficientPolenException {
+		if (polen >= ammount) {
+			polen = polen - ammount;
+		} else
+			throw new InsufficientPolenException("The polen is gone.");
 	}	
 }

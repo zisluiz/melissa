@@ -16,6 +16,7 @@ import model.enumeration.HoneySupply;
 import model.enumeration.PollenSupply;
 import model.exception.CannotCollectOnThisPositionException;
 import model.exception.CannotDepositOnThisPositionException;
+import model.exception.InsufficientPolenException;
 import model.exception.InvalidMovimentException;
 import model.exception.MovimentOutOfBoundsException;
 import model.exception.NoLongerHiveException;
@@ -176,6 +177,10 @@ public class Environment {
 		});
 	}
 	
+	public void setPolenStart(int ammount) {
+		Hive.getInstance().setPolen(ammount);
+	}
+	
 	public void registerBee(String beeId, String type, int age) {
 		System.out.println("Registering bee "+beeId);
 		Hive hive = Hive.getInstance();
@@ -281,15 +286,16 @@ public class Environment {
 			throw new NoLongerHiveException("Bee isn't on Hive!");
 		
 		int ammount = beeResolver.getBee(beeId).getBee().takePollenCollected();
-		
 		if (ammount <= 0)
-			throw new NoPollenCollectedException("No one pollen is collected!");
+			throw new NoPollenCollectedException("Not one pollen is collected!");
+		
+		Hive.getInstance().addPolen(ammount);
+		updateHoney();
+	}
+
+	public void updateHoney() {
 		
 		HoneySupply statusBefore = Hive.getInstance().getStatus();
-		
-		
-		Hive.getInstance().addHoney(ammount);
-		
 		HoneySupply statusAfter = Hive.getInstance().getStatus();
 		
 		if (!statusBefore.equals(statusAfter)) {
@@ -301,7 +307,13 @@ public class Environment {
 			});
 		}
 	}
-
+	
+	public void processPolen(int ammount) throws InsufficientPolenException {
+		Hive.getInstance().subPolen(ammount);
+		Hive.getInstance().addHoney(ammount);
+		updateHoney();
+	}
+	
 	public Position getPosition(String beeId) {
 		return beeResolver.getBee(beeId).getBee().getPosition();
 	}
