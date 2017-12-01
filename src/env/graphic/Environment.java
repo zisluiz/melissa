@@ -165,7 +165,12 @@ public class Environment {
 
 	public void createLarva() {
 		Hive.getInstance().createLarva();
-		EnvironmentApplication.getInstance().updateLarvaCount();
+		JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
+			@Override
+			public void run() {			
+				EnvironmentApplication.getInstance().updateLarvaCount();
+			}
+		});
 	}
 
 	public void setHoneyStart(int ammount) {
@@ -203,17 +208,32 @@ public class Environment {
 	}
 
 	public void changeDay(int newDay) {
-		EnvironmentApplication.getInstance().updateDay(newDay);
+		JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
+			@Override
+			public void run() {			
+				EnvironmentApplication.getInstance().updateDay(newDay);
+			}
+		});		
 	}
 
 	public void setIntTemp(int newTemp) {
 		Hive.getInstance().setTemperature(newTemp);
-		EnvironmentApplication.getInstance().updateIntTemperature(newTemp);
+		JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
+			@Override
+			public void run() {			
+				EnvironmentApplication.getInstance().updateIntTemperature(newTemp);
+			}
+		});		
 	}
 
 	public void changeExtTemp(int newTemp) {
 		this.extTemperature = newTemp;
-		EnvironmentApplication.getInstance().updateExtTemp(newTemp);
+		JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
+			@Override
+			public void run() {			
+				EnvironmentApplication.getInstance().updateExtTemp(newTemp);
+			}
+		});		
 	}
 
 	public void launchGraphicApplication(int width, int height) {

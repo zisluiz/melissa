@@ -98,8 +98,10 @@ public class HiveArtifact extends Artifact {
 			
 			int ammount = extTemp + heat - cool;
 			
-			intTemp.updateValue(ammount);
-			Environment.getInstance().setIntTemp(ammount);
+			if (ammount != intTemp.intValue()) {
+				intTemp.updateValue(ammount);
+				Environment.getInstance().setIntTemp(ammount);
+			}
 		}
 	}	
 }
