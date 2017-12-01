@@ -42,6 +42,17 @@ public class MapArtifact extends Artifact {
 		pollenFields.add(new Rectangle(759, 230, 40, 40));
 	}
 	
+	boolean posInField(int x0, int y0) {
+		for(Rectangle rec : pollenFields) {
+			if(rec.x < x0 && x0 < (rec.x + rec.width)) {
+				if(rec.y < y0 && y0 < (rec.y + rec.height)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	@OPERATION
 	void move(String direction) {
 		try {
