@@ -21,16 +21,19 @@ mas melissa {
     agent worker : worker.asl {
     	instances: 2
     	roles: baba in colmeia
+    	beliefs: age(0)
     }
     
      agent worker : worker.asl {
     	instances: 2
     	roles: sentinela in colmeia
+    	beliefs: age(18)
     }   
     
       agent worker : worker.asl {
     	instances: 20
     	roles: exploradora in colmeia
+    	beliefs: age(22)
     }   
     
     organisation colmeiaOrg : organisation.xml {
