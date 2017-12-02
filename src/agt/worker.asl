@@ -93,9 +93,9 @@ new_day(D) :-
 		-+hoje(D)
 	}.
 	
-+age_to_sentinel <- changeRole(sentinela).
++age_to_sentinel <- changeRole(sentinela); .print("Virei sentinela!").
 	
-+age_to_explorer <- changeRole(exploradora).
++age_to_explorer <- changeRole(exploradora); .print("Virei exploradora!").
 	
 +too_old
 <-	.random(N);
