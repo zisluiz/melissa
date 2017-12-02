@@ -70,6 +70,10 @@ public class MapArtifact extends Artifact {
 			Environment.getInstance().moveBee(getCurrentOpAgentId().getAgentName(), x, y);
 		} catch (MovimentOutOfBoundsException | InvalidMovimentException e) {
 			failed(e.getMessage());
+		} catch (NullPointerException e) {
+			System.out.println("Move failed to bee "+getCurrentOpAgentId().getAgentName()+", x: "+x+" y: "+y);
+			e.printStackTrace();
+			failed(e.getMessage());
 		}
 		await_time(Parameters.DELAY_MOVE_OPERATION);
 	}	

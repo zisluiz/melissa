@@ -6,6 +6,7 @@ import cartago.Artifact;
 import cartago.INTERNAL_OPERATION;
 import cartago.OPERATION;
 import cartago.ObsProperty;
+import cartago.OpFeedbackParam;
 import graphic.Environment;
 import model.Hive;
 import model.Larva;
@@ -145,15 +146,15 @@ public class HiveArtifact extends Artifact {
 	}
 	
 	@OPERATION
-	void alimentarLarva() {	
+	void alimentarLarva(OpFeedbackParam<Boolean> isEvolving) {	
 		try {
 			Larva larvaToEvolve = Environment.getInstance().feedLarva();
 			
 			if (larvaToEvolve != null) {
-				System.out.println("Larva is evolving");
 				Environment.getInstance().removeLarva(larvaToEvolve);
-				defineObsProperty("larva");
-			}
+				isEvolving.set(true);
+			} else
+				isEvolving.set(false);
 		} catch (InsufficientHoneyException e) {
 			failed(e.getMessage());
 		}

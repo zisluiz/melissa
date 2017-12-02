@@ -5,6 +5,7 @@ energia(100).
 maxEnergia(100).
 lifespan(45).
 niceTemperature(25).
+newBees(1).
 
 /* Rules */
 
@@ -16,13 +17,11 @@ ta_frio(T) :-
 	niceTemperature(NT) &
 	T < NT - 1.
 	
-com_fome :-
-	energia(E) &
+com_fome(E) :-
 	maxEnergia(M) &
 	E <= M * 0.2.
 	
-satisfeita :-
-	energia(E) &
+satisfeita(E) :-
 	maxEnergia(M) &
 	E > M * 0.9.
 	
@@ -59,9 +58,15 @@ new_day(D) :-
       commitMission(Mission)[artifact_name(Scheme)].
 
 /*   Basic Plans  */
-+larva
-<- .create_agent(worker,"worker.asl");
-	-larva.
++!born
+<- .print("I'm borning!");
++age(0);
+joinWorkspace("colmeiaOrg",Workspace);
+lookupArtifact("colmeia1",SchArtId);
+focus(SchArtId);
+adoptRole(baba);
+commitMission(mBaba)[artifact_id(SchArtId)];
+!registerBee[scheme(Sch)].
 
 +!registerBee[scheme(Sch)] : age(X)
 <-	today(D);
@@ -118,7 +123,7 @@ new_day(D) :-
 	Y = Y0 + math.floor(H*R2);
 	setPosition(X,Y).
 
-+!alimentarse: energia(E) & not satisfeita
++!alimentarse: energia(E) & not satisfeita(E)
 <-	comer(5);
 	-+energia(E+10).
 
@@ -134,7 +139,7 @@ new_day(D) :-
 
 /*   Baba Plans   */
 
-+!fabricarMel : energia(E) & not com_fome
++!fabricarMel : energia(E) & not com_fome(E)
 <-	!tryPollen;	
 	.wait(100);
 	!fabricarMel;
@@ -156,14 +161,34 @@ new_day(D) :-
 <-	.send(queen, achieve, comer(50));
 	-+energia(E-1).
 
-+!alimentarLarvas
-<- alimentarLarva;
-	.wait(500);
++!alimentarLarvas : newBees(SEQ) & .my_name(N)
+<-  ?larvas(NR);
+	if (NR > 0) {
+		alimentarLarva(L);
+		.concat(N, SEQ, NEWBEE);
+		
+		if (L) {
+			.create_agent(NEWBEE,"worker.asl");
+			.send(NEWBEE, achieve, born);
+			+newBees(SEQ+1)
+		};
+	}
+	
+	.wait(100);
 	!alimentarLarvas.
+	
+-!alimentarLarvas[error(ia_failed)] <- 
+	.print("Não consegui alimentar as larvas!");
+	.wait(100);
+	!alimentarLarvas.
+-!alimentarLarvas[error_msg(M)] <- 
+	.print("Não consegui alimentar as larvas! Erro: ",M);
+	.wait(100);
+	!alimentarLarvas.	
 
 /* Sentinel Plans */
 
-+!aquecer : resfriando & energia(E) & not com_fome
++!aquecer : resfriando & energia(E) & not com_fome(E)
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -174,7 +199,7 @@ new_day(D) :-
 	};
 	!aquecer.
 
-+!aquecer : not aquecendo & energia(E) & not com_fome
++!aquecer : not aquecendo & energia(E) & not com_fome(E)
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -187,7 +212,7 @@ new_day(D) :-
 	
 +!aquecer <- .wait(100+math.random(200)); !aquecer.
 
-+!resfriar: aquecendo & energia(E) & not com_fome
++!resfriar: aquecendo & energia(E) & not com_fome(E)
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -198,7 +223,7 @@ new_day(D) :-
 	};
 	!resfriar.
 
-+!resfriar: not resfriando & energia(E) & not com_fome
++!resfriar: not resfriando & energia(E) & not com_fome(E)
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -213,7 +238,7 @@ new_day(D) :-
 
 /* Explorer Plans */
 	
-+!procurarPolen[scheme(Sch)] : energia(E) & not com_fome
++!procurarPolen[scheme(Sch)] : energia(E) & not com_fome(E)
 <-	lookupArtifact("Map",AId);
 	focus(AId);
 	.findall(r(LEVEL, X, Y, WIDTH, HEIGHT), pollenField(LEVEL, X, Y, WIDTH, HEIGHT)[artifact_id(AId)], List);

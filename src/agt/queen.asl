@@ -58,8 +58,8 @@ com_fome :-
 +!porOvos[scheme(Sch)] : energia(E) & not com_fome
 <-	-+energia(E-5);
 	createLarva;
-	.wait(1000);
-	/*!porOvos[scheme(Sch)]*/.
+	.wait(5000);
+	!porOvos[scheme(Sch)].
 	
 +!comer(X) : energia(E) <-	comer(math.floor(X/2)); -+energia(E+X).
 -!comer(X).

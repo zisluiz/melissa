@@ -152,9 +152,11 @@ public class Hive {
 			sentinels.add(bee);		
 			break;
 		case baba:
-			feeders.add(bee);			
+			feeders.add(bee);	
+			break;
 		case monarca:
 			queens.add(bee);
+			break;
 		default:
 			workers.add(bee);
 			break;
@@ -167,9 +169,11 @@ public class Hive {
 			sentinels.remove(bee);		
 			break;
 		case baba:
-			feeders.remove(bee);			
+			feeders.remove(bee);	
+			break;
 		case monarca:
 			queens.remove(bee);
+			break;
 		default:
 			workers.remove(bee);
 			break;
