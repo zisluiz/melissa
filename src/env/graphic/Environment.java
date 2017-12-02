@@ -60,6 +60,12 @@ public class Environment {
 		beeResolver.createBee(bee, x, y);
 		//root.getChildren().add(beeGraphic);
 	}
+	
+	public Position getBeePos(String beeId) {
+		BeeGraphic beeGraphic = beeResolver.getBee(beeId);
+		Bee bee = beeGraphic.getBee();
+		return bee.getPosition();
+	}
 
 	public void moveBee(String beeId, Direction direction) throws MovimentOutOfBoundsException, InvalidMovimentException {
 		validateMoviment(beeId, direction);

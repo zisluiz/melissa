@@ -7,6 +7,7 @@ import cartago.INTERNAL_OPERATION;
 import cartago.OPERATION;
 import cartago.ObsProperty;
 import graphic.Environment;
+import model.Position;
 import model.enumeration.Direction;
 import model.exception.CannotCollectOnThisPositionException;
 import model.exception.InvalidMovimentException;
@@ -60,6 +61,26 @@ public class MapArtifact extends Artifact {
 		}
 		await_time(20);
 	}	
+
+	@OPERATION
+	void flyTo(int x, int y) {
+		Position beePos = Environment.getInstance().getBeePos(getCurrentOpAgentId().getAgentName());
+		int i = beePos.getX();
+		int j = beePos.getY();
+		if( !(x==i & y==j)) {
+			if(Math.abs(y-j) > Math.abs(x-i))
+				if(y-j>0)
+					move(i,j+1);
+				else
+					move(i,j-1);
+			else
+				if(x-i>0)
+					move(i+1,j);
+				else
+					move(i-1,j);
+			flyTo(x,y);
+		}
+	}
 	
 	@OPERATION
 	void collect(String pollenFieldId) {

@@ -119,24 +119,47 @@ ta_frio(T) :-
 +!procurarPolen[scheme(Sch)]
 <-	lookupArtifact("Map",AId);
 	focus(AId);
-	
 	.findall(r(X, Y, WIDTH, HEIGHT), pollenField(X, Y, WIDTH, HEIGHT)[artifact_id(AId)], List);
-	
-	!collectHoney;
-	!trazerPolen[scheme(Sch)].
+	!goToField(List);
+	if(collect) {
+		-collect;
+		!collectHoney;
+		!trazerPolen[scheme(Sch)]
+	} else {
+		!procurarPolen[scheme(Sch)]
+	}.
 
 -!procurarPolen[error(ia_failed)] <- .print("Não consegui procurar!").
 -!procurarPolen[error_msg(M)]     <- .print("Error in: ",M).
 
++!goToField([r(X0,Y0,W,H)|L])
+<-	//.print(r(X0,Y0,W,H));
+	.random(N);
+	if (N < 0.2) {
+		.random(R1);
+		X = X0 + math.floor(W*R1);
+		.random(R2);
+		Y = Y0 + math.floor(H*R2);
+		.print("Going to (", X, ",",Y,")");
+		flyTo(X,Y);
+		+collect
+	} else { if(not .empty(L)) {
+		!goToField(L)
+	} else {
+		
+	}}.
 
 +!trazerPolen[scheme(Sch)]
-   <- lookupArtifact("Hive",AId);
-      focus(AId);
-    ?pollenField(pollenField4, X, Y, WIDTH, HEIGHT);
-	for ( .range(J,Y + HEIGHT, 450)) {
-		move(down);
-	}
+<-	lookupArtifact("Map",AId);
+	focus(AId);
 	
+	?hive(X0,Y0,W,H)[artifact_id(ATd)];
+	.random(R1);
+	X = X0 + math.floor(W*R1);
+	.random(R2);
+	Y = Y0 + math.floor(H*R2);
+	.print("Going to (", X, ",",Y,")");
+	flyTo(X,Y);
 	!estocarPolen[scheme(Sch)].
 
 -!trazerPolen[error(ia_failed)] <- .print("I didn't in!").
