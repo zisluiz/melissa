@@ -12,8 +12,7 @@ import model.exception.InsufficientPollenException;
 
 public class Hive {
 	private static Hive instance;
-//	private static int maxHoney = 1000;
-	private static int maxPollen = 1000;
+	private static int maxHoney = Parameters.MAX_HIVE_HONEY;
 
 	private int temperature;
 
@@ -32,13 +31,13 @@ public class Hive {
 	}
 	
 	public HoneySupply getStatus() {
-		if (pollen < maxPollen * Parameters.HIVE_SUPPLY_EMPTY)
+		if (honey < maxHoney * Parameters.HIVE_SUPPLY_EMPTY)
 			return HoneySupply.EMPTY;
-		else if (pollen < maxPollen * Parameters.HIVE_SUPPLY_LOW)
+		else if (honey < maxHoney * Parameters.HIVE_SUPPLY_LOW)
 			return HoneySupply.LOW;
-		else if (pollen < maxPollen * Parameters.HIVE_SUPPLY_MEDIUM)
+		else if (honey < maxHoney * Parameters.HIVE_SUPPLY_MEDIUM)
 			return HoneySupply.MEDIUM;
-		else if (pollen < maxPollen * Parameters.HIVE_SUPPLY_HIGH)
+		else if (honey < maxHoney * Parameters.HIVE_SUPPLY_HIGH)
 			return HoneySupply.HIGH;
 		else
 			return HoneySupply.FULL;

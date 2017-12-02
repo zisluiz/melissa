@@ -11,8 +11,10 @@ public class Parameters {
 	public static final int AVERAGE_TEMPERATURE = 25;
 	public static final int EXTERNAL_TEMPERATURE_START = 25;
 	public static final int TERMIC_AMPLITUDE = 10;	
-	public static final int HONEY_START = 100;
+	
 	public static final int POLLEN_START = 100;
+	public static final int HONEY_START = 100;
+	public static final int MAX_HIVE_HONEY = 1000;
 	
 	public static final long DELAY_MOVE_OPERATION = 20;
 	public static final int AMMOUNT_BEE_COLLECT_POLLEN = 10;

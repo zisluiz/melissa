@@ -345,8 +345,6 @@ public class Environment {
 	}
 
 	public void updateHoney(HoneySupply statusBefore, HoneySupply statusAfter) {
-		
-		
 		if (!statusBefore.equals(statusAfter)) {
 			JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
 				@Override
