@@ -29,12 +29,16 @@ satisfeita :-
 age_to_sentinel :-
 	nascimento(N) &
 	hoje(D) &
-	D-N >= 18.
+	D-N >= 18 & 
+	.my_name(Me) & 
+	play(Me, baba, _).
 	
 age_to_explorer :-
 	nascimento(N) &
 	hoje(D) &
-	D-N >= 22.
+	D-N >= 22 & 
+	.my_name(Me) & 
+	play(Me, sentinela, _).
 
 too_old :-
 	nascimento(N) &
@@ -102,11 +106,17 @@ too_old :-
 		!suicide
 	}.
 	
-+!changeStatus : age_to_explorer & .my_name(Me) & play(Me, sentinela, _)
-<-	changeRole(exploradora); .print("Virei exploradora!").
++!changeStatus : age_to_explorer
+<-	changeRole(exploradora); 
+	adoptRole(exploradora);
+	removeRole(sentinela);
+	.print("Virei exploradora!").
 	
-+!changeStatus : age_to_sentinel & .my_name(Me) & play(Me, baba, _)
-<-	changeRole(sentinela); .print("Virei sentinela!").
++!changeStatus : age_to_sentinel
+<-	changeRole(sentinela);
+	adoptRole(sentinela);
+	removeRole(baba);
+	.print("Virei sentinela!").
 
 +!changeStatus.
 
@@ -131,6 +141,7 @@ too_old :-
 
 +!suicide : .my_name(Me)
 <- 	drop_all_intentions;
+	removeRole(exploradora);
 	unRegisterBee;
 	ag_killed(Me).
 
