@@ -25,8 +25,13 @@ satisfeita(E) :-
 	E > M * 0.9.
 	
 too_old :-
-	age(A) &
-	A >= 45.
+	nascimento(N) &
+	hoje(D) &
+	D-N >= 45.
+	
+new_day(D) :-
+	hoje(H) &
+	H \== D.
 
 /* Initial goals */
 
@@ -39,25 +44,44 @@ too_old :-
 
 /*   Basic Plans  */
 
-+!registerBee[scheme(Sch)]
-<-	.my_name(Me);
-	?play(Me,R,colmeia);
-	
-	registerBee(R);	
-	
-	if (R == exploradora) {
-		!setPosition;
-	}.
-
 +!registerBee[scheme(Sch)] : age(X)
-<-	if(X < 18) {
+<-	today(D);
+	+hoje(D);
+	+nascimento(D-X);
+	if (X < 18) {
+		adoptRole(baba);
 		registerBee(feeder);	
 	} else { if (X < 22) {
+		adoptRole(sentinela);
 		registerBee(sentinel);
 	} else {
+		adoptRole(exploradora);
 		registerBee(worker);
 		!setPosition
-	}}.
+	}};
+	-age(_);
+	!updateDay.
+
++!registerBee[scheme(Sch)]
+<-	today(D);
+	+hoje(D);
+	+nascimento(D);
+	adoptRole(baba);
+	registerBee(feeder);
+	!updateDay. 
+
++!updateDay
+<-	.wait(5000);
+	today(D);
+	if (new_day(D)) {
+		-+hoje(D)
+	}.
+	
++too_old
+<-	.random(N);
+	if(N < 0.5) {
+		!suicide
+	}.
 
 +!setPosition
 <-	lookupArtifact("Map",AId);

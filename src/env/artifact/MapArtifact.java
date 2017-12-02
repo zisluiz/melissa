@@ -8,6 +8,7 @@ import cartago.Artifact;
 import cartago.INTERNAL_OPERATION;
 import cartago.OPERATION;
 import cartago.ObsProperty;
+import cartago.OpFeedbackParam;
 import graphic.Environment;
 import model.PollenField;
 import model.Position;
@@ -102,6 +103,11 @@ public class MapArtifact extends Artifact {
 	@OPERATION
 	public void setPosition(int x, int y) {
 		Environment.getInstance().setPosition(getCurrentOpAgentId().getAgentName(), x, y);
+	}
+	
+	@OPERATION
+	public void today(OpFeedbackParam day) {
+		day.set(getObsProperty("day").intValue());
 	}
 	
 	@INTERNAL_OPERATION
