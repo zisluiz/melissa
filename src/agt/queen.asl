@@ -49,10 +49,13 @@ energia(1000).
 		
 /* Renew Plans */
 		
-+!porOvos[scheme(Sch)]   
-<-	createLarva;
++!porOvos[scheme(Sch)] : energia(E)  
+<-	-+energia(E-5);
+	createLarva;
 	.wait(1000);
 	!porOvos[scheme(Sch)].
+	
++!comer : energia(E) <-	-+energia(E+50).
 
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }

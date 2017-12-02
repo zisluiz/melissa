@@ -51,14 +51,17 @@ ta_frio(T) :-
 	Y = Y0 + math.floor(H*R2);
 	setPosition(X,Y).
 
-+!alimentarse.
++!alimentarse: energia(E) & E <= 90
+<-	comer(10);
+	-+energia(E+10).
 
 /*   Baba Plans   */
 
-+!fabricarMel
++!fabricarMel : energia(E)
 <-	!tryPollen;	
 	.wait(100);
-	!fabricarMel.
+	!fabricarMel;
+	-+energia(E-1).
 
 @tryPollen [atomic]
 +!tryPollen
@@ -78,53 +81,57 @@ ta_frio(T) :-
 
 /* Sentinel Plans */
 
-+!aquecer : resfriando
++!aquecer : resfriando & energia(E) & E > 20
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
 	if(intTemperature(T)[artifact_id(AId)] & ta_frio(T)) {
 		stop_resfriar;
-		-resfriando
+		-resfriando;
+		-+energia(E-1)
 	};
 	!aquecer.
 
-+!aquecer : not aquecendo
++!aquecer : not aquecendo & energia(E) & E > 20
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
 	if(intTemperature(T)[artifact_id(AId)] & ta_frio(T)) {
 		aquecer;
-		+aquecendo
+		+aquecendo;
+		-+energia(E-1)
 	};
 	!aquecer.
 	
-+!aquecer <- .wait(100+math.random(200)); !aquecer.
++!aquecer : energia(E) & E > 20 <- .wait(100+math.random(200)); !aquecer.
 
-+!resfriar: aquecendo
++!resfriar: aquecendo & energia(E) & E > 20
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
 	if(intTemperature(T)[artifact_id(AId)] & ta_quente(T)) {
 		stop_aquecer;
-		-aquecendo
+		-aquecendo;
+		-+energia(E-1)
 	};
 	!resfriar.
 
-+!resfriar: not resfriando
++!resfriar: not resfriando & energia(E) & E > 20
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
 	if(intTemperature(T)[artifact_id(AId)] & ta_quente(T)) {
 		resfriar;
 		+resfriando
+		-+energia(E-1)
 	};
-	!resfriar.
+	!resfriar;.
 	
-+!resfriar <- .wait(100+math.random(200)); !resfriar.
++!resfriar : energia(E) & E > 20 <- .wait(100+math.random(200)); !resfriar.
 
 /* Explorer Plans */
 	
-+!procurarPolen[scheme(Sch)]
++!procurarPolen[scheme(Sch)] : energia(E) & E > 20
 <-	lookupArtifact("Map",AId);
 	focus(AId);
 	.findall(r(LEVEL, X, Y, WIDTH, HEIGHT), pollenField(LEVEL, X, Y, WIDTH, HEIGHT)[artifact_id(AId)], List);
@@ -174,8 +181,9 @@ ta_frio(T) :-
 	//.print("Going to (", X, ",",Y,")");
 	flyTo(X,Y).
 
-+!estocarPolen[scheme(Sch)] <-
-	delivery;
++!estocarPolen[scheme(Sch)] : energia(E)
+<-	delivery;
+	-+energia(E-20);
 	!procurarPolen[scheme(Sch)].
 
 -!estocarPolen[error(ia_failed)].
