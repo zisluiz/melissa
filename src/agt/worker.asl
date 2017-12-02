@@ -37,10 +37,19 @@ ta_frio(T) :-
 			registerBee(sentinel);	
 		} else {
 			registerBee(worker);
-			setPosition(math.round(761+math.random(30)), 449); /*esse comando serve apenas pra minha lógica de subir e descer funcione, 
-			quando elas se registram, elas já são posicionadas dentro da colmeia em pontos aleatorios*/
+			!setPosition
 		}			
 	}.
+
++!setPosition
+<-	lookupArtifact("Map",AId);
+	focus(AId);
+	?hive(X0,Y0,W,H)[artifact_id(AId)];
+	.random(R1);
+	X = X0 + math.floor(W*R1);
+	.random(R2);
+	Y = Y0 + math.floor(H*R2);
+	setPosition(X,Y).
 
 +!alimentarse.
 
@@ -56,8 +65,7 @@ ta_frio(T) :-
 <- 	lookupArtifact("Hive",AId);
 	focus(AId);
 	if(polen(P)[artifact_id(AId)] & P>1) {
-		processPolen;
-		.print("Polen processado!")
+		processPolen
 	}.
 
 -!fabricarMel
@@ -119,7 +127,7 @@ ta_frio(T) :-
 +!procurarPolen[scheme(Sch)]
 <-	lookupArtifact("Map",AId);
 	focus(AId);
-	.findall(r(X, Y, WIDTH, HEIGHT), pollenField(X, Y, WIDTH, HEIGHT)[artifact_id(AId)], List);
+	.findall(r(LEVEL, X, Y, WIDTH, HEIGHT), pollenField(LEVEL, X, Y, WIDTH, HEIGHT)[artifact_id(AId)], List);
 	!flyToField(List);
 	if(collect) {
 		-collect;
@@ -132,7 +140,7 @@ ta_frio(T) :-
 -!procurarPolen[error(ia_failed)] <- .print("Não consegui procurar!").
 -!procurarPolen[error_msg(M)]     <- .print("Error in: ",M).
 
-+!flyToField([r(X0,Y0,W,H)|L])
++!flyToField([r(Lvl,X0,Y0,W,H)|L])
 <-	.random(N);
 	if (N < 0.2) {
 		.random(R1);
@@ -158,7 +166,6 @@ ta_frio(T) :-
 +!flyToHive
 <-	lookupArtifact("Map",AId);
 	focus(AId);
-	
 	?hive(X0,Y0,W,H)[artifact_id(AId)];
 	.random(R1);
 	X = X0 + math.floor(W*R1);

@@ -17,6 +17,7 @@ energia(1000).
 	.my_name(Me); setOwner(Me)[artifact_id(SchArtId)];  // I am the owner of this scheme!
 	focus(SchArtId);
 	addScheme(SchName);  // set the group as responsible for the scheme
+	adoptRole(monarca);
 	commitMission(mRainha)[artifact_id(SchArtId)];
 	commitMission(mAlimentacao)[artifact_id(SchArtId)];
 	commitMission(mRenovacao)[artifact_id(SchArtId)];

@@ -327,14 +327,15 @@ public class Environment {
 		if (ammount <= 0)
 			throw new NoPollenCollectedException("Not one pollen is collected!");
 		
+		HoneySupply statusBefore = Hive.getInstance().getStatus();
 		Hive.getInstance().addPolen(ammount);
-		updateHoney();
+		HoneySupply statusAfter = Hive.getInstance().getStatus();
+		
+		updateHoney(statusBefore, statusAfter);
 	}
 
-	public void updateHoney() {
+	public void updateHoney(HoneySupply statusBefore, HoneySupply statusAfter) {
 		
-		HoneySupply statusBefore = Hive.getInstance().getStatus();
-		HoneySupply statusAfter = Hive.getInstance().getStatus();
 		
 		if (!statusBefore.equals(statusAfter)) {
 			JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
@@ -347,9 +348,14 @@ public class Environment {
 	}
 	
 	public void processPolen(int ammount) throws InsufficientPolenException {
+		HoneySupply statusBefore = Hive.getInstance().getStatus();
+		
 		Hive.getInstance().subPolen(ammount);
 		Hive.getInstance().addHoney(ammount);
-		updateHoney();
+		
+		HoneySupply statusAfter = Hive.getInstance().getStatus();
+		
+		updateHoney(statusBefore, statusAfter);
 	}
 	
 	public Position getPosition(String beeId) {

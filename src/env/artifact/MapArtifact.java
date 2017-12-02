@@ -9,6 +9,7 @@ import cartago.ObsProperty;
 import graphic.Environment;
 import model.Position;
 import model.enumeration.Direction;
+import model.enumeration.PollenSupply;
 import model.exception.CannotCollectOnThisPositionException;
 import model.exception.InvalidMovimentException;
 import model.exception.MovimentOutOfBoundsException;
@@ -29,10 +30,10 @@ public class MapArtifact extends Artifact {
 		// x, y, width, height
 		defineObsProperty("hive", 649,449,150,150);
 		
-		defineObsProperty("pollenField", 0,0,150,200);
-		defineObsProperty("pollenField", 0, 300, 60, 170);
-		defineObsProperty("pollenField", 400, 0, 40, 40);
-		defineObsProperty("pollenField", 759, 230, 40, 40);
+		defineObsProperty("pollenField", "HIGH", 0,0,150,200);
+		defineObsProperty("pollenField", "HIGH", 0, 300, 60, 170);
+		defineObsProperty("pollenField", "HIGH", 400, 0, 40, 40);
+		defineObsProperty("pollenField", "HIGH", 759, 230, 40, 40);
 		
 	//	defineObsProperty("pollenField", "(pollenField1,0,0,150,200)", "(pollenField2, 0, 300, 60, 170)", "(pollenField3, 400, 0, 40, 40)", "(pollenField4, 759, 230, 40, 40)");
 		
@@ -86,6 +87,7 @@ public class MapArtifact extends Artifact {
 	void collect(String pollenFieldId) {
 		try {
 			Environment.getInstance().collect(pollenFieldId, getCurrentOpAgentId().getAgentName());
+			//updatePollenFields();
 		} catch (PollenIsOverException | NoLongerPollenFieldException | CannotCollectOnThisPositionException e) {
 //			e.printStackTrace();
 			failed(e.getMessage());
@@ -124,6 +126,7 @@ public class MapArtifact extends Artifact {
 			
 			Environment.getInstance().changeDay(newDay);
 			day.updateValue(newDay);
+			//updatePollenFields();
 		}
 	}	
 	
@@ -142,5 +145,20 @@ public class MapArtifact extends Artifact {
 			ObsProperty temperature = getObsProperty("extTemperature");
 			temperature.updateValue(newTemperature);
 		}
-	}	
+	}
+	/*
+	@INTERNAL_OPERATION
+	void updatePollenFields() {
+		for (int i =1; i <= Environment.getInstance().getPollenFieldResolver().getNumberPollenFields(); i++) {
+			String name = "pollenField"+i;
+			PollenSupply level = Environment.getInstance().getPollenFieldResolver().getPollenField(name).getPollenField().getStatus();
+			
+			ObsProperty pf = getObsProperty("pollenField");
+			System.out.println("PollenFieldObs: "+pf.getValue(0));
+			
+			/*if(!(level == )){
+				pf.updateValue(0, level);
+			}
+		}
+	}*/
 }
