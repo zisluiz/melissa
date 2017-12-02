@@ -1,18 +1,22 @@
 package model;
 
+import artifact.Parameters;
+
 public class Larva {
-	private int age;
 	private int honeyEated;
 	
-	public Larva(int age) {
-		this.age = age;
+	public Larva() {
 	}
 	
 	public int getHoneyEated() {
 		return honeyEated;
 	}
-	
-	public int getAge() {
-		return age;
+
+	public boolean isEvolving() {
+		return honeyEated >= Parameters.LARVA_TOTAL_HONEY_TO_EVOLVE;
+	}
+
+	public void feed(int honey) {
+		honeyEated += honey;
 	}
 }

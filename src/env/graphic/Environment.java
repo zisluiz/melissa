@@ -11,6 +11,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import model.Bee;
 import model.Hive;
+import model.Larva;
 import model.PollenField;
 import model.Position;
 import model.RandomUtils;
@@ -426,5 +427,14 @@ public class Environment {
 			
 			updatePollenField(pollenField, statusBefore);
 		}		
+	}
+
+	public Larva feedLarva() throws InsufficientHoneyException {
+		return Hive.getInstance().feedLarva();
+	}
+
+	public void removeLarva(Larva larva) {
+		Hive.getInstance().removeLarva(larva);
+		EnvironmentApplication.getInstance().updateLarvaCount();
 	}
 }

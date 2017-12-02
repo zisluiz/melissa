@@ -8,6 +8,7 @@ import cartago.OPERATION;
 import cartago.ObsProperty;
 import graphic.Environment;
 import model.Hive;
+import model.Larva;
 import model.exception.CannotDepositOnThisPositionException;
 import model.exception.InsufficientHoneyException;
 import model.exception.InsufficientPollenException;
@@ -158,11 +159,25 @@ public class HiveArtifact extends Artifact {
 		}		
 	}
 	
+	@OPERATION
+	void alimentarLarva() {	
+		try {
+			Larva larvaToEvolve = Environment.getInstance().feedLarva();
+			
+			if (larvaToEvolve != null) {
+				System.out.println("Larva is evolving");
+				Environment.getInstance().removeLarva(larvaToEvolve);
+				defineObsProperty("larva");
+			}
+		} catch (InsufficientHoneyException e) {
+			failed(e.getMessage());
+		}
+	}
+	
 	@INTERNAL_OPERATION
 	void temperatureChange() {
 		while(true){
 			await_time((int)(Parameters.DELAY_CHANGE_DAY/10));
-			
 			updateTemp();
 		}
 	}

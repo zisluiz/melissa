@@ -43,6 +43,9 @@ new_day(D) :-
       commitMission(Mission)[artifact_name(Scheme)].
 
 /*   Basic Plans  */
++larva
+<- .create_agent(worker,"worker.asl");
+	-larva.
 
 +!registerBee[scheme(Sch)] : age(X)
 <-	today(D);
@@ -133,7 +136,10 @@ new_day(D) :-
 <-	.send(queen, achieve, comer(50));
 	-+energia(E-1).
 
-+!alimentarLarvas.
++!alimentarLarvas
+<- alimentarLarva;
+	.wait(500);
+	!alimentarLarvas.
 
 /* Sentinel Plans */
 

@@ -1,7 +1,9 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import com.sun.javafx.geom.Rectangle;
 
@@ -22,6 +24,7 @@ public class Hive {
 	private List<Bee> sentinels = new ArrayList<>();
 	private List<Bee> workers = new ArrayList<>();
 	private List<Larva> larvas = new ArrayList<>();
+	private Queue<Larva> feedOrder = new LinkedList<>(); 
 
 	private int honey;
 	private int pollen;
@@ -107,7 +110,9 @@ public class Hive {
 	}
 
 	public void createLarva() {
-		larvas.add(new Larva(0));
+		Larva larva = new Larva();
+		larvas.add(larva);
+		getFeedOrder().add(larva);
 	}
 
 	synchronized public void addHoney(int ammount) {
@@ -176,5 +181,30 @@ public class Hive {
 		
 		BeeRole newRole = BeeRole.valueOf(role);
 		addBeeRole(newRole, bee);
+	}
+
+	public Larva feedLarva() throws InsufficientHoneyException {
+		if (getFeedOrder().isEmpty()) return null;
+		
+		int honey = Parameters.LARVA_AMMOUNT_HONEY_FEED;
+		
+		subHoney(honey);
+		Larva larva = getFeedOrder().poll();
+		larva.feed(honey);
+		
+		if (!larva.isEvolving()) {
+			getFeedOrder().add(larva);
+			return null;
+		}
+		
+		return larva;
+	}
+
+	synchronized public Queue<Larva> getFeedOrder() {
+		return feedOrder;
+	}
+
+	public void removeLarva(Larva larva) {
+		larvas.remove(larva);
 	}
 }
