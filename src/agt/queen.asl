@@ -6,17 +6,17 @@ energia(1000).
 
 /* Initial goals */
 
-!startOrg(1).
+!startOrg("colmeia1").
 
 /* Organisational Plans */
 
 +!startOrg(Id)
-<-  .concat("sch_",Id,SchName);
-	makeArtifact(SchName, "ora4mas.nopl.SchemeBoard",["src/org/organisation.xml", doSimulation],SchArtId);
+<-  makeArtifact(Id, "ora4mas.nopl.SchemeBoard",["src/org/organisation.xml", doSimulation],SchArtId);
 	debug(inspector_gui(off))[artifact_id(SchArtId)];
 	.my_name(Me); setOwner(Me)[artifact_id(SchArtId)];  // I am the owner of this scheme!
 	focus(SchArtId);
-	addScheme(SchName);  // set the group as responsible for the scheme
+	.wait(200);
+	addScheme(Id);  // set the group as responsible for the scheme
 	adoptRole(monarca);
 	commitMission(mRainha)[artifact_id(SchArtId)];
 	commitMission(mAlimentacao)[artifact_id(SchArtId)];

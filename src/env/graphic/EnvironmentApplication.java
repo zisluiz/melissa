@@ -135,7 +135,7 @@ public class EnvironmentApplication extends Application {
 		Group group = new Group();
 		Image labels = new Image("file:labels.png");
 		ImageView labelsView = new ImageView(labels);
-		labelsView.setLayoutX(828);
+		labelsView.setLayoutX(831);
 		labelsView.setLayoutY(20);
 		group.getChildren().add(labelsView);
 		
