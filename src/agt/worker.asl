@@ -172,7 +172,7 @@ ta_frio(T) :-
 -!estocarPolen[error(ia_failed)].
 -!estocarPolen[error_msg(M)]/* <- .print("Error: ", M) */.
 
-+!collectHoney <- collect(pollenField4).
++!collectHoney <- collect(pollenField4).	// arrumar aqui
 +!delivery <- delivery.
 
 { include("$jacamoJar/templates/common-cartago.asl") }
