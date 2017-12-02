@@ -38,15 +38,11 @@ satisfeita(E) :-
 +!registerBee[scheme(Sch)]
 <-	.my_name(Me);
 	?play(Me,R,colmeia);
-	if (R == baba) {
-		registerBee(feeder);	
-	} else {
-		if (R == sentinela) {
-			registerBee(sentinel);	
-		} else {
-			registerBee(worker);
-			!setPosition
-		}			
+	
+	registerBee(R);	
+	
+	if (R == exploradora) {
+		!setPosition;
 	}.
 
 +!registerBee[scheme(Sch)] : age(X)

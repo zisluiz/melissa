@@ -1,13 +1,17 @@
 package model;
 
+import model.enumeration.BeeRole;
+
 public class Bee {
 	private String id;
+	private BeeRole role;
 	private int age;
 	private Position position = new Position();
 	private int pollenCollected;
 
-	public Bee(String id) {
+	public Bee(String id, BeeRole role) {
 		this.id = id;
+		this.role = role;
 	}
 	
 	public void setPosition(int x, int y) {
@@ -34,5 +38,9 @@ public class Bee {
 		int ammount = pollenCollected;
 		pollenCollected = 0;
 		return ammount;
+	}
+	
+	public BeeRole getRole() {
+		return role;
 	}
 }
