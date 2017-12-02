@@ -27,15 +27,11 @@ satisfeita :-
 	E > M * 0.9.
 	
 age_to_sentinel :-
-	.my_name(Me) &
-	play(Me, baba, _) &
 	nascimento(N) &
 	hoje(D) &
 	D-N >= 18.
 	
 age_to_explorer :-
-	.my_name(Me) &
-	play(Me, sentinela, _) &
 	nascimento(N) &
 	hoje(D) &
 	D-N >= 22.
@@ -44,10 +40,6 @@ too_old :-
 	nascimento(N) &
 	hoje(D) &
 	D-N >= 45.
-	
-new_day(D) :-
-	hoje(H) &
-	H \== D.
 
 /* Initial goals */
 
@@ -64,7 +56,9 @@ new_day(D) :-
 	-larva.
 
 +!registerBee[scheme(Sch)] : age(X)
-<-	today(D);
+<-	lookupArtifact("Map",AId);
+	focus(AId);
+	?day(D)[artifact_id(AId)];
 	+hoje(D);
 	+nascimento(D-X);
 	if (X < 18) {
@@ -79,34 +73,42 @@ new_day(D) :-
 		!setPosition;
 	}};
 	-age(_);
-	!updateDay.
+	!!updateDay.
 
 +!registerBee[scheme(Sch)]
-<-	lookupArtifact("Hive",AId);
+<-	lookupArtifact("Map",AId);
 	focus(AId);
-	today(D);
+	?day(D)[artifact_id(AId)];
 	+hoje(D);
 	+nascimento(D);
 	adoptRole(baba);
 	registerBee(baba);
-	!updateDay. 
+	!!updateDay. 
 
-+!updateDay
++!updateDay :hoje(H)
 <-	.wait(5000);
-	today(D);
-	if (new_day(D)) {
+	lookupArtifact("Map",AId);
+	focus(AId);
+	?day(D)[artifact_id(AId)];
+	if (D \== H) {
 		-+hoje(D)
-	}.
-	
-+age_to_sentinel <- changeRole(sentinela); .print("Virei sentinela!").
-	
-+age_to_explorer <- changeRole(exploradora); .print("Virei exploradora!").
-	
-+too_old
+	};
+	!!changeStatus;
+	!updateDay.
+
++!changeStatus : too_old
 <-	.random(N);
 	if(N < 0.5) {
 		!suicide
 	}.
+	
++!changeStatus : age_to_explorer & .my_name(Me) & play(Me, sentinela, _)
+<-	changeRole(exploradora); .print("Virei exploradora!").
+	
++!changeStatus : age_to_sentinel & .my_name(Me) & play(Me, baba, _)
+<-	changeRole(sentinela); .print("Virei sentinela!").
+
++!changeStatus.
 
 +!setPosition
 <-	lookupArtifact("Map",AId);
