@@ -93,8 +93,26 @@ public class MapArtifact extends Artifact {
 	}	
 	
 	@OPERATION
+	void collect() {
+		try {
+			String beeId = getCurrentOpAgentId().getAgentName();
+			Position beePos = getPosition(beeId);
+			String pollenFieldId = Environment.getInstance().getMatchingPollenFieldId(beePos);
+			Environment.getInstance().collect(pollenFieldId, beeId);
+		} catch (PollenIsOverException | NoLongerPollenFieldException | CannotCollectOnThisPositionException e) {
+//			e.printStackTrace();
+			failed(e.getMessage());
+		}
+	}	
+	
+	@OPERATION
 	public void setPosition(int x, int y) {
 		Environment.getInstance().setPosition(getCurrentOpAgentId().getAgentName(), x, y);
+	}
+	
+	@INTERNAL_OPERATION
+	public Position getPosition(String beeId) {
+		return Environment.getInstance().getBeePos(beeId);
 	}
 	
 	@INTERNAL_OPERATION

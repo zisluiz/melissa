@@ -16,4 +16,8 @@ public class PollenFieldResolver {
 	public PollenFieldGraphic getPollenField(String pollenFieldId) {
 		return pollenFields.get(pollenFieldId);
 	}
+	
+	public int getNumberPollenFields() {
+		return pollenFields.size();
+	}
 }

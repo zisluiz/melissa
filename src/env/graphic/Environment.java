@@ -5,6 +5,7 @@ import graphic.model.BeeGraphic;
 import graphic.model.PollenFieldGraphic;
 import javafx.application.Application;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import model.Bee;
 import model.Hive;
 import model.JavaFXConcurrent;
@@ -288,6 +289,9 @@ public class Environment {
 	public void collect(String pollenFieldId, String beeId) throws PollenIsOverException, NoLongerPollenFieldException, CannotCollectOnThisPositionException {
 //		System.out.println("Beee "+beeId+" trying to collect on field "+pollenFieldId);
 		BeeGraphic beeGraphic = beeResolver.getBee(beeId);
+		if(pollenFieldId == null)
+			throw new CannotCollectOnThisPositionException("Bee isn't inside pollen field!");
+		
 		PollenFieldGraphic pollenFieldGraphic = pollenFieldResolver.getPollenField(pollenFieldId);
 		
 		if (!beeGraphic.isInsideContainer())
@@ -350,6 +354,20 @@ public class Environment {
 	
 	public Position getPosition(String beeId) {
 		return beeResolver.getBee(beeId).getBee().getPosition();
+	}
+
+	public String getMatchingPollenFieldId(Position beePos) {
+		String pollenFieldId = null;
+		
+		for (int i = 1; i <= pollenFieldResolver.getNumberPollenFields(); i++){
+			String name = "pollenField"+i;
+			Rectangle rec = pollenFieldResolver.getPollenField(name).getRectangle();
+			
+			if (beePos.getX() >= rec.getLayoutX() && beePos.getX() <= (rec.getLayoutX() + rec.getWidth()))
+				if(beePos.getY() >= rec.getLayoutY() && beePos.getY() <= (rec.getLayoutY() + rec.getHeight()))
+					pollenFieldId = name;
+		}
+		return pollenFieldId;
 	}
 	
 	public int getExtTemperature() {

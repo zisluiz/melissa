@@ -39,9 +39,12 @@ energia(1000).
 		
 /* Management Plans */		
 		
-+!alimentacao.
-+!renovacaoEnxame.
-+!controleTemperatura.
++!alimentacao : goalState(_,alimentacao,_,_,satisfied)
+<-	resetGoal(alimentacao).
++!renovacaoEnxame : goalState(_,renovacaoEnxame,_,_,satisfied)
+<-	resetGoal(renovacaoEnxame).
++!controleTemperatura : goalState(_,controleTemperatura,_,_,satisfied)
+<-	resetGoal(controleTemperatura).
 		
 /* Renew Plans */
 		

@@ -29,7 +29,7 @@ mas melissa {
     }   
     
       agent worker : worker.asl {
-    	instances: 5
+    	instances: 50
     	roles: exploradora in colmeia
     }   
     

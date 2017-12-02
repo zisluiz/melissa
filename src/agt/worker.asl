@@ -57,7 +57,7 @@ ta_frio(T) :-
 	focus(AId);
 	if(polen(P)[artifact_id(AId)] & P>1) {
 		processPolen;
-		//.print("Polen processado!")
+		.print("Polen processado!")
 	}.
 
 -!fabricarMel
@@ -120,10 +120,10 @@ ta_frio(T) :-
 <-	lookupArtifact("Map",AId);
 	focus(AId);
 	.findall(r(X, Y, WIDTH, HEIGHT), pollenField(X, Y, WIDTH, HEIGHT)[artifact_id(AId)], List);
-	!goToField(List);
+	!flyToField(List);
 	if(collect) {
 		-collect;
-		!collectHoney;
+		!coletarPolen;
 		!trazerPolen[scheme(Sch)]
 	} else {
 		!procurarPolen[scheme(Sch)]
@@ -132,48 +132,53 @@ ta_frio(T) :-
 -!procurarPolen[error(ia_failed)] <- .print("Não consegui procurar!").
 -!procurarPolen[error_msg(M)]     <- .print("Error in: ",M).
 
-+!goToField([r(X0,Y0,W,H)|L])
-<-	//.print(r(X0,Y0,W,H));
-	.random(N);
++!flyToField([r(X0,Y0,W,H)|L])
+<-	.random(N);
 	if (N < 0.2) {
 		.random(R1);
 		X = X0 + math.floor(W*R1);
 		.random(R2);
 		Y = Y0 + math.floor(H*R2);
-		.print("Going to (", X, ",",Y,")");
+		//.print("Going to (", X, ",",Y,")");
 		flyTo(X,Y);
 		+collect
 	} else { if(not .empty(L)) {
-		!goToField(L)
+		!flyToField(L)
 	} else {
 		
 	}}.
 
 +!trazerPolen[scheme(Sch)]
-<-	lookupArtifact("Map",AId);
-	focus(AId);
-	
-	?hive(X0,Y0,W,H)[artifact_id(ATd)];
-	.random(R1);
-	X = X0 + math.floor(W*R1);
-	.random(R2);
-	Y = Y0 + math.floor(H*R2);
-	.print("Going to (", X, ",",Y,")");
-	flyTo(X,Y);
+<-	!flyToHive;
 	!estocarPolen[scheme(Sch)].
 
 -!trazerPolen[error(ia_failed)] <- .print("I didn't in!").
 -!trazerPolen[error_msg(M)]     <- .print("Error in: ",M).
 
++!flyToHive
+<-	lookupArtifact("Map",AId);
+	focus(AId);
+	
+	?hive(X0,Y0,W,H)[artifact_id(AId)];
+	.random(R1);
+	X = X0 + math.floor(W*R1);
+	.random(R2);
+	Y = Y0 + math.floor(H*R2);
+	//.print("Going to (", X, ",",Y,")");
+	flyTo(X,Y).
+
 +!estocarPolen[scheme(Sch)] <-
-	!delivery;
+	delivery;
 	!procurarPolen[scheme(Sch)].
 
 -!estocarPolen[error(ia_failed)].
 -!estocarPolen[error_msg(M)]/* <- .print("Error: ", M) */.
 
-+!collectHoney <- collect(pollenField4).	// arrumar aqui
-+!delivery <- delivery.
++!coletarPolen <- collect.	// arrumar aqui
+
+-!coletarPolen[error_msg(M)]
+<-	.print("Error in: ",M);
+	!flyToHive.
 
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }

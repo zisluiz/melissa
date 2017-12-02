@@ -2,6 +2,7 @@ package graphic.model;
 
 import javafx.scene.shape.Rectangle;
 import model.PollenField;
+import model.Position;
 
 public class PollenFieldGraphic extends BeeContainer {
 	private PollenField pollenField;
