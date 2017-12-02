@@ -1,6 +1,7 @@
 package graphic;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import graphic.model.BeeContainer;
@@ -25,7 +26,7 @@ public class MapResolver {
 		this.existsContainer = new String[width][height];
 	}
 
-	public void addContainers(HiveGraphic hive, PollenFieldGraphic... pollenFieldGraphics) {
+	public void addContainers(HiveGraphic hive, List<PollenFieldGraphic> pollenFieldGraphics) {
 		this.hive = hive;
 		
 		for (PollenFieldGraphic pollenField : pollenFieldGraphics)

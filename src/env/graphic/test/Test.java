@@ -1,5 +1,6 @@
 package graphic.test;
 
+import artifact.Parameters;
 import graphic.Environment;
 import model.JavaFXConcurrent;
 import model.Position;
@@ -17,7 +18,7 @@ import model.exception.PollenIsOverException;
 public class Test {
 	public static void main(String[] args) {
 		Environment instance = Environment.getInstance();
-		instance.launchGraphicApplication(800, 600);
+		instance.launchGraphicApplication(800, 600, Parameters.makePollenFields());
 
 		try {
 			Thread.sleep(2000);

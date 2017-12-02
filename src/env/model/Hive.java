@@ -5,14 +5,15 @@ import java.util.List;
 
 import com.sun.javafx.geom.Rectangle;
 
+import artifact.Parameters;
 import model.enumeration.HoneySupply;
 import model.exception.InsufficientHoneyException;
-import model.exception.InsufficientPolenException;
+import model.exception.InsufficientPollenException;
 
 public class Hive {
 	private static Hive instance;
-	private static int maxHoney = 1000;
-	private static int maxPolen = 1000;
+//	private static int maxHoney = 1000;
+	private static int maxPollen = 1000;
 
 	private int temperature;
 
@@ -23,7 +24,7 @@ public class Hive {
 	private List<Larva> larvas = new ArrayList<>();
 
 	private int honey;
-	private int polen;
+	private int pollen;
 	
 	private Rectangle hive;
 
@@ -31,13 +32,13 @@ public class Hive {
 	}
 	
 	public HoneySupply getStatus() {
-		if (honey < maxHoney * 0.05)
+		if (pollen < maxPollen * Parameters.HIVE_SUPPLY_EMPTY)
 			return HoneySupply.EMPTY;
-		else if (honey < maxHoney * 0.2)
+		else if (pollen < maxPollen * Parameters.HIVE_SUPPLY_LOW)
 			return HoneySupply.LOW;
-		else if (honey < maxHoney * 0.6)
+		else if (pollen < maxPollen * Parameters.HIVE_SUPPLY_MEDIUM)
 			return HoneySupply.MEDIUM;
-		else if (honey < maxHoney * 0.9)
+		else if (pollen < maxPollen * Parameters.HIVE_SUPPLY_HIGH)
 			return HoneySupply.HIGH;
 		else
 			return HoneySupply.FULL;
@@ -86,12 +87,12 @@ public class Hive {
 		this.honey = honey;
 	}	
 	
-	public int getPolen() {
-		return polen;
+	public int getPollen() {
+		return pollen;
 	}
 	
-	public void setPolen(int polen) {
-		this.polen = polen;
+	public void setPollen(int pollen) {
+		this.pollen = pollen;
 	}
 	
 	public List<Bee> getQueens() {
@@ -144,14 +145,14 @@ public class Hive {
 			throw new InsufficientHoneyException("The honey is gone.");
 	}	
 
-	synchronized public void addPolen(int ammount) {
-		polen = polen + ammount;
+	synchronized public void addPollen(int ammount) {
+		pollen = pollen + ammount;
 	}
 	
-	synchronized public void subPolen(int ammount) throws InsufficientPolenException {
-		if (polen >= ammount) {
-			polen = polen - ammount;
+	synchronized public void subPollen(int ammount) throws InsufficientPollenException {
+		if (pollen >= ammount) {
+			pollen = pollen - ammount;
 		} else
-			throw new InsufficientPolenException("The polen is gone.");
+			throw new InsufficientPollenException("The pollen is gone.");
 	}	
 }

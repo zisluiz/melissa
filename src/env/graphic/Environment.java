@@ -1,5 +1,8 @@
 package graphic;
 
+import java.util.List;
+
+import artifact.Parameters;
 import graphic.model.BeeContainer;
 import graphic.model.BeeGraphic;
 import graphic.model.PollenFieldGraphic;
@@ -18,7 +21,7 @@ import model.enumeration.PollenSupply;
 import model.exception.CannotCollectOnThisPositionException;
 import model.exception.CannotDepositOnThisPositionException;
 import model.exception.InsufficientHoneyException;
-import model.exception.InsufficientPolenException;
+import model.exception.InsufficientPollenException;
 import model.exception.InvalidMovimentException;
 import model.exception.MovimentOutOfBoundsException;
 import model.exception.NoLongerHiveException;
@@ -34,6 +37,7 @@ public class Environment {
 	private BeeResolver beeResolver;
 	private PollenFieldResolver pollenFieldResolver;
 	private MapResolver mapResolver;
+	private List<PollenField> pollenFields;
 	
 	private Environment() {
 		System.out.println("Creating BeeEnvironment");
@@ -191,8 +195,8 @@ public class Environment {
 		});
 	}
 	
-	public void setPolenStart(int ammount) {
-		Hive.getInstance().setPolen(ammount);
+	public void setPollenStart(int ammount) {
+		Hive.getInstance().setPollen(ammount);
 	}
 	
 	public void registerBee(String beeId, String type) {
@@ -250,10 +254,11 @@ public class Environment {
 		});		
 	}
 
-	public void launchGraphicApplication(int width, int height) {
+	public void launchGraphicApplication(int width, int height, List<PollenField> pollenFields) {
 		this.width = width;
 		this.height = height;
 		this.mapResolver = new MapResolver(beeResolver, width, height);
+		this.pollenFields = pollenFields;
 		
 		new Thread(() -> {
 			Application.launch(EnvironmentApplication.class, width+"", height+"");
@@ -308,10 +313,14 @@ public class Environment {
 		int ammount = pollenField.collect();
 		beeGraphic.getBee().setPollenCollected(ammount);
 		
+		updatePollenField(pollenField, statusBefore);
+	}
+
+	private void updatePollenField(PollenField pollenField, PollenSupply statusBefore) {
 		PollenSupply statusAfter = pollenField.getStatus();
 		
 		if (!statusBefore.equals(statusAfter)) {
-			EnvironmentApplication.getInstance().updatePollenFieldStatus(pollenFieldId);
+			EnvironmentApplication.getInstance().updatePollenFieldStatus(pollenField.getId());
 		}
 	}
 
@@ -329,7 +338,7 @@ public class Environment {
 			throw new NoPollenCollectedException("Not one pollen is collected!");
 		
 		HoneySupply statusBefore = Hive.getInstance().getStatus();
-		Hive.getInstance().addPolen(ammount);
+		Hive.getInstance().addPollen(ammount);
 		HoneySupply statusAfter = Hive.getInstance().getStatus();
 		
 		updateHoney(statusBefore, statusAfter);
@@ -348,10 +357,10 @@ public class Environment {
 		}
 	}
 	
-	public void processPolen(int ammount) throws InsufficientPolenException {
+	public void processPollen(int ammount) throws InsufficientPollenException {
 		HoneySupply statusBefore = Hive.getInstance().getStatus();
 		
-		Hive.getInstance().subPolen(ammount);
+		Hive.getInstance().subPollen(ammount);
 		Hive.getInstance().addHoney(ammount);
 		
 		HoneySupply statusAfter = Hive.getInstance().getStatus();
@@ -383,5 +392,19 @@ public class Environment {
 
 	public void eat(int ammount) throws InsufficientHoneyException {
 		Hive.getInstance().subHoney(ammount);
+	}
+	
+	public List<PollenField> getPollenFields() {
+		return pollenFields;
+	}
+
+	public void incrementPollenFields() {
+		for (PollenField pollenField : pollenFields) {
+			PollenSupply statusBefore = pollenField.getStatus();
+			
+			pollenField.addPollenAmmount(Parameters.DAILY_POLLEN_AMMOUNT_INCREASE);
+			
+			updatePollenField(pollenField, statusBefore);
+		}		
 	}
 }

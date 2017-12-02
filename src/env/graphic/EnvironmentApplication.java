@@ -1,5 +1,8 @@
 package graphic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import graphic.model.HiveGraphic;
 import graphic.model.PollenFieldGraphic;
 import javafx.application.Application;
@@ -21,8 +24,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Hive;
 import model.JavaFXConcurrent;
+import model.PollenField;
 import model.enumeration.HoneySupply;
-import model.enumeration.PollenSupply;
 
 public class EnvironmentApplication extends Application {
 	public static EnvironmentApplication instance = null;
@@ -48,8 +51,6 @@ public class EnvironmentApplication extends Application {
 	private Color colorYellowStrong = Color.web("rgb(255,202,14)", 1);
 	private Color colorGreen = Color.web("green", 1);
 	private Color colorYellow = Color.web("yellow", 1);
-	
-	
 	
 	private Font font = new Font(14);
 	private Text time;
@@ -85,7 +86,7 @@ public class EnvironmentApplication extends Application {
 		stage.setScene(scene);
 		
 		root.getChildren().add(createHive());
-		root.getChildren().add(createPollenFields());
+		root.getChildren().add(createPollenFields(Environment.getInstance().getPollenFields()));
 		
 		Text labelTime = new Text(690, 16, "Tempo: ");
 		labelTime.setFill(colorWhite);
@@ -141,36 +142,28 @@ public class EnvironmentApplication extends Application {
 		return group;
 	}
 
-	private Group createPollenFields() {
+	private Group createPollenFields(List<PollenField> pollenFields) {
 		Group group = new Group();
-		Rectangle foodSource1 = createRectangle(150, 200, PollenSupply.HIGH.getColor(), 0, 0);
-		group.getChildren().add(foodSource1);
-		
-		Rectangle foodSource2 = createRectangle(60, 170, PollenSupply.HIGH.getColor(), 0, 300);
-		group.getChildren().add(foodSource2);
-		Rectangle foodSource3 = createRectangle(40, 40, PollenSupply.HIGH.getColor(), 400, 0);
-		group.getChildren().add(foodSource3);
-		Rectangle foodSource4 = createRectangle(40, 40, PollenSupply.HIGH.getColor(), 759, 230);
-		group.getChildren().add(foodSource4);
-		
-		PollenFieldGraphic pollenField1 = new PollenFieldGraphic(foodSource1, "pollenField1", 2000, 2000);
-		PollenFieldGraphic pollenField2 = new PollenFieldGraphic(foodSource2, "pollenField2", 1000, 1000);
-		PollenFieldGraphic pollenField3 = new PollenFieldGraphic(foodSource3, "pollenField3", 400, 400);
-		PollenFieldGraphic pollenField4 = new PollenFieldGraphic(foodSource4, "pollenField4", 400, 400);
-		
 		PollenFieldResolver pollenFieldResolver = Environment.getInstance().getPollenFieldResolver();
-		pollenFieldResolver.createPollenField("pollenField1", pollenField1);
-		pollenFieldResolver.createPollenField("pollenField2", pollenField2);
-		pollenFieldResolver.createPollenField("pollenField3", pollenField3);
-		pollenFieldResolver.createPollenField("pollenField4", pollenField4);
-		Environment.getInstance().getMapResolver().addContainers(hiveGraphic, pollenField1, pollenField2, pollenField3, pollenField4);
+		List<PollenFieldGraphic> pollenFieldGraphics = new ArrayList<>();
+		
+		for (PollenField pollenField : pollenFields) {
+			Rectangle foodSource1 = createRectangle(pollenField.getWidth(), pollenField.getHeight(), pollenField.getStatus().getColor(), pollenField.getPosition().getX(), pollenField.getPosition().getY());
+			group.getChildren().add(foodSource1);
+			
+			PollenFieldGraphic pollenFieldGraphic = new PollenFieldGraphic(foodSource1, pollenField);
+			pollenFieldResolver.createPollenField(pollenField.getId(), pollenFieldGraphic);
+			pollenFieldGraphics.add(pollenFieldGraphic);
+			
+		}
+		Environment.getInstance().getMapResolver().addContainers(hiveGraphic, pollenFieldGraphics);
 		
 		return group;
 	}
 
 	private Group createHive() {
 		Group group = new Group();
-		Rectangle hive = createRectangle(150, 150, colorYellow, 649, 449);
+		Rectangle hive = createRectangle(artifact.Parameters.HIVE_WIDTH, artifact.Parameters.HIVE_HEIGHT, colorYellow, artifact.Parameters.HIVE_X, artifact.Parameters.HIVE_Y);
 		group.getChildren().add(hive);
 		hiveGraphic = new HiveGraphic(hive, "hive");
 		

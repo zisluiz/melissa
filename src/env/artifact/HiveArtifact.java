@@ -10,15 +10,13 @@ import graphic.Environment;
 import model.Hive;
 import model.exception.CannotDepositOnThisPositionException;
 import model.exception.InsufficientHoneyException;
-import model.exception.InsufficientPolenException;
+import model.exception.InsufficientPollenException;
 import model.exception.NoLongerHiveException;
 import model.exception.NoPollenCollectedException;
 
 public class HiveArtifact extends Artifact {
-	private static final long DELAY_TIME = 10000;
-	
 	void init() {
-		defineObsProperty("polen", 0);
+		defineObsProperty("pollen", 0);
 		defineObsProperty("honey", 0);
 		defineObsProperty("intTemperature", 0);
 		defineObsProperty("larvas", 0);
@@ -27,24 +25,24 @@ public class HiveArtifact extends Artifact {
 		defineObsProperty("x", 0);
 		defineObsProperty("y", 0);
 		defineObsProperty("width", 0);
-		defineObsProperty("heigth", 0);
+		defineObsProperty("height", 0);
 		
 		execInternalOp("temperatureChange");
 	}
 	
 	@OPERATION
 	void hiveStart() {
-		honeyStart(100);
-		polenStart(100);
-		tempStart(25);
-		dimStart(649, 449, 150, 150);
+		honeyStart(Parameters.HONEY_START);
+		pollenStart(Parameters.POLLEN_START);
+		tempStart(Parameters.TEMPERATURE_START);
+		dimStart(Parameters.HIVE_X, Parameters.HIVE_Y, Parameters.HIVE_WIDTH, Parameters.HIVE_HEIGHT);
 	}
 	
-	void dimStart(int x, int y, int width, int heigth) {
+	void dimStart(int x, int y, int width, int height) {
 		updateObsProperty("x", x);
 		updateObsProperty("y", y);
 		updateObsProperty("width", width);
-		updateObsProperty("heigth", heigth);
+		updateObsProperty("height", height);
 	}
 
 	
@@ -77,25 +75,25 @@ public class HiveArtifact extends Artifact {
 	}
 	
 	@OPERATION
-	void processPolen() {
+	void processPollen() {
 		try {
-			Environment.getInstance().processPolen(1);
-		} catch (InsufficientPolenException e) {
+			Environment.getInstance().processPollen(1);
+		} catch (InsufficientPollenException e) {
 			failed(e.getMessage());
 		}
 	}
 	
 	@OPERATION
-	void polenStart(int ammount) {
-		Environment.getInstance().setPolenStart(ammount);
-		updateObsProperty("polen", ammount);
+	void pollenStart(int ammount) {
+		Environment.getInstance().setPollenStart(ammount);
+		updateObsProperty("pollen", ammount);
 	}	
 	
 	@OPERATION
 	void honeyStart(int ammount) {
 		Environment.getInstance().setHoneyStart(ammount);
 		updateObsProperty("honey", ammount);
-		polenStart(0);
+		pollenStart(0);
 	}	
 	
 	@OPERATION
@@ -153,7 +151,7 @@ public class HiveArtifact extends Artifact {
 	@INTERNAL_OPERATION
 	void temperatureChange() {
 		while(true){
-			await_time((int)(DELAY_TIME/10));
+			await_time((int)(Parameters.DELAY_CHANGE_DAY/10));
 			
 			updateTemp();
 		}

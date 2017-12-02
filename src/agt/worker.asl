@@ -56,16 +56,16 @@ ta_frio(T) :-
 /*   Baba Plans   */
 
 +!fabricarMel
-<-	!tryPolen;	
+<-	!tryPollen;	
 	.wait(100);
 	!fabricarMel.
 
-@tryPolen [atomic]
-+!tryPolen
+@tryPollen [atomic]
++!tryPollen
 <- 	lookupArtifact("Hive",AId);
 	focus(AId);
-	if(polen(P)[artifact_id(AId)] & P>1) {
-		processPolen
+	if(pollen(P)[artifact_id(AId)] & P>1) {
+		processPollen
 	}.
 
 -!fabricarMel

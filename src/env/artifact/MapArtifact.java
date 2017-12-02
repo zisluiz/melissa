@@ -2,14 +2,16 @@
 
 package artifact;
 
+import java.util.List;
+
 import cartago.Artifact;
 import cartago.INTERNAL_OPERATION;
 import cartago.OPERATION;
 import cartago.ObsProperty;
 import graphic.Environment;
+import model.PollenField;
 import model.Position;
 import model.enumeration.Direction;
-import model.enumeration.PollenSupply;
 import model.exception.CannotCollectOnThisPositionException;
 import model.exception.InvalidMovimentException;
 import model.exception.MovimentOutOfBoundsException;
@@ -17,26 +19,21 @@ import model.exception.NoLongerPollenFieldException;
 import model.exception.PollenIsOverException;
 
 public class MapArtifact extends Artifact {
-	private static final long DELAY_TIME = 10000;
-	private static final int AVERAGE_TEMPERATURE = 25;
-	private static final int TERMIC_AMPLITUDE = 10;
-	
 	void init() {
-		Environment.getInstance().launchGraphicApplication(800, 600);
+		List<PollenField> pollenFields = Parameters.makePollenFields();
+		
+		Environment.getInstance().launchGraphicApplication(800, 600, pollenFields);
 		
 		defineObsProperty("day", 0);
-		defineObsProperty("extTemperature", 25);
+		defineObsProperty("extTemperature", Parameters.EXTERNAL_TEMPERATURE_START);
 		
 		// x, y, width, height
-		defineObsProperty("hive", 649,449,150,150);
+		defineObsProperty("hive", Parameters.HIVE_X,Parameters.HIVE_Y,Parameters.HIVE_WIDTH,Parameters.HIVE_HEIGHT);
 		
-		defineObsProperty("pollenField", "HIGH", 0,0,150,200);
-		defineObsProperty("pollenField", "HIGH", 0, 300, 60, 170);
-		defineObsProperty("pollenField", "HIGH", 400, 0, 40, 40);
-		defineObsProperty("pollenField", "HIGH", 759, 230, 40, 40);
-		
-	//	defineObsProperty("pollenField", "(pollenField1,0,0,150,200)", "(pollenField2, 0, 300, 60, 170)", "(pollenField3, 400, 0, 40, 40)", "(pollenField4, 759, 230, 40, 40)");
-		
+		for (PollenField pollenField : pollenFields) {
+			defineObsProperty("pollenField", pollenField.getStatus().toString(), pollenField.getPosition().getX(),pollenField.getPosition().getY(),pollenField.getWidth(),pollenField.getHeight());
+		}
+			
 		execInternalOp("dayChange");
 		execInternalOp("temperatureChange");
 	}
@@ -46,10 +43,9 @@ public class MapArtifact extends Artifact {
 		try {
 			Environment.getInstance().moveBee(getCurrentOpAgentId().getAgentName(), Direction.valueOf(direction.toUpperCase()));
 		} catch (MovimentOutOfBoundsException | InvalidMovimentException e) {
-//			e.printStackTrace();
 			failed(e.getMessage());
 		}
-		await_time(20);
+		await_time(Parameters.DELAY_MOVE_OPERATION);
 	}
 	
 	@OPERATION
@@ -57,10 +53,9 @@ public class MapArtifact extends Artifact {
 		try {
 			Environment.getInstance().moveBee(getCurrentOpAgentId().getAgentName(), x, y);
 		} catch (MovimentOutOfBoundsException | InvalidMovimentException e) {
-//			e.printStackTrace();
 			failed(e.getMessage());
 		}
-		await_time(20);
+		await_time(Parameters.DELAY_MOVE_OPERATION);
 	}	
 
 	@OPERATION
@@ -87,9 +82,7 @@ public class MapArtifact extends Artifact {
 	void collect(String pollenFieldId) {
 		try {
 			Environment.getInstance().collect(pollenFieldId, getCurrentOpAgentId().getAgentName());
-			//updatePollenFields();
 		} catch (PollenIsOverException | NoLongerPollenFieldException | CannotCollectOnThisPositionException e) {
-//			e.printStackTrace();
 			failed(e.getMessage());
 		}
 	}	
@@ -102,7 +95,6 @@ public class MapArtifact extends Artifact {
 			String pollenFieldId = Environment.getInstance().getMatchingPollenFieldId(beePos);
 			Environment.getInstance().collect(pollenFieldId, beeId);
 		} catch (PollenIsOverException | NoLongerPollenFieldException | CannotCollectOnThisPositionException e) {
-//			e.printStackTrace();
 			failed(e.getMessage());
 		}
 	}	
@@ -120,25 +112,25 @@ public class MapArtifact extends Artifact {
 	@INTERNAL_OPERATION
 	void dayChange() {
 		while (true) {
-			await_time(DELAY_TIME);
+			await_time(Parameters.DELAY_CHANGE_DAY);
 			ObsProperty day = getObsProperty("day");
 			int newDay = day.intValue()+1;
 			
 			Environment.getInstance().changeDay(newDay);
 			day.updateValue(newDay);
-			//updatePollenFields();
+			execInternalOp("updatePollenFields");
 		}
 	}	
 	
 	@INTERNAL_OPERATION
 	void temperatureChange() {
 		while (true) {
-			await_time(DELAY_TIME);
+			await_time(Parameters.DELAY_CHANGE_DAY);
 			ObsProperty day = getObsProperty("day");
 			int today = day.intValue();
 			
 			int month = today % 12; // para estacoes do ano
-			int newTemperature = (int)(AVERAGE_TEMPERATURE + TERMIC_AMPLITUDE * Math.sin(2*Math.PI*(month/12.)));
+			int newTemperature = (int)(Parameters.AVERAGE_TEMPERATURE + Parameters.TERMIC_AMPLITUDE * Math.sin(2*Math.PI*(month/12.)));
 			
 			Environment.getInstance().changeExtTemp(newTemperature);
 
@@ -146,19 +138,9 @@ public class MapArtifact extends Artifact {
 			temperature.updateValue(newTemperature);
 		}
 	}
-	/*
+	
 	@INTERNAL_OPERATION
 	void updatePollenFields() {
-		for (int i =1; i <= Environment.getInstance().getPollenFieldResolver().getNumberPollenFields(); i++) {
-			String name = "pollenField"+i;
-			PollenSupply level = Environment.getInstance().getPollenFieldResolver().getPollenField(name).getPollenField().getStatus();
-			
-			ObsProperty pf = getObsProperty("pollenField");
-			System.out.println("PollenFieldObs: "+pf.getValue(0));
-			
-			/*if(!(level == )){
-				pf.updateValue(0, level);
-			}
-		}
-	}*/
+		Environment.getInstance().incrementPollenFields();
+	}
 }
