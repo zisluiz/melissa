@@ -50,24 +50,26 @@ new_day(D) :-
 	+nascimento(D-X);
 	if (X < 18) {
 		adoptRole(baba);
-		registerBee(feeder);	
+		registerBee(baba);	
 	} else { if (X < 22) {
 		adoptRole(sentinela);
-		registerBee(sentinel);
+		registerBee(sentinela);
 	} else {
 		adoptRole(exploradora);
-		registerBee(worker);
-		!setPosition
+		registerBee(exploradora);
+		!setPosition;
 	}};
 	-age(_);
 	!updateDay.
 
 +!registerBee[scheme(Sch)]
-<-	today(D);
+<-	lookupArtifact("Hive",AId);
+	focus(AId);
+	today(D);
 	+hoje(D);
 	+nascimento(D);
 	adoptRole(baba);
-	registerBee(feeder);
+	registerBee(baba);
 	!updateDay. 
 
 +!updateDay
