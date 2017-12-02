@@ -2,7 +2,13 @@
 
 /* Initial beliefs and rules */
 
+maxEnergia(1000).
 energia(1000).
+	
+com_fome :-
+	energia(E) &
+	maxEnergia(M) &
+	E <= M * 0.2.
 
 /* Initial goals */
 
@@ -49,7 +55,7 @@ energia(1000).
 		
 /* Renew Plans */
 		
-+!porOvos[scheme(Sch)] : energia(E)  
++!porOvos[scheme(Sch)] : energia(E) & not com_fome
 <-	-+energia(E-5);
 	createLarva;
 	.wait(1000);

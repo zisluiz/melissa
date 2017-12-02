@@ -16,11 +16,13 @@ ta_frio(T) :-
 	niceTemperature(NT) &
 	T < NT - 1.
 	
-com_fome(E) :-
+com_fome :-
+	energia(E) &
 	maxEnergia(M) &
 	E <= M * 0.2.
 	
-satisfeita(E) :-
+satisfeita :-
+	energia(E) &
 	maxEnergia(M) &
 	E > M * 0.9.
 	
@@ -116,7 +118,7 @@ new_day(D) :-
 	Y = Y0 + math.floor(H*R2);
 	setPosition(X,Y).
 
-+!alimentarse: energia(E) & not satisfeita(E)
++!alimentarse: energia(E) & not satisfeita
 <-	comer(5);
 	-+energia(E+10).
 
@@ -132,7 +134,7 @@ new_day(D) :-
 
 /*   Baba Plans   */
 
-+!fabricarMel : energia(E) & not com_fome(E)
++!fabricarMel : energia(E) & not com_fome
 <-	!tryPollen;	
 	.wait(100);
 	!fabricarMel;
@@ -161,7 +163,7 @@ new_day(D) :-
 
 /* Sentinel Plans */
 
-+!aquecer : resfriando & energia(E) & not com_fome(E)
++!aquecer : resfriando & energia(E) & not com_fome
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -172,7 +174,7 @@ new_day(D) :-
 	};
 	!aquecer.
 
-+!aquecer : not aquecendo & energia(E) & not com_fome(E)
++!aquecer : not aquecendo & energia(E) & not com_fome
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -185,7 +187,7 @@ new_day(D) :-
 	
 +!aquecer <- .wait(100+math.random(200)); !aquecer.
 
-+!resfriar: aquecendo & energia(E) & not com_fome(E)
++!resfriar: aquecendo & energia(E) & not com_fome
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -196,7 +198,7 @@ new_day(D) :-
 	};
 	!resfriar.
 
-+!resfriar: not resfriando & energia(E) & not com_fome(E)
++!resfriar: not resfriando & energia(E) & not com_fome
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -211,7 +213,7 @@ new_day(D) :-
 
 /* Explorer Plans */
 	
-+!procurarPolen[scheme(Sch)] : energia(E) & not com_fome(E)
++!procurarPolen[scheme(Sch)] : energia(E) & not com_fome
 <-	lookupArtifact("Map",AId);
 	focus(AId);
 	.findall(r(LEVEL, X, Y, WIDTH, HEIGHT), pollenField(LEVEL, X, Y, WIDTH, HEIGHT)[artifact_id(AId)], List);
