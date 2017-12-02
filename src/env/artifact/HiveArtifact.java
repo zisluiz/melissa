@@ -113,21 +113,6 @@ public class HiveArtifact extends Artifact {
 	}	
 	
 	@OPERATION
-	void registerBee(String role) {
-		Environment.getInstance().registerBee(getCurrentOpAgentId().getAgentName(), role);
-	}
-	
-	@OPERATION
-	void changeRole(String newRole) {
-		Environment.getInstance().changeRole(getCurrentOpAgentId().getAgentName(), newRole);
-	}		
-	
-	@OPERATION
-	void unRegisterBee() {
-		Environment.getInstance().unRegisterBee(getCurrentOpAgentId().getAgentName());
-	}	
-	
-	@OPERATION
 	void delivery() {
 		try {
 			Environment.getInstance().delivery(getCurrentOpAgentId().getAgentName());
