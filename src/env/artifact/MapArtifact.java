@@ -124,11 +124,6 @@ public class MapArtifact extends Artifact {
 		Environment.getInstance().setPosition(getCurrentOpAgentId().getAgentName(), x, y);
 	}
 	
-	@OPERATION
-	public void today(OpFeedbackParam day) {
-		day.set(getObsProperty("day").intValue());
-	}
-	
 	@INTERNAL_OPERATION
 	public Position getPosition(String beeId) {
 		return Environment.getInstance().getBeePos(beeId);

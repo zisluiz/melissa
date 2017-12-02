@@ -26,27 +26,23 @@ satisfeita(E) :-
 	E > M * 0.9.
 	
 age_to_sentinel :-
-	.my_name(Me) &
-	play(Me, baba, _) &
 	nascimento(N) &
 	hoje(D) &
-	D-N >= 18.
+	D-N >= 18 & 
+	.my_name(Me) & 
+	play(Me, baba, _).
 	
 age_to_explorer :-
-	.my_name(Me) &
-	play(Me, sentinela, _) &
 	nascimento(N) &
 	hoje(D) &
-	D-N >= 22.
+	D-N >= 22 & 
+	.my_name(Me) & 
+	play(Me, sentinela, _).
 
 too_old :-
 	nascimento(N) &
 	hoje(D) &
 	D-N >= 45.
-	
-new_day(D) :-
-	hoje(H) &
-	H \== D.
 
 /* Initial goals */
 
@@ -69,7 +65,9 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 !registerBee[scheme(Sch)].
 
 +!registerBee[scheme(Sch)] : age(X)
-<-	today(D);
+<-	lookupArtifact("Map",AId);
+	focus(AId);
+	?day(D)[artifact_id(AId)];
 	+hoje(D);
 	+nascimento(D-X);
 	if (X < 18) {
@@ -84,34 +82,48 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 		!setPosition;
 	}};
 	-age(_);
-	!updateDay.
+	!!updateDay.
 
 +!registerBee[scheme(Sch)]
-<-	lookupArtifact("Hive",AId);
+<-	lookupArtifact("Map",AId);
 	focus(AId);
-	today(D);
+	?day(D)[artifact_id(AId)];
 	+hoje(D);
 	+nascimento(D);
 	adoptRole(baba);
 	registerBee(baba);
-	!updateDay. 
+	!!updateDay. 
 
-+!updateDay
++!updateDay :hoje(H)
 <-	.wait(5000);
-	today(D);
-	if (new_day(D)) {
+	lookupArtifact("Map",AId);
+	focus(AId);
+	?day(D)[artifact_id(AId)];
+	if (D \== H) {
 		-+hoje(D)
-	}.
-	
-+age_to_sentinel <- changeRole(sentinela); .print("Virei sentinela!").
-	
-+age_to_explorer <- changeRole(exploradora); .print("Virei exploradora!").
-	
-+too_old
+	};
+	!!changeStatus;
+	!updateDay.
+
++!changeStatus : too_old
 <-	.random(N);
 	if(N < 0.5) {
 		!suicide
 	}.
+	
++!changeStatus : age_to_explorer
+<-	changeRole(exploradora); 
+	adoptRole(exploradora);
+	removeRole(sentinela);
+	.print("Virei exploradora!").
+	
++!changeStatus : age_to_sentinel
+<-	changeRole(sentinela);
+	adoptRole(sentinela);
+	removeRole(baba);
+	.print("Virei sentinela!").
+
++!changeStatus.
 
 +!setPosition
 <-	lookupArtifact("Map",AId);
@@ -134,6 +146,7 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 
 +!suicide : .my_name(Me)
 <- 	drop_all_intentions;
+	removeRole(exploradora);
 	unRegisterBee;
 	ag_killed(Me).
 
