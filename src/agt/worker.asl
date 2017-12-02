@@ -2,6 +2,7 @@
 
 /* Initial beliefs and rules */
 energia(100).
+maxEnergia(100).
 lifespan(45).
 niceTemperature(25).
 
@@ -55,6 +56,8 @@ ta_frio(T) :-
 <-	comer(10);
 	-+energia(E+10).
 
++!alimentarse <- .wait(100); !alimentarse.
+
 /*   Baba Plans   */
 
 +!fabricarMel : energia(E)
@@ -75,7 +78,9 @@ ta_frio(T) :-
 <-	.wait(500);
 	!fabricarMel.
 
-+!alimentarRainha.
++!alimentarRainha : energia(E)// & play()
+<-	.send(queen, achieve, comer(50));
+	-+energia(E-1).
 
 +!alimentarLarvas.
 
@@ -122,7 +127,7 @@ ta_frio(T) :-
 	focus(AId);
 	if(intTemperature(T)[artifact_id(AId)] & ta_quente(T)) {
 		resfriar;
-		+resfriando
+		+resfriando;
 		-+energia(E-1)
 	};
 	!resfriar;.
