@@ -16,6 +16,13 @@ ta_frio(T) :-
 	niceTemperature(NT) &
 	T < NT - 1.
 	
+com_fome(E) :-
+	maxEnergia(M) &
+	E <= M * 0.2.
+	
+satisfeita(E) :-
+	maxEnergia(M) &
+	E > M * 0.9.
 
 /* Initial goals */
 
@@ -29,8 +36,8 @@ ta_frio(T) :-
 /*   Basic Plans  */
 
 +!registerBee[scheme(Sch)]
-<-	.my_name(N);
-	?play(N,R,colmeia);
+<-	.my_name(Me);
+	?play(Me,R,colmeia);
 	if (R == baba) {
 		registerBee(feeder);	
 	} else {
@@ -42,6 +49,16 @@ ta_frio(T) :-
 		}			
 	}.
 
++!registerBee[scheme(Sch)] : age(X)
+<-	if(X < 18) {
+		registerBee(feeder);	
+	} else { if (X < 22) {
+		registerBee(sentinel);
+	} else {
+		registerBee(worker);
+		!setPosition
+	}}.
+
 +!setPosition
 <-	lookupArtifact("Map",AId);
 	focus(AId);
@@ -52,15 +69,20 @@ ta_frio(T) :-
 	Y = Y0 + math.floor(H*R2);
 	setPosition(X,Y).
 
-+!alimentarse: energia(E) & E <= 90
-<-	comer(10);
++!alimentarse: energia(E) & not satisfeita(E)
+<-	comer(5);
 	-+energia(E+10).
 
+-!alimentarse <- .wait(100); !alimentarse.
 +!alimentarse <- .wait(100); !alimentarse.
+
++!suicide : .my_name(Me)
+<- 	drop_all_intentions;
+	ag_killed(Me).
 
 /*   Baba Plans   */
 
-+!fabricarMel : energia(E)
++!fabricarMel : energia(E) & not com_fome(E)
 <-	!tryPollen;	
 	.wait(100);
 	!fabricarMel;
@@ -78,7 +100,7 @@ ta_frio(T) :-
 <-	.wait(500);
 	!fabricarMel.
 
-+!alimentarRainha : energia(E)// & play()
++!alimentarRainha : energia(E)
 <-	.send(queen, achieve, comer(50));
 	-+energia(E-1).
 
@@ -86,7 +108,7 @@ ta_frio(T) :-
 
 /* Sentinel Plans */
 
-+!aquecer : resfriando & energia(E) & E > 20
++!aquecer : resfriando & energia(E) & not com_fome(E)
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -97,7 +119,7 @@ ta_frio(T) :-
 	};
 	!aquecer.
 
-+!aquecer : not aquecendo & energia(E) & E > 20
++!aquecer : not aquecendo & energia(E) & not com_fome(E)
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -108,9 +130,9 @@ ta_frio(T) :-
 	};
 	!aquecer.
 	
-+!aquecer : energia(E) & E > 20 <- .wait(100+math.random(200)); !aquecer.
++!aquecer : energia(E) & not com_fome(E) <- .wait(100+math.random(200)); !aquecer.
 
-+!resfriar: aquecendo & energia(E) & E > 20
++!resfriar: aquecendo & energia(E) & not com_fome(E)
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -121,7 +143,7 @@ ta_frio(T) :-
 	};
 	!resfriar.
 
-+!resfriar: not resfriando & energia(E) & E > 20
++!resfriar: not resfriando & energia(E) & not com_fome(E)
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -132,11 +154,11 @@ ta_frio(T) :-
 	};
 	!resfriar;.
 	
-+!resfriar : energia(E) & E > 20 <- .wait(100+math.random(200)); !resfriar.
++!resfriar : energia(E) & not com_fome(E) <- .wait(100+math.random(200)); !resfriar.
 
 /* Explorer Plans */
 	
-+!procurarPolen[scheme(Sch)] : energia(E) & E > 20
++!procurarPolen[scheme(Sch)] : energia(E) & not com_fome(E)
 <-	lookupArtifact("Map",AId);
 	focus(AId);
 	.findall(r(LEVEL, X, Y, WIDTH, HEIGHT), pollenField(LEVEL, X, Y, WIDTH, HEIGHT)[artifact_id(AId)], List);
