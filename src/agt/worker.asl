@@ -24,6 +24,20 @@ satisfeita(E) :-
 	maxEnergia(M) &
 	E > M * 0.9.
 	
+age_to_sentinel :-
+	.my_name(Me) &
+	play(Me, baba, _) &
+	nascimento(N) &
+	hoje(D) &
+	D-N >= 18.
+	
+age_to_explorer :-
+	.my_name(Me) &
+	play(Me, sentinela, _) &
+	nascimento(N) &
+	hoje(D) &
+	D-N >= 22.
+
 too_old :-
 	nascimento(N) &
 	hoje(D) &
@@ -78,6 +92,10 @@ new_day(D) :-
 	if (new_day(D)) {
 		-+hoje(D)
 	}.
+	
++age_to_sentinel <- changeRole(sentinela).
+	
++age_to_explorer <- changeRole(exploradora).
 	
 +too_old
 <-	.random(N);
