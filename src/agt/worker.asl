@@ -23,6 +23,10 @@ com_fome(E) :-
 satisfeita(E) :-
 	maxEnergia(M) &
 	E > M * 0.9.
+	
+too_old :-
+	age(A) &
+	A >= 45.
 
 /* Initial goals */
 
@@ -76,6 +80,7 @@ satisfeita(E) :-
 
 +!suicide : .my_name(Me)
 <- 	drop_all_intentions;
+	unRegisterBee;
 	ag_killed(Me).
 
 /*   Baba Plans   */
@@ -128,7 +133,7 @@ satisfeita(E) :-
 	};
 	!aquecer.
 	
-+!aquecer : energia(E) & not com_fome(E) <- .wait(100+math.random(200)); !aquecer.
++!aquecer <- .wait(100+math.random(200)); !aquecer.
 
 +!resfriar: aquecendo & energia(E) & not com_fome(E)
 <- 	.wait(100+math.random(200));
@@ -152,7 +157,7 @@ satisfeita(E) :-
 	};
 	!resfriar;.
 	
-+!resfriar : energia(E) & not com_fome(E) <- .wait(100+math.random(200)); !resfriar.
++!resfriar <- .wait(100+math.random(200)); !resfriar.
 
 /* Explorer Plans */
 	
