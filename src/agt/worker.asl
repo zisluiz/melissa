@@ -76,6 +76,8 @@ satisfeita(E) :-
 -!alimentarse <- .wait(100); !alimentarse.
 +!alimentarse <- .wait(100); !alimentarse.
 
++energia(E) : E <= 0 <- !suicide.
+
 +!suicide : .my_name(Me)
 <- 	drop_all_intentions;
 	ag_killed(Me).
@@ -165,11 +167,13 @@ satisfeita(E) :-
 	!flyToField(List);
 	if(collect) {
 		-collect;
-		!coletarPolen;
+		!coletarPolen[scheme(Sch)];
 		!trazerPolen[scheme(Sch)]
 	} else {
 		!procurarPolen[scheme(Sch)]
 	}.
+
++!procurarPolen[scheme(Sch)] <- .wait(100); !procurarPolen[scheme(Sch)].
 
 -!procurarPolen[error(ia_failed)] <- .print("Não consegui procurar!").
 -!procurarPolen[error_msg(M)]     <- .print("Error in: ",M).
@@ -218,9 +222,9 @@ satisfeita(E) :-
 
 +!coletarPolen <- collect.	// arrumar aqui
 
--!coletarPolen[error_msg(M)]
+-!coletarPolen[scheme(Sch),error_msg(M)]
 <-	.print("Error in: ",M);
-	!flyToHive.
+	!procurarPolen[scheme(Sch)].
 
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }
