@@ -57,7 +57,7 @@ ta_frio(T) :-
 	focus(AId);
 	if(polen(P)[artifact_id(AId)] & P>1) {
 		processPolen;
-		.print("Polen processado!")
+		//.print("Polen processado!")
 	}.
 
 -!fabricarMel
@@ -117,22 +117,10 @@ ta_frio(T) :-
 /* Explorer Plans */
 	
 +!procurarPolen[scheme(Sch)]
-<-	lookupArtifact("Hive",AId);
+<-	lookupArtifact("Map",AId);
 	focus(AId);
 	
-	.findall(r(ID, X, Y, WIDTH, HEIGHT), pollenField("pollenField4", X, Y, WIDTH, HEIGHT),List);
-	
-	.print("X: ",List);
-	
-//	X = math.floor(math.random(Width));
-//	Y = math.floor(math.random(Heigth));
-//	move(X,Y);
-	
-      
-	for ( .range(I,Y + HEIGHT, 450)) {
-		move(up);
-	}
-	
+	.findall(r(X, Y, WIDTH, HEIGHT), pollenField(X, Y, WIDTH, HEIGHT)[artifact_id(AId)], List);
 	
 	!collectHoney;
 	!trazerPolen[scheme(Sch)].

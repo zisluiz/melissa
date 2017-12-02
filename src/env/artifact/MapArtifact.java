@@ -28,10 +28,10 @@ public class MapArtifact extends Artifact {
 		// x, y, width, height
 		defineObsProperty("hive", 649,449,150,150);
 		
-		defineObsProperty("pollenField", "pollenField1",0,0,150,200);
-		defineObsProperty("pollenField", "pollenField2",0, 300, 60, 170);
-		defineObsProperty("pollenField", "pollenField3",400, 0, 40, 40);
-		defineObsProperty("pollenField", "pollenField4",759, 230, 40, 40);
+		defineObsProperty("pollenField", 0,0,150,200);
+		defineObsProperty("pollenField", 0, 300, 60, 170);
+		defineObsProperty("pollenField", 400, 0, 40, 40);
+		defineObsProperty("pollenField", 759, 230, 40, 40);
 		
 	//	defineObsProperty("pollenField", "(pollenField1,0,0,150,200)", "(pollenField2, 0, 300, 60, 170)", "(pollenField3, 400, 0, 40, 40)", "(pollenField4, 759, 230, 40, 40)");
 		
