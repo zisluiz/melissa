@@ -2,8 +2,6 @@
 
 package artifact;
 
-import com.sun.javafx.geom.Rectangle;
-
 import cartago.Artifact;
 import cartago.INTERNAL_OPERATION;
 import cartago.OPERATION;
@@ -11,6 +9,7 @@ import cartago.ObsProperty;
 import graphic.Environment;
 import model.Hive;
 import model.exception.CannotDepositOnThisPositionException;
+import model.exception.InsufficientHoneyException;
 import model.exception.InsufficientPolenException;
 import model.exception.NoLongerHiveException;
 import model.exception.NoPollenCollectedException;
@@ -100,9 +99,12 @@ public class HiveArtifact extends Artifact {
 	}	
 	
 	@OPERATION
-	void tempStart(int ammount) {
-		Environment.getInstance().setIntTemp(ammount);
-		updateObsProperty("intTemperature", ammount);
+	void comer(int ammount) {
+		try {
+			Environment.getInstance().eat(ammount);
+		} catch (InsufficientHoneyException e) {
+			failed(e.getMessage());
+		}
 	}	
 	
 	@OPERATION
@@ -121,10 +123,15 @@ public class HiveArtifact extends Artifact {
 		try {
 			Environment.getInstance().delivery(getCurrentOpAgentId().getAgentName());
 		} catch (CannotDepositOnThisPositionException | NoLongerHiveException | NoPollenCollectedException e) {
-//			e.printStackTrace();
 			failed(e.getMessage());
 		}
 	}
+	
+	@OPERATION
+	void tempStart(int ammount) {
+		Environment.getInstance().setIntTemp(ammount);
+		updateObsProperty("intTemperature", ammount);
+	}	
 	
 	@OPERATION
 	void updateTemp() {

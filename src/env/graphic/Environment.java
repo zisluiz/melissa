@@ -17,6 +17,7 @@ import model.enumeration.HoneySupply;
 import model.enumeration.PollenSupply;
 import model.exception.CannotCollectOnThisPositionException;
 import model.exception.CannotDepositOnThisPositionException;
+import model.exception.InsufficientHoneyException;
 import model.exception.InsufficientPolenException;
 import model.exception.InvalidMovimentException;
 import model.exception.MovimentOutOfBoundsException;
@@ -378,5 +379,9 @@ public class Environment {
 	
 	public int getExtTemperature() {
 		return extTemperature;
+	}
+
+	public void eat(int ammount) throws InsufficientHoneyException {
+		Hive.getInstance().subHoney(ammount);
 	}
 }
