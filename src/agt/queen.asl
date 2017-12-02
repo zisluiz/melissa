@@ -35,7 +35,7 @@ energia(1000).
 	.wait(6000).
 	
 +!registerBee[scheme(Sch)]
-<-	registerBee(queen); 
+<-	registerBee(monarca); 
 	hiveStart.
 		
 /* Management Plans */		

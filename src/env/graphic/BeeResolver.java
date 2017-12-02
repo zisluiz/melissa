@@ -23,4 +23,8 @@ public class BeeResolver {
 	public BeeGraphic getBee(String beeId) {
 		return beeCircles.get(beeId);
 	}
+
+	public void removeBee(String beeId) {
+		beeCircles.remove(beeId);
+	}
 }

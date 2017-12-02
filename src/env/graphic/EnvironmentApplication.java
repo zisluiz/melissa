@@ -23,7 +23,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Hive;
-import model.JavaFXConcurrent;
 import model.PollenField;
 import model.enumeration.HoneySupply;
 
@@ -365,9 +364,7 @@ public class EnvironmentApplication extends Application {
                     }
                     String min = minute <= 9 ? "0" + minute : minute + "";
                     String sec = second <= 9 ? "0" + second : second + "";
-//                    Platform.runLater(() -> {
-//                        time.setText(min + ":" + sec);
-//                    });
+
                     JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
 						@Override
 						public void run() {

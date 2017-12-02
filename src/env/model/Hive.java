@@ -6,6 +6,7 @@ import java.util.List;
 import com.sun.javafx.geom.Rectangle;
 
 import artifact.Parameters;
+import model.enumeration.BeeRole;
 import model.enumeration.HoneySupply;
 import model.exception.InsufficientHoneyException;
 import model.exception.InsufficientPollenException;
@@ -109,30 +110,6 @@ public class Hive {
 		larvas.add(new Larva(0));
 	}
 
-	public Bee createFeeder(String id) {
-		Bee bee = new Bee(id);
-		feeders.add(bee);
-		return bee;
-	}
-
-	public Bee createSentinel(String id) {
-		Bee bee = new Bee(id);
-		sentinels.add(bee);
-		return bee;
-	}
-
-	public Bee createWorker(String id) {
-		Bee bee = new Bee(id);
-		workers.add(bee);
-		return bee;
-	}
-
-	public Bee createQueen(String id) {
-		Bee bee = new Bee(id);
-		queens.add(bee);
-		return bee;
-	}
-
 	synchronized public void addHoney(int ammount) {
 		honey = honey + ammount;
 	}
@@ -153,5 +130,51 @@ public class Hive {
 			pollen = pollen - ammount;
 		} else
 			throw new InsufficientPollenException("The pollen is gone.");
+	}
+
+	public Bee createBee(String beeId, String role) {
+		BeeRole beeRole = BeeRole.valueOf(role);
+		Bee bee = new Bee(beeId, beeRole);;
+		
+		addBeeRole(beeRole, bee);
+		
+		return bee;
+	}
+
+	private void addBeeRole(BeeRole role, Bee bee) {
+		switch (role) {
+		case sentinela:
+			sentinels.add(bee);		
+			break;
+		case baba:
+			feeders.add(bee);			
+		case monarca:
+			queens.add(bee);
+		default:
+			workers.add(bee);
+			break;
+		}
+	}
+
+	public void removeBeeRole(BeeRole role, Bee bee) {
+		switch (role) {
+		case sentinela:
+			sentinels.remove(bee);		
+			break;
+		case baba:
+			feeders.remove(bee);			
+		case monarca:
+			queens.remove(bee);
+		default:
+			workers.remove(bee);
+			break;
+		}	
 	}	
+	
+	public void changeRole(Bee bee, String role) {
+		removeBeeRole(bee.getRole(), bee);
+		
+		BeeRole newRole = BeeRole.valueOf(role);
+		addBeeRole(newRole, bee);
+	}
 }

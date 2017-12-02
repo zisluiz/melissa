@@ -11,7 +11,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import model.Bee;
 import model.Hive;
-import model.JavaFXConcurrent;
 import model.PollenField;
 import model.Position;
 import model.RandomUtils;
@@ -64,7 +63,6 @@ public class Environment {
 		
 		bee.setPosition(x, y);
 		beeResolver.createBee(bee, x, y);
-		//root.getChildren().add(beeGraphic);
 	}
 	
 	public Position getBeePos(String beeId) {
@@ -199,21 +197,10 @@ public class Environment {
 		Hive.getInstance().setPollen(ammount);
 	}
 	
-	public void registerBee(String beeId, String type) {
+	public void registerBee(String beeId, String role) {
 		System.out.println("Registering bee "+beeId);
 		Hive hive = Hive.getInstance();
-		Bee bee = null;
-		
-		if (type.equals("sentinel")) {
-			bee = hive.createSentinel(beeId);
-		} else if (type.equals("worker")) {
-			bee = hive.createWorker(beeId);
-		} else if (type.equals("queen")) {
-			bee = hive.createQueen(beeId);
-		} else {
-			bee = hive.createFeeder(beeId);
-		}
-		
+		Bee bee = hive.createBee(beeId, role );
 		EnvironmentApplication map = EnvironmentApplication.getInstance();
 		addBee(bee);
 		
@@ -224,6 +211,41 @@ public class Environment {
 			}
 		});			
 	}
+	
+	public void changeRole(String beeId, String role) {
+		System.out.println("Changing bee role, bee: "+beeId+", to role:"+role);
+		Bee bee = beeResolver.getBee(beeId).getBee();
+		Hive.getInstance().changeRole(bee, role);
+		
+		JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
+			@Override
+			public void run() {			
+				EnvironmentApplication.getInstance().updateBeeCount();		
+			}
+		});			
+	}
+	
+	public void unRegisterBee(String beeId) {
+		System.out.println("Unregistering bee "+beeId);
+		BeeGraphic beeGraphic = beeResolver.getBee(beeId);
+		Bee bee = beeGraphic.getBee();
+		
+		Hive.getInstance().removeBeeRole(bee.getRole(), bee);
+		beeResolver.removeBee(beeId);
+		
+		if (beeGraphic.isInsideContainer()) {
+			beeGraphic.getInsideContainer().removeBee(beeGraphic);
+		}
+			
+		JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
+			@Override
+			public void run() {			
+				EnvironmentApplication map = EnvironmentApplication.getInstance();
+				map.removeBee(beeGraphic.getCircle());
+				map.updateBeeCount();		
+			}
+		});			
+	}	
 
 	public void changeDay(int newDay) {
 		JavaFXConcurrent.getInstance().addUpdate(new Runnable() {

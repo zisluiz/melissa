@@ -2,7 +2,7 @@ package graphic.test;
 
 import artifact.Parameters;
 import graphic.Environment;
-import model.JavaFXConcurrent;
+import graphic.JavaFXConcurrent;
 import model.Position;
 import model.RandomUtils;
 import model.enumeration.Direction;
