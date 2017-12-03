@@ -54,7 +54,7 @@ too_old :-
 
 /*   Basic Plans  */
 +!born
-<- .print("I'm borning!"); // Frase mais estranha possivel...
+<- .print("I'm borning!"); // Frase mais estranha possivel... PQ?
 joinWorkspace("colmeiaOrg",Workspace);
 lookupArtifact("colmeia1",SchArtId);
 focus(SchArtId);
@@ -187,36 +187,30 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 <-  ?larvas(NR);
 	if (NR > 0) {
 		?newBees(SEQ);
-		.print("Alimentando larvas");
 		alimentarLarva(L);
 		.concat(N, SEQ, NEWBEE);
 		
 		if (L) {
-			.print("Larva evolving");
 			.my_name(N);
 			.create_agent(NEWBEE,"worker.asl");
 			.send(NEWBEE, achieve, born);
 			+newBees(SEQ+1)
-		} else {
-			.print("Não alimentando larvas - 1");
 		}
-	} else {
-		.print("Não alimentando larvas - 2");
-	}
+	} 
 	
 	.wait(300);
-	!!alimentarLarvas[scheme(Sch)].
+	!alimentarLarvas[scheme(Sch)].
 	
 +!alimentarLarvas : newBees(SEQ) & .my_name(N).	
 	
 -!alimentarLarvas[error(ia_failed)] <- 
 	.print("Não consegui alimentar as larvas!");
 	.wait(300);
-	!!alimentarLarvas[scheme(Sch)].
+	!alimentarLarvas[scheme(Sch)].
 -!alimentarLarvas[error_msg(M)] <- 
 	.print("Não consegui alimentar as larvas! Erro: ",M);
 	.wait(300);
-	!!alimentarLarvas[scheme(Sch)].	
+	!alimentarLarvas[scheme(Sch)].	
 
 /* Sentinel Plans */
 
