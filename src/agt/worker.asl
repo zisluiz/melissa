@@ -184,12 +184,13 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 +!alimentarRainha : energia(E).
 
 +!alimentarLarvas : newBees(SEQ) & .my_name(N) & role(baba)
-<-  ?larvas(NR);
+<-  lookupArtifact("Hive",AId);
+	focus(AId);
+	?larvas(NR);
 	if (NR > 0) {
 		?newBees(SEQ);
 		alimentarLarva(L);
 		.concat(N, SEQ, NEWBEE);
-		
 		if (L) {
 			.my_name(N);
 			.create_agent(NEWBEE,"worker.asl");
