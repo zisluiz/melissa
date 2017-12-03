@@ -186,8 +186,8 @@ public class Hive {
 		BeeRole newRole = BeeRole.valueOf(role);
 		addBeeRole(newRole, bee);
 		
-		bee.setRole(newRole);
-	}
+			bee.setRole(newRole);
+		}
 
 	public Larva feedLarva() throws InsufficientHoneyException {
 		if (getFeedOrder().isEmpty()) return null;
