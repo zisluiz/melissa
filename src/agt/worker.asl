@@ -29,20 +29,19 @@ age_to_sentinel :-
 	nascimento(N) &
 	hoje(D) &
 	D-N >= 18 & 
-	.my_name(Me) & 
-	play(Me, baba, _).
+	role(baba).
 	
 age_to_explorer :-
 	nascimento(N) &
 	hoje(D) &
 	D-N >= 22 & 
-	.my_name(Me) & 
-	play(Me, sentinela, _).
+	role(sentinela).
 
 too_old :-
 	nascimento(N) &
 	hoje(D) &
-	D-N >= 45.
+	D-N >= 45 &
+	role(explorer).
 
 /* Initial goals */
 
@@ -55,7 +54,7 @@ too_old :-
 
 /*   Basic Plans  */
 +!born
-<- .print("I'm borning!");
+<- .print("I'm borning!"); // Frase mais estranha possivel...
 +age(0);
 joinWorkspace("colmeiaOrg",Workspace);
 lookupArtifact("colmeia1",SchArtId);
@@ -72,13 +71,16 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 	+nascimento(D-X);
 	if (X < 18) {
 		adoptRole(baba);
-		registerBee(baba);	
+		registerBee(baba);
+		+role(baba);
 	} else { if (X < 22) {
 		adoptRole(sentinela);
 		registerBee(sentinela);
+		+role(sentinela);
 	} else {
 		adoptRole(exploradora);
 		registerBee(exploradora);
+		+role(exploradora);
 		!setPosition;
 	}};
 	-age(_);
@@ -92,6 +94,7 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 	+nascimento(D);
 	adoptRole(baba);
 	registerBee(baba);
+	+role(baba);
 	!!updateDay. 
 
 +!updateDay :hoje(H)
@@ -111,21 +114,29 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 		!suicide
 	}.
 	
-+!changeStatus : age_to_explorer /* TEMP */& not role(explorer)
++!changeStatus : age_to_explorer
 <-	changeRole(exploradora); 
-	adoptRole(exploradora);
 	removeRole(sentinela);
-	-+role(explorer);		// TEMP - retirar apos consertar remocao de roles!!
+	adoptRole(exploradora);
+	-+role(exploradora);		// TEMP - retirar apos consertar remocao de roles!!
 	.print("Virei exploradora!").
 	
-+!changeStatus : age_to_sentinel /* TEMP */& not role(sentinel)
++!changeStatus : age_to_sentinel
 <-	changeRole(sentinela);
-	adoptRole(sentinela);
 	removeRole(baba);
-	+role(sentinel);		// TEMP - retirar apos consertar remocao de roles!!
+	adoptRole(sentinela);
+	-+role(sentinela);		// TEMP - retirar apos consertar remocao de roles!!
 	.print("Virei sentinela!").
 
 +!changeStatus.
+
++!suicide : .my_name(Me)
+<- 	.print("Time to die");
+	removeRole(exploradora);
+	unRegisterBee;
+	drop_all_intentions;
+	-role(_);		// TEMP - retirar apos consertar remocao de roles!!
+	ag_killed(Me).
 
 +!setPosition
 <-	lookupArtifact("Map",AId);
@@ -146,23 +157,16 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 
 +energia(E) : E <= 0 <- !suicide.
 
-+!suicide : .my_name(Me)
-<- 	.print("Time to die");
-	removeRole(exploradora);
-	unRegisterBee;
-	drop_all_intentions;
-	-role(_);		// TEMP - retirar apos consertar remocao de roles!!
-	ag_killed(Me).
-
 /*   Baba Plans   */
 
-+!fabricarMel : energia(E) & not com_fome(E)
++!fabricarMel : energia(E) & not com_fome(E) & role(baba)
 <-	!tryPollen;	
 	.wait(100);
 	!fabricarMel;
 	-+energia(E-1).
+	
++!fabricarMel : energia(E) & not com_fome(E).
 
-@tryPollen [atomic]
 +!tryPollen
 <- 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -174,11 +178,13 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 <-	.wait(500);
 	!fabricarMel.
 
-+!alimentarRainha : energia(E)
++!alimentarRainha : energia(E) & role(baba)
 <-	.send(queen, achieve, comer(50));
 	-+energia(E-1).
 
-+!alimentarLarvas : newBees(SEQ) & .my_name(N)
++!alimentarRainha : energia(E).
+
++!alimentarLarvas : newBees(SEQ) & .my_name(N) & role(baba)
 <-  ?larvas(NR);
 	if (NR > 0) {
 		.print("Alimentando larvas");
@@ -195,6 +201,8 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 	.wait(300);
 	!alimentarLarvas.
 	
++!alimentarLarvas : newBees(SEQ) & .my_name(N).	
+	
 -!alimentarLarvas[error(ia_failed)] <- 
 	//.print("Não consegui alimentar as larvas!");
 	.wait(300);
@@ -206,7 +214,7 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 
 /* Sentinel Plans */
 
-+!aquecer : resfriando & energia(E) & not com_fome(E)
++!aquecer : resfriando & energia(E) & not com_fome(E) & role(sentinela)
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -217,7 +225,7 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 	};
 	!aquecer.
 
-+!aquecer : not aquecendo & energia(E) & not com_fome(E)
++!aquecer : not aquecendo & energia(E) & not com_fome(E) & role(sentinela)
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -228,9 +236,11 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 	};
 	!aquecer.
 	
-+!aquecer <- .wait(100+math.random(200)); !aquecer.
++!aquecer : role(sentinela) <- .wait(100+math.random(200)); !aquecer.
 
-+!resfriar: aquecendo & energia(E) & not com_fome(E)
++!aquecer.
+
++!resfriar: aquecendo & energia(E) & not com_fome(E) & role(sentinela)
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -241,7 +251,7 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 	};
 	!resfriar.
 
-+!resfriar: not resfriando & energia(E) & not com_fome(E)
++!resfriar: not resfriando & energia(E) & not com_fome(E) & role(sentinela)
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -252,11 +262,13 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 	};
 	!resfriar;.
 	
-+!resfriar <- .wait(100+math.random(200)); !resfriar.
++!resfriar : role(sentinela)<- .wait(100+math.random(200)); !resfriar.
+
++!resfriar.
 
 /* Explorer Plans */
 	
-+!procurarPolen[scheme(Sch)] : energia(E) & not com_fome(E)
++!procurarPolen[scheme(Sch)] : energia(E) & not com_fome(E) & role(exploradora)
 <-	lookupArtifact("Map",AId);
 	focus(AId);
 	.findall(r(LEVEL, X, Y, WIDTH, HEIGHT), pollenField(LEVEL, X, Y, WIDTH, HEIGHT)[artifact_id(AId)], List);
@@ -269,7 +281,8 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 		!procurarPolen[scheme(Sch)]
 	}.
 
-+!procurarPolen[scheme(Sch)] <- .wait(100); !procurarPolen[scheme(Sch)].
++!procurarPolen[scheme(Sch)] : role(exploradora) <- .wait(100); !procurarPolen[scheme(Sch)].
++!procurarPolen.
 
 -!procurarPolen[error(ia_failed)] <- .print("Não consegui procurar!").
 -!procurarPolen[error_msg(M)]     <- .print("Error in: ",M).
@@ -290,9 +303,11 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 		
 	}}.
 
-+!trazerPolen[scheme(Sch)]
++!trazerPolen[scheme(Sch)] : role(exploradora)
 <-	!flyToHive;
 	!estocarPolen[scheme(Sch)].
+	
++!trazerPolen.
 
 -!trazerPolen[error(ia_failed)] <- .print("I didn't in!").
 -!trazerPolen[error_msg(M)]     <- .print("Error in: ",M).
@@ -308,15 +323,19 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 	//.print("Going to (", X, ",",Y,")");
 	flyTo(X,Y).
 
-+!estocarPolen[scheme(Sch)] : energia(E)
++!estocarPolen[scheme(Sch)] : energia(E) & role(exploradora)
 <-	delivery;
 	-+energia(E-20);
 	!procurarPolen[scheme(Sch)].
 
++!estocarPolen.
+
 -!estocarPolen[error(ia_failed)].
 -!estocarPolen[error_msg(M)]/* <- .print("Error: ", M) */.
 
-+!coletarPolen <- collect.	// arrumar aqui
++!coletarPolen : role(exploradora) <- collect.
+
++!coletarPolen.
 
 -!coletarPolen[scheme(Sch),error_msg(M)]
 <-	.print("Error in: ",M);
