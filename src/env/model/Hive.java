@@ -206,7 +206,7 @@ public class Hive {
 		return larva;
 	}
 
-	public Queue<Larva> getFeedOrder() {
+	synchronized public Queue<Larva> getFeedOrder() {
 		return feedOrder;
 	}
 

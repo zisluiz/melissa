@@ -435,8 +435,8 @@ public class Environment {
 		Larva larva = Hive.getInstance().feedLarva();
 		
 		HoneySupply statusAfter = Hive.getInstance().getStatus();
-		
 		updateHoney(statusBefore, statusAfter);
+
 		return larva;
 	}
 

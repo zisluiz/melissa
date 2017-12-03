@@ -51,7 +51,7 @@ too_old :-
     : .my_name(Ag)
    <- //.print("I am obliged to commit to ",Mission," on ",Scheme);
       commitMission(Mission)[artifact_name(Scheme)].
-
+      
 /*   Basic Plans  */
 +!born
 <- .print("I'm borning!"); // Frase mais estranha possivel... PQ?
@@ -80,7 +80,7 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 		adoptRole(exploradora);
 		registerBee(exploradora);
 		+role(exploradora);
-		!setPosition;
+		!!setPosition;
 	}};
 	-age(_);
 	!!updateDay.
@@ -189,9 +189,11 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 	?larvas(NR);
 	if (NR > 0) {
 		?newBees(SEQ);
+		.print("Feeding Larva");
 		alimentarLarva(L);
 		.concat(N, SEQ, NEWBEE);
 		if (L) {
+			.print("Larva is evolving");
 			.my_name(N);
 			.create_agent(NEWBEE,"worker.asl");
 			.send(NEWBEE, achieve, born);
@@ -200,7 +202,7 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 	} 
 	
 	.wait(300);
-	!alimentarLarvas[scheme(Sch)].
+	!!alimentarLarvas[scheme(Sch)].
 	
 +!alimentarLarvas : newBees(SEQ) & .my_name(N).	
 	
@@ -209,9 +211,11 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 	.wait(300);
 	!alimentarLarvas[scheme(Sch)].
 -!alimentarLarvas[error_msg(M)] <- 
-	.print("Não consegui alimentar as larvas! Erro: ",M);
+	//.print("Não consegui alimentar as larvas! Erro: ",M);
 	.wait(300);
 	!alimentarLarvas[scheme(Sch)].	
+	
+-!alimentarLarvas <- !alimentarLarvas.
 
 /* Sentinel Plans */
 
