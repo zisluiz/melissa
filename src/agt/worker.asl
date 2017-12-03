@@ -164,7 +164,7 @@ too_old :-
 	!fabricarMel;
 	-+energia(E-1).
 	
-+!fabricarMel : energia(E) & not com_fome(E).
++!fabricarMel.
 
 +!tryPollen
 <- 	lookupArtifact("Hive",AId);
@@ -181,7 +181,7 @@ too_old :-
 <-	.send(queen, achieve, comer(50));
 	-+energia(E-1).
 
-+!alimentarRainha : energia(E).
++!alimentarRainha.
 
 +!alimentarLarvas : newBees(SEQ) & .my_name(N) & role(baba)
 <-  lookupArtifact("Hive",AId);
@@ -204,7 +204,7 @@ too_old :-
 	.wait(300);
 	!!alimentarLarvas[scheme(Sch)]. //Assim !!alimentarLarvas[scheme(Sch)] não causa o bug de criar infinitas babas quando troca de role, mas dá o bug "im not obligged anymore", não sei como resolver
 	
-+!alimentarLarvas : newBees(SEQ) & .my_name(N).	
++!alimentarLarvas.	
 	
 -!alimentarLarvas[error(ia_failed)] <- 
 	.print("Não consegui alimentar as larvas!");
@@ -219,7 +219,7 @@ too_old :-
 
 /* Sentinel Plans */
 
-+!aquecer : resfriando & energia(E) & not com_fome(E) & role(exploradora)
++!aquecer : resfriando & energia(E) & not com_fome(E) & role(sentinela)
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -245,7 +245,7 @@ too_old :-
 
 +!aquecer.
 
-+!resfriar: aquecendo & energia(E) & not com_fome(E) & role(exploradora)
++!resfriar: aquecendo & energia(E) & not com_fome(E) & role(sentinela)
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
