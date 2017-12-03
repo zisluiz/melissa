@@ -213,7 +213,7 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 
 /* Sentinel Plans */
 
-+!aquecer : resfriando & energia(E) & not com_fome(E) & role(sentinela)
++!aquecer : resfriando & energia(E) & not com_fome(E) & role(exploradora)
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);
@@ -239,7 +239,7 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 
 +!aquecer.
 
-+!resfriar: aquecendo & energia(E) & not com_fome(E) & role(sentinela)
++!resfriar: aquecendo & energia(E) & not com_fome(E) & role(exploradora)
 <- 	.wait(100+math.random(200));
 	lookupArtifact("Hive",AId);
 	focus(AId);

@@ -19,19 +19,19 @@ mas melissa {
     } 
        
     agent worker : worker.asl {
-    	instances: 2
+    	instances: 5
     	roles: baba in colmeia
     	beliefs: age(0)
     }
     
      agent worker : worker.asl {
-    	instances: 2
+    	instances: 5
     	roles: sentinela in colmeia
     	beliefs: age(18)
     }   
     
       agent worker : worker.asl {
-    	instances: 50
+    	instances: 10
     	roles: exploradora in colmeia
     	beliefs: age(22)
     }   

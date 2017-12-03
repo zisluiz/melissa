@@ -52,7 +52,9 @@ com_fome :-
 <-	resetGoal(renovacaoEnxame).
 +!controleTemperatura : goalState(_,controleTemperatura,_,_,satisfied)
 <-	resetGoal(controleTemperatura).
-		
+
+-!controleTemperatura <- .wait(100); !controleTemperatura.
+
 /* Renew Plans */
 		
 +!porOvos[scheme(Sch)] : energia(E) & not com_fome
