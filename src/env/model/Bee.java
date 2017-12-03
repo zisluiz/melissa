@@ -43,4 +43,8 @@ public class Bee {
 	public BeeRole getRole() {
 		return role;
 	}
+
+	public void setRole(BeeRole newRole) {
+		this.role = role;
+	}
 }

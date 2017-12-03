@@ -25,7 +25,7 @@ public class Parameters {
 	
 	/** Start parameters **/
 	public static final int POLLEN_START = 100;
-	public static final int HONEY_START = 100;
+	public static final int HONEY_START = 1000;
 	
 	/** Hive Pollen status, in % **/
 	public static final int MAX_HIVE_HONEY = 1000;

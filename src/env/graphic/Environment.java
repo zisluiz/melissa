@@ -430,7 +430,14 @@ public class Environment {
 	}
 
 	public Larva feedLarva() throws InsufficientHoneyException {
-		return Hive.getInstance().feedLarva();
+		HoneySupply statusBefore = Hive.getInstance().getStatus();
+		
+		Larva larva = Hive.getInstance().feedLarva();
+		
+		HoneySupply statusAfter = Hive.getInstance().getStatus();
+		
+		updateHoney(statusBefore, statusAfter);
+		return larva;
 	}
 
 	public void removeLarva(Larva larva) {

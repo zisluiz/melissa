@@ -177,6 +177,7 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 +!alimentarLarvas : newBees(SEQ) & .my_name(N)
 <-  ?larvas(NR);
 	if (NR > 0) {
+		.print("Alimentando larvas");
 		alimentarLarva(L);
 		.concat(N, SEQ, NEWBEE);
 		
@@ -187,16 +188,16 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 		};
 	}
 	
-	.wait(100);
+	.wait(300);
 	!alimentarLarvas.
 	
 -!alimentarLarvas[error(ia_failed)] <- 
-	.print("Não consegui alimentar as larvas!");
-	.wait(100);
+	//.print("Não consegui alimentar as larvas!");
+	.wait(300);
 	!alimentarLarvas.
 -!alimentarLarvas[error_msg(M)] <- 
-	.print("Não consegui alimentar as larvas! Erro: ",M);
-	.wait(100);
+	//.print("Não consegui alimentar as larvas! Erro: ",M);
+	.wait(300);
 	!alimentarLarvas.	
 
 /* Sentinel Plans */
