@@ -45,6 +45,6 @@ public class Bee {
 	}
 
 	public void setRole(BeeRole newRole) {
-		this.role = role;
+		this.role = newRole;
 	}
 }
