@@ -55,7 +55,6 @@ too_old :-
 /*   Basic Plans  */
 +!born
 <- .print("I'm borning!"); // Frase mais estranha possivel...
-+age(0);
 joinWorkspace("colmeiaOrg",Workspace);
 lookupArtifact("colmeia1",SchArtId);
 focus(SchArtId);
