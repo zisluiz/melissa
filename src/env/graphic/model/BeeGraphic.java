@@ -21,15 +21,15 @@ public class BeeGraphic {
 		return circle;
 	}
 
-	synchronized public BeeContainer getInsideContainer() {
+	public BeeContainer getInsideContainer() {
 		return insideContainer;
 	}
 
-	synchronized public void setInsideContainer(BeeContainer insideContainer) {
+	public void setInsideContainer(BeeContainer insideContainer) {
 		this.insideContainer = insideContainer;
 	}
 
-	synchronized public boolean isInsideContainer() {
+	public boolean isInsideContainer() {
 		return insideContainer != null;
 	}
 

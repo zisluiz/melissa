@@ -18,7 +18,7 @@ com_fome :-
 
 +!startOrg(Id)
 <-  makeArtifact(Id, "ora4mas.nopl.SchemeBoard",["src/org/organisation.xml", doSimulation],SchArtId);
-	debug(inspector_gui(off))[artifact_id(SchArtId)];
+	debug(inspector_gui(on))[artifact_id(SchArtId)];
 	.my_name(Me); setOwner(Me)[artifact_id(SchArtId)];  // I am the owner of this scheme!
 	focus(SchArtId);
 	.wait(200);

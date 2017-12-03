@@ -118,7 +118,8 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 	.print("Virei exploradora!").
 	
 +!changeStatus : age_to_sentinel
-<-	changeRole(sentinela);
+<-	.print("Virando sentinela!");
+	changeRole(sentinela);
 	adoptRole(sentinela);
 	removeRole(baba);
 	.print("Virei sentinela!").
@@ -145,7 +146,8 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 +energia(E) : E <= 0 <- !suicide.
 
 +!suicide : .my_name(Me)
-<- 	drop_all_intentions;
+<- 	.print("I'm going off!!");
+	drop_all_intentions;
 	removeRole(exploradora);
 	unRegisterBee;
 	ag_killed(Me).
@@ -174,31 +176,38 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 <-	.send(queen, achieve, comer(50));
 	-+energia(E-1).
 
-+!alimentarLarvas : newBees(SEQ) & .my_name(N)
++!alimentarLarvas
 <-  ?larvas(NR);
 	if (NR > 0) {
+		?newBees(SEQ);
 		.print("Alimentando larvas");
 		alimentarLarva(L);
 		.concat(N, SEQ, NEWBEE);
 		
 		if (L) {
+			.print("Larva evolving");
+			.my_name(N);
 			.create_agent(NEWBEE,"worker.asl");
 			.send(NEWBEE, achieve, born);
 			+newBees(SEQ+1)
-		};
+		} else {
+			.print("Não alimentando larvas - 1");
+		}
+	} else {
+		.print("Não alimentando larvas - 2");
 	}
 	
 	.wait(300);
-	!alimentarLarvas.
+	!!alimentarLarvas[scheme(Sch)].
 	
 -!alimentarLarvas[error(ia_failed)] <- 
-	//.print("Não consegui alimentar as larvas!");
+	.print("Não consegui alimentar as larvas!");
 	.wait(300);
-	!alimentarLarvas.
+	!!alimentarLarvas[scheme(Sch)].
 -!alimentarLarvas[error_msg(M)] <- 
-	//.print("Não consegui alimentar as larvas! Erro: ",M);
+	.print("Não consegui alimentar as larvas! Erro: ",M);
 	.wait(300);
-	!alimentarLarvas.	
+	!!alimentarLarvas[scheme(Sch)].	
 
 /* Sentinel Plans */
 

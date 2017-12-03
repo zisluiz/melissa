@@ -30,7 +30,7 @@ public class PollenField {
 			return PollenSupply.HIGH;
 	}
 
-	synchronized public int getAmmount() {
+	public int getAmmount() {
 		return ammount;
 	}
 

@@ -115,22 +115,22 @@ public class Hive {
 		getFeedOrder().add(larva);
 	}
 
-	synchronized public void addHoney(int ammount) {
+	public void addHoney(int ammount) {
 		honey = honey + ammount;
 	}
 	
-	synchronized public void subHoney(int ammount) throws InsufficientHoneyException {
+	public void subHoney(int ammount) throws InsufficientHoneyException {
 		if (honey >= ammount) {
 			honey = honey - ammount;
 		} else
 			throw new InsufficientHoneyException("The honey is gone.");
 	}	
 
-	synchronized public void addPollen(int ammount) {
+	public void addPollen(int ammount) {
 		pollen = pollen + ammount;
 	}
 	
-	synchronized public void subPollen(int ammount) throws InsufficientPollenException {
+	public void subPollen(int ammount) throws InsufficientPollenException {
 		if (pollen >= ammount) {
 			pollen = pollen - ammount;
 		} else
@@ -206,7 +206,7 @@ public class Hive {
 		return larva;
 	}
 
-	synchronized public Queue<Larva> getFeedOrder() {
+	public Queue<Larva> getFeedOrder() {
 		return feedOrder;
 	}
 

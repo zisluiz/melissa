@@ -63,9 +63,9 @@
 		                	</plan>
 		                </goal>
 		                
-		                <goal id="renovacaoEnxame">
+		                <goal id="renovacaoEnxame" type="maintenance">
 		                	<plan operator="parallel">
-		                		<goal id="porOvos"/>
+		                		<goal id="porOvos" />
 		                		<goal id="alimentarLarvas"/>
 		                	</plan>
 		                </goal>
@@ -110,7 +110,7 @@
         	<goal id="registerBee"/>
         	<goal id="fabricarMel"/>
         	<goal id="alimentarRainha"/>
-        	<goal id="alimentarLarvas"/>
+        	<goal id="alimentarLarvas" />
             <goal id="alimentarse"/>
         </mission>
         <mission id="mRainha" min="1" max="1">
@@ -133,16 +133,17 @@
 
        some examples follow
     -->
-    <!-- properties>
-        <property id="default_management"  value="fail" />
-        <property id="role_compatibility"  value="prohibition" />
-        <property id="mission_cardinality" value="prohibition" />
-    </properties-->
+    <properties>
+<!--         <property id="default_management"  value="fail" /> -->
+<!--         <property id="role_compatibility"  value="prohibition" /> -->
+<!--         <property id="mission_cardinality" value="prohibition" /> -->
+		<property id="mission_cardinality" value="ignore" />
+    </properties>
 
     <!-- the norms of the application -->
     <norm id="nExploradora" type="obligation" role="exploradora" mission="mExploradora"/>
     <norm id="nSentinela" type="obligation" role="sentinela" mission="mSentinela"/>
-    <norm id="nBaba" type="obligation" role="baba" mission="mBaba"/>
+    <norm id="nBaba" type="obligation" role="baba" mission="mBaba" />
     <norm id="nRainha" type="permission" role="monarca" mission="mRainha"/>    
     
     <norm id="nAlimentacao" type="obligation" role="monarca" mission="mAlimentacao"/>
