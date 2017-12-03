@@ -111,16 +111,18 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 		!suicide
 	}.
 	
-+!changeStatus : age_to_explorer
++!changeStatus : age_to_explorer /* TEMP */& not role(explorer)
 <-	changeRole(exploradora); 
 	adoptRole(exploradora);
 	removeRole(sentinela);
+	-+role(explorer);		// TEMP - retirar apos consertar remocao de roles!!
 	.print("Virei exploradora!").
 	
-+!changeStatus : age_to_sentinel
++!changeStatus : age_to_sentinel /* TEMP */& not role(sentinel)
 <-	changeRole(sentinela);
 	adoptRole(sentinela);
 	removeRole(baba);
+	+role(sentinel);		// TEMP - retirar apos consertar remocao de roles!!
 	.print("Virei sentinela!").
 
 +!changeStatus.
@@ -145,9 +147,11 @@ commitMission(mBaba)[artifact_id(SchArtId)];
 +energia(E) : E <= 0 <- !suicide.
 
 +!suicide : .my_name(Me)
-<- 	drop_all_intentions;
+<- 	.print("Time to die");
 	removeRole(exploradora);
 	unRegisterBee;
+	drop_all_intentions;
+	-role(_);		// TEMP - retirar apos consertar remocao de roles!!
 	ag_killed(Me).
 
 /*   Baba Plans   */
