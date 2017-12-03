@@ -153,6 +153,7 @@ public class HiveArtifact extends Artifact {
 			if (larvaToEvolve != null) {
 				Environment.getInstance().removeLarva(larvaToEvolve);
 				isEvolving.set(true);
+				updateObsProperty("larvas", Hive.getInstance().getLarvas().size()-1);
 			} else
 				isEvolving.set(false);
 		} catch (InsufficientHoneyException e) {
