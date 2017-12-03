@@ -202,7 +202,7 @@ too_old :-
 	} 
 	
 	.wait(300);
-	!!alimentarLarvas[scheme(Sch)].
+	!!alimentarLarvas[scheme(Sch)]. //Assim !!alimentarLarvas[scheme(Sch)] não causa o bug de criar infinitas babas quando troca de role, mas dá o bug "im not obligged anymore", não sei como resolver
 	
 +!alimentarLarvas : newBees(SEQ) & .my_name(N).	
 	
