@@ -60,7 +60,7 @@ lookupArtifact("colmeia1",SchArtId);
 focus(SchArtId);
 adoptRole(baba);
 commitMission(mBaba)[artifact_id(SchArtId)];
-!registerBee[scheme(Sch)].
+!!registerBee[scheme(Sch)].
 
 +!registerBee[scheme(Sch)] : age(X)
 <-	lookupArtifact("Map",AId);
