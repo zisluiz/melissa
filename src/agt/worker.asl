@@ -90,6 +90,7 @@ too_old :-
 	+hoje(D);
 	+nascimento(D);
 	adoptRole(baba);
+	commitMission(mBaba);
 	registerBee(baba);
 	+role(baba);
 	!!updateDay. 
