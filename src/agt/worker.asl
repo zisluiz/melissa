@@ -89,6 +89,7 @@ too_old :-
 	+hoje(D);
 	+nascimento(D);
 	adoptRole(baba);
+	commitMission(mBaba);
 	registerBee(baba);
 	+role(baba);
 	!!updateDay. 
@@ -114,14 +115,16 @@ too_old :-
 <-	changeRole(exploradora); 
 	removeRole(sentinela);
 	adoptRole(exploradora);
-	-+role(exploradora);		// TEMP - retirar apos consertar remocao de roles!!
+	-role(sentinela);
+	+role(exploradora);		// TEMP - retirar apos consertar remocao de roles!!
 	.print("Virei exploradora!").
 	
 +!changeStatus : age_to_sentinel
 <-	changeRole(sentinela);
 	removeRole(baba);
 	adoptRole(sentinela);
-	-+role(sentinela);		// TEMP - retirar apos consertar remocao de roles!!
+	-role(baba);
+	+role(sentinela);		// TEMP - retirar apos consertar remocao de roles!!
 	.print("Virei sentinela!").
 
 +!changeStatus.
