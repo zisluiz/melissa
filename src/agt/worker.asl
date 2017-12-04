@@ -58,7 +58,7 @@ too_old :-
 	joinWorkspace("colmeiaOrg",Workspace);
 	lookupArtifact("colmeia1",SchArtId);
 	focus(SchArtId);
-	!!registerBee[scheme(Sch)].
+	!!registerBaba.
 
 +!registerBee[scheme(Sch)] : age(X)
 <-	lookupArtifact("Map",AId);
@@ -82,7 +82,7 @@ too_old :-
 	-age(_);
 	!!updateDay.
 
-+!registerBee[scheme(Sch)]
++!registerBaba
 <-	lookupArtifact("Map",AId);
 	focus(AId);
 	?day(D)[artifact_id(AId)];
