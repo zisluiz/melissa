@@ -87,7 +87,6 @@ public class Environment {
 	
 	public void moveBee(String beeId, int x, int y) throws MovimentOutOfBoundsException, InvalidMovimentException {
 		validateMoviment(x ,y);
-//		System.out.println("Moving bee "+beeId+" to "+direction.toString());
 		BeeGraphic beeGraphic = beeResolver.getBee(beeId);
 		Bee bee = beeGraphic.getBee();
 		

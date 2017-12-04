@@ -54,12 +54,10 @@ too_old :-
       
 /*   Basic Plans  */
 +!born
-<-	.print("I'm borning!"); // Frase mais estranha possivel...
+<-	.print("I'm borning!"); // Frase mais estranha possível...
 	joinWorkspace("colmeiaOrg",Workspace);
 	lookupArtifact("colmeia1",SchArtId);
 	focus(SchArtId);
-	adoptRole(baba);
-	commitMission(mBaba)[artifact_id(SchArtId)];
 	!!registerBee[scheme(Sch)].
 
 +!registerBee[scheme(Sch)] : age(X)
@@ -243,6 +241,13 @@ too_old :-
 	
 +!aquecer : role(sentinela) <- .wait(100+math.random(200)); !aquecer.
 
++!aquecer : not role(sentinela) & energia(E) & not com_fome(E) & resfriando
+<-	lookupArtifact("Hive",AId);
+	focus(AId);
+	stop_resfriar;
+	-resfriando;
+	-+energia(E-1).
+
 +!aquecer.
 
 +!resfriar: aquecendo & energia(E) & not com_fome(E) & role(sentinela)
@@ -268,6 +273,13 @@ too_old :-
 	!resfriar;.
 	
 +!resfriar : role(sentinela)<- .wait(100+math.random(200)); !resfriar.
+
++!resfriarr : not role(sentinela) & energia(E) & not com_fome(E) & aquecendo
+<-	lookupArtifact("Hive",AId);
+	focus(AId);
+	stop_aquecendo;
+	-aquecendo;
+	-+energia(E-1).
 
 +!resfriar.
 

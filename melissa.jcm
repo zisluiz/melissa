@@ -31,7 +31,7 @@ mas melissa {
     }   
     
       agent worker : worker.asl {
-    	instances: 10
+    	instances: 30
     	roles: exploradora in colmeia
     	beliefs: age(22)
     }   

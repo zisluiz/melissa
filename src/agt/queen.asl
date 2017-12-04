@@ -53,8 +53,12 @@ com_fome :-
 +!controleTemperatura : goalState(_,controleTemperatura,_,_,satisfied)
 <-	resetGoal(controleTemperatura).
 
-+!controleTemperatura <- .wait(100); !controleTemperatura.
--!controleTemperatura <- .wait(100); !controleTemperatura.
++!alimentacao 			<- .wait(100); !alimentacao.
+-!alimentacao 			<- .wait(100); !alimentacao.
++!renovacaoEnxame 		<- .wait(100); !renovacaoEnxame.
+-!renovacaoEnxame 		<- .wait(100); !renovacaoEnxame.
++!controleTemperatura 	<- .wait(100); !controleTemperatura.
+-!controleTemperatura 	<- .wait(100); !controleTemperatura.
 
 /* Renew Plans */
 		
