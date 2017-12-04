@@ -181,21 +181,15 @@ too_old :-
 
 +!alimentarRainha.
 
-+!alimentarLarvas : newBees(SEQ) & .my_name(N) & role(baba)
++!alimentarLarvas : role(baba)
 <-  lookupArtifact("Hive",AId);
 	focus(AId);
 	?larvas(NR);
 	if (NR > 0) {
-		?newBees(SEQ);
-		.print("Feeding Larva");
+		//.print("Feeding Larva");
 		alimentarLarva(L);
-		.concat(N, SEQ, NEWBEE);
 		if (L) {
-			.print("Larva is evolving");
-			.my_name(N);
-			.create_agent(NEWBEE,"worker.asl");
-			.send(NEWBEE, achieve, born);
-			+newBees(SEQ+1)
+			!!evolveLarva;
 		}
 	} 
 	
@@ -207,13 +201,20 @@ too_old :-
 -!alimentarLarvas[error(ia_failed)] <- 
 	.print("Não consegui alimentar as larvas!");
 	.wait(300);
-	!alimentarLarvas[scheme(Sch)].
+	!!alimentarLarvas[scheme(Sch)].
 -!alimentarLarvas[error_msg(M)] <- 
 	//.print("Não consegui alimentar as larvas! Erro: ",M);
 	.wait(300);
-	!alimentarLarvas[scheme(Sch)].	
+	!!alimentarLarvas[scheme(Sch)].	
 	
--!alimentarLarvas <- !alimentarLarvas.
+-!alimentarLarvas <- .wait(300); !!alimentarLarvas.
+
++!evolveLarva : newBees(SEQ) & .my_name(N)
+<- .print("Larva is evolving");
+   .concat(N, SEQ, NEWBEE);
+   .create_agent(NEWBEE,"worker.asl");
+   .send(NEWBEE, achieve, born);
+   +newBees(SEQ+1).
 
 /* Sentinel Plans */
 

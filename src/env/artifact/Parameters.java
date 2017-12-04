@@ -11,7 +11,7 @@ public class Parameters {
 	public static final long DELAY_MOVE_OPERATION = 20;
 	public static final int AMMOUNT_BEE_COLLECT_POLLEN = 10;
 	public static final int LARVA_AMMOUNT_HONEY_FEED = 2;
-	public static final int LARVA_TOTAL_HONEY_TO_EVOLVE = 20;
+	public static final int LARVA_TOTAL_HONEY_TO_EVOLVE = 100;
 	
 	/** Daily parameters */
 	public static final long DELAY_CHANGE_DAY = 10000;
