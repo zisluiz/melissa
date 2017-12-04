@@ -114,6 +114,7 @@ too_old :-
 	
 +!changeStatus : age_to_explorer
 <-	changeRole(exploradora); 
+	leaveMission(mSentinela);
 	removeRole(sentinela);
 	adoptRole(exploradora);
 	-role(sentinela);
@@ -122,6 +123,7 @@ too_old :-
 	
 +!changeStatus : age_to_sentinel
 <-	changeRole(sentinela);
+	leaveMission(mBaba);
 	removeRole(baba);
 	adoptRole(sentinela);
 	-role(baba);

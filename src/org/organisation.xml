@@ -137,7 +137,7 @@
 <!--         <property id="default_management"  value="fail" /> -->
 <!--         <property id="role_compatibility"  value="prohibition" /> -->
 <!--         <property id="mission_cardinality" value="prohibition" /> -->
-		<property id="mission_cardinality" value="ignore" />
+		<property id="default_management" value="ignore" />
     </properties>
 
     <!-- the norms of the application -->
