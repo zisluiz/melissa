@@ -102,7 +102,6 @@ public class Environment {
 		boolean removeNode = false;
 		boolean addNode = false;
 		
-		
 		if (!beforeInsideContainer && afterInsideContainer) {
 			BeeContainer beeContainer = mapResolver.getContainer(bee.getPosition());
 			beeGraphic.setInsideContainer(beeContainer);
