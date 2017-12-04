@@ -194,27 +194,29 @@ too_old :-
 	} 
 	
 	.wait(300);
-	!!alimentarLarvas[scheme(Sch)]. //Assim !!alimentarLarvas[scheme(Sch)] não causa o bug de criar infinitas babas quando troca de role, mas dá o bug "im not obligged anymore", não sei como resolver
+	!alimentarLarvas[scheme(Sch)]. //Assim !!alimentarLarvas[scheme(Sch)] não causa o bug de criar infinitas babas quando troca de role, mas dá o bug "im not obligged anymore", não sei como resolver
 	
 +!alimentarLarvas.	
 	
 -!alimentarLarvas[error(ia_failed)] <- 
 	.print("Não consegui alimentar as larvas!");
 	.wait(300);
-	!!alimentarLarvas[scheme(Sch)].
+	!alimentarLarvas[scheme(Sch)].
 -!alimentarLarvas[error_msg(M)] <- 
 	//.print("Não consegui alimentar as larvas! Erro: ",M);
 	.wait(300);
-	!!alimentarLarvas[scheme(Sch)].	
+	!alimentarLarvas[scheme(Sch)].	
 	
--!alimentarLarvas <- .wait(300); !!alimentarLarvas.
+//-!alimentarLarvas <- .wait(300); !!alimentarLarvas.
 
-+!evolveLarva : newBees(SEQ) & .my_name(N)
++!evolveLarva : newBees(SEQ) & .my_name(N) & role(baba)
 <- .print("Larva is evolving");
    .concat(N, SEQ, NEWBEE);
    .create_agent(NEWBEE,"worker.asl");
    .send(NEWBEE, achieve, born);
    +newBees(SEQ+1).
+   
++!evolveLarva.
 
 /* Sentinel Plans */
 
