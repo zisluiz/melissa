@@ -78,7 +78,6 @@ too_old :-
 		adoptRole(exploradora);
 		registerBee(exploradora);
 		+role(exploradora);
-		!!setPosition;
 	}};
 	-age(_);
 	!!updateDay.
@@ -134,16 +133,6 @@ too_old :-
 	drop_all_intentions;
 	-role(_);		// TEMP - retirar apos consertar remocao de roles!!
 	ag_killed(Me).
-
-+!setPosition
-<-	lookupArtifact("Map",AId);
-	focus(AId);
-	?hive(X0,Y0,W,H)[artifact_id(AId)];
-	.random(R1);
-	X = X0 + math.floor(W*R1);
-	.random(R2);
-	Y = Y0 + math.floor(H*R2);
-	setPosition(X,Y).
 
 +!alimentarse: energia(E) & not satisfeita(E)
 <-	comer(5);
