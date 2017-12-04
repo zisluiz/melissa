@@ -55,12 +55,14 @@ too_old :-
 /*   Basic Plans  */
 +!born
 <-	.print("I'm borning!"); // Frase mais estranha possível...
+	.abolish(nascimento(_));
+	.abolish(age(_));
 	joinWorkspace("colmeiaOrg",Workspace);
 	lookupArtifact("colmeia1",SchArtId);
 	focus(SchArtId);
-	!!registerBaba.
+	!!registerBee.
 
-+!registerBee[scheme(Sch)] : age(X)
++!registerBee : age(X)
 <-	lookupArtifact("Map",AId);
 	focus(AId);
 	?day(D)[artifact_id(AId)];
@@ -68,21 +70,24 @@ too_old :-
 	+nascimento(D-X);
 	if (X < 18) {
 		adoptRole(baba);
+		commitMission(mBaba);
 		registerBee(baba);
 		+role(baba);
 	} else { if (X < 22) {
 		adoptRole(sentinela);
+		commitMission(mSentinela);
 		registerBee(sentinela);
 		+role(sentinela);
 	} else {
 		adoptRole(exploradora);
+		commitMission(mExploradora);
 		registerBee(exploradora);
 		+role(exploradora);
 	}};
 	-age(_);
 	!!updateDay.
 
-+!registerBaba
++!registerBee
 <-	lookupArtifact("Map",AId);
 	focus(AId);
 	?day(D)[artifact_id(AId)];
@@ -116,6 +121,7 @@ too_old :-
 	leaveMission(mSentinela);
 	removeRole(sentinela);
 	adoptRole(exploradora);
+	commitMission(mExploradora);
 	-role(sentinela);
 	+role(exploradora);		// TEMP - retirar apos consertar remocao de roles!!
 	.print("Virei exploradora!").
@@ -125,6 +131,7 @@ too_old :-
 	leaveMission(mBaba);
 	removeRole(baba);
 	adoptRole(sentinela);
+	commitMission(mSentinela);
 	-role(baba);
 	+role(sentinela);		// TEMP - retirar apos consertar remocao de roles!!
 	.print("Virei sentinela!").
@@ -153,8 +160,8 @@ too_old :-
 +!fabricarMel : energia(E) & not com_fome(E) & role(baba)
 <-	!tryPollen;	
 	.wait(100);
-	!fabricarMel;
-	-+energia(E-1).
+	-+energia(E-1);
+	!fabricarMel.
 	
 +!fabricarMel.
 
@@ -185,8 +192,7 @@ too_old :-
 		if (L) {
 			!!evolveLarva;
 		}
-	} 
-	
+	}
 	.wait(300);
 	!alimentarLarvas[scheme(Sch)]. //Assim !!alimentarLarvas[scheme(Sch)] não causa o bug de criar infinitas babas quando troca de role, mas dá o bug "im not obligged anymore", não sei como resolver
 	
