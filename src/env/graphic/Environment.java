@@ -55,8 +55,8 @@ public class Environment {
 	private void addBee(Bee bee) {
 		int hiveX = (int) mapResolver.getHive().getRectangle().getLayoutX();
 		int hiveY = (int) mapResolver.getHive().getRectangle().getLayoutY();
-		int hiveMaxX = hiveX + (int) mapResolver.getHive().getRectangle().getWidth();
-		int hiveMaxY = hiveY + (int) mapResolver.getHive().getRectangle().getHeight();
+		int hiveMaxX = hiveX + (int) mapResolver.getHive().getRectangle().getWidth() - 1;
+		int hiveMaxY = hiveY + (int) mapResolver.getHive().getRectangle().getHeight() - 1;
 		int x = RandomUtils.getRandom(hiveX, hiveMaxX);
 		int y = RandomUtils.getRandom(hiveY, hiveMaxY);
 		
@@ -64,6 +64,9 @@ public class Environment {
 		
 		bee.setPosition(x, y);
 		beeResolver.createBee(bee, x, y);
+		BeeGraphic beeGraphic = beeResolver.getBee(bee.getId());
+		beeGraphic.setInsideContainer(mapResolver.getHive());
+		mapResolver.getHive().addBee(beeGraphic);
 	}
 	
 	public Position getBeePos(String beeId) {
@@ -197,7 +200,7 @@ public class Environment {
 	}
 	
 	public void registerBee(String beeId, String role) {
-		System.out.println("Registering bee "+beeId);
+		System.out.println("Registering bee "+beeId+" to role "+role);
 		Hive hive = Hive.getInstance();
 		Bee bee = hive.createBee(beeId, role );
 		EnvironmentApplication map = EnvironmentApplication.getInstance();

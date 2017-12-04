@@ -78,7 +78,6 @@ too_old :-
 		adoptRole(exploradora);
 		registerBee(exploradora);
 		+role(exploradora);
-		!!setPosition;
 	}};
 	-age(_);
 	!!updateDay.
@@ -140,16 +139,6 @@ too_old :-
 	-role(_);		// TEMP - retirar apos consertar remocao de roles!!
 	ag_killed(Me).
 
-+!setPosition
-<-	lookupArtifact("Map",AId);
-	focus(AId);
-	?hive(X0,Y0,W,H)[artifact_id(AId)];
-	.random(R1);
-	X = X0 + math.floor(W*R1);
-	.random(R2);
-	Y = Y0 + math.floor(H*R2);
-	setPosition(X,Y).
-
 +!alimentarse: energia(E) & not satisfeita(E)
 <-	comer(5);
 	-+energia(E+10).
@@ -199,27 +188,29 @@ too_old :-
 	} 
 	
 	.wait(300);
-	!!alimentarLarvas[scheme(Sch)]. //Assim !!alimentarLarvas[scheme(Sch)] não causa o bug de criar infinitas babas quando troca de role, mas dá o bug "im not obligged anymore", não sei como resolver
+	!alimentarLarvas[scheme(Sch)]. //Assim !!alimentarLarvas[scheme(Sch)] não causa o bug de criar infinitas babas quando troca de role, mas dá o bug "im not obligged anymore", não sei como resolver
 	
 +!alimentarLarvas.	
 	
 -!alimentarLarvas[error(ia_failed)] <- 
 	.print("Não consegui alimentar as larvas!");
 	.wait(300);
-	!!alimentarLarvas[scheme(Sch)].
+	!alimentarLarvas[scheme(Sch)].
 -!alimentarLarvas[error_msg(M)] <- 
 	//.print("Não consegui alimentar as larvas! Erro: ",M);
 	.wait(300);
-	!!alimentarLarvas[scheme(Sch)].	
+	!alimentarLarvas[scheme(Sch)].	
 	
--!alimentarLarvas <- .wait(300); !!alimentarLarvas.
+//-!alimentarLarvas <- .wait(300); !!alimentarLarvas.
 
-+!evolveLarva : newBees(SEQ) & .my_name(N)
++!evolveLarva : newBees(SEQ) & .my_name(N) & role(baba)
 <- .print("Larva is evolving");
    .concat(N, SEQ, NEWBEE);
    .create_agent(NEWBEE,"worker.asl");
    .send(NEWBEE, achieve, born);
    +newBees(SEQ+1).
+   
++!evolveLarva.
 
 /* Sentinel Plans */
 
