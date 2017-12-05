@@ -63,26 +63,35 @@ too_old :-
 	!!registerBee.
 
 +!registerBee : age(X)
-<-	lookupArtifact("Map",AId);
+<-	.random(N);
+	lookupArtifact("Map",AId);
 	focus(AId);
 	?day(D)[artifact_id(AId)];
 	+hoje(D);
-	+nascimento(D-X);
 	if (X < 18) {
+		+nascimento(D-math.floor(18*N));
+		?nascimento(A);
+		.print("I am ", A, " days old!")
 		adoptRole(baba);
 		commitMission(mBaba);
 		registerBee(baba);
-		+role(baba);
+		+role(baba)
 	} else { if (X < 22) {
+		+nascimento(D-(18+math.floor(4*N)));
+		?nascimento(A);
+		.print("I am ", A, " days old!")
 		adoptRole(sentinela);
 		commitMission(mSentinela);
 		registerBee(sentinela);
-		+role(sentinela);
+		+role(sentinela)
 	} else {
+		+nascimento(D-(22+math.floor(23*N)));
+		?nascimento(A);
+		.print("I am ", A, " days old!")
 		adoptRole(exploradora);
 		commitMission(mExploradora);
 		registerBee(exploradora);
-		+role(exploradora);
+		+role(exploradora)
 	}};
 	-age(_);
 	!!updateDay.
@@ -140,6 +149,7 @@ too_old :-
 
 +!suicide : .my_name(Me)
 <- 	.print("Time to die");
+	leaveMission(mExploradora);
 	removeRole(exploradora);
 	unRegisterBee;
 	drop_all_intentions;
