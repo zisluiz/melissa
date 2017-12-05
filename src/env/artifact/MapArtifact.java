@@ -81,6 +81,8 @@ public class MapArtifact extends Artifact {
 	@OPERATION
 	void flyTo(int x, int y) {
 		Position beePos = Environment.getInstance().getBeePos(getCurrentOpAgentId().getAgentName());
+		if(beePos == null)
+			return;
 		int i = beePos.getX();
 		int j = beePos.getY();
 		if( !(x==i & y==j)) {

@@ -71,6 +71,8 @@ public class Environment {
 	
 	public Position getBeePos(String beeId) {
 		BeeGraphic beeGraphic = beeResolver.getBee(beeId);
+		if(beeGraphic == null)
+			return null;
 		Bee bee = beeGraphic.getBee();
 		return bee.getPosition();
 	}
