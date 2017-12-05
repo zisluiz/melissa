@@ -42,8 +42,8 @@ public class EnvironmentApplication extends Application {
 	private Rectangle rectangleHoneyYellow;
 	private Rectangle rectangleHoneyOrange;
 	private Rectangle rectangleHoneyRed;
-	private Color colorWhite = Color.web("white", 1);
 	
+	private Color colorWhite = Color.web("white", 1);
 	private Color colorBlack = Color.web("black", 1);
 	private Color colorRed = Color.web("red", 1);
 	private Color colorOrange = Color.web("rgb(255,126,38)", 1);

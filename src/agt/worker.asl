@@ -224,7 +224,7 @@ too_old :-
    .concat(N, SEQ, NEWBEE);
    .create_agent(NEWBEE,"worker.asl");
    .send(NEWBEE, achieve, born);
-   +newBees(SEQ+1).
+   -+newBees(SEQ+1).
    
 +!evolveLarva.
 

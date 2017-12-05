@@ -131,11 +131,18 @@ public class Environment {
 				beeGraphic.getCircle().setLayoutX(bee.getPosition().getX());
 				beeGraphic.getCircle().setLayoutY(bee.getPosition().getY());
 				
-				if (removeNodeFinal)
-					EnvironmentApplication.instance.removeBee(beeGraphic.getCircle());
+				beeGraphic.getLabel().setX(bee.getPosition().getX());
+				beeGraphic.getLabel().setY(bee.getPosition().getY());				
 				
-				if (addeNodeFinal)
-					EnvironmentApplication.instance.addBee(beeGraphic.getCircle());				
+				if (removeNodeFinal) {
+					EnvironmentApplication.instance.removeBee(beeGraphic.getCircle());
+					EnvironmentApplication.instance.removeBee(beeGraphic.getLabel());
+				}
+				
+				if (addeNodeFinal) {
+					EnvironmentApplication.instance.addBee(beeGraphic.getCircle());
+					EnvironmentApplication.instance.addBee(beeGraphic.getLabel());
+				}
 			}
 		});
 	}
@@ -244,6 +251,7 @@ public class Environment {
 			public void run() {			
 				EnvironmentApplication map = EnvironmentApplication.getInstance();
 				map.removeBee(beeGraphic.getCircle());
+				map.removeBee(beeGraphic.getLabel());
 				map.updateBeeCount();		
 			}
 		});			
@@ -296,10 +304,15 @@ public class Environment {
 		JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
 			@Override
 			public void run() {	
-				if (beeResolver.getBee(beeId).isInsideContainer())
+				BeeGraphic beeGraphic = beeResolver.getBee(beeId);
+				if (beeGraphic.isInsideContainer()) {
 					EnvironmentApplication.getInstance().removeBee(circle);
-				else
+					EnvironmentApplication.getInstance().removeBee(beeGraphic.getLabel());
+				}
+				else {
 					EnvironmentApplication.getInstance().addBee(circle);
+					EnvironmentApplication.getInstance().addBee(beeGraphic.getLabel());
+				}
 			}
 		});
 	}
