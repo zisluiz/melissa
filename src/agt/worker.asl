@@ -41,7 +41,7 @@ too_old :-
 	nascimento(N) &
 	hoje(D) &
 	D-N >= 45 &
-	role(explorer).
+	role(exploradora).
 
 /* Initial goals */
 
@@ -108,15 +108,17 @@ too_old :-
 	+role(baba);
 	!!updateDay. 
 
-+!updateDay :hoje(H)
++!updateDay : hoje(H)
 <-	.wait(5000);
 	lookupArtifact("Map",AId);
 	focus(AId);
 	?day(D)[artifact_id(AId)];
 	if (D \== H) {
-		-+hoje(D)
+		-+hoje(D);
+		?energia(E);
+		-+energia(E-5);
+		!!changeStatus;
 	};
-	!!changeStatus;
 	!updateDay.
 
 +!changeStatus : too_old
@@ -133,6 +135,7 @@ too_old :-
 	commitMission(mExploradora);
 	-role(sentinela);
 	+role(exploradora);		// TEMP - retirar apos consertar remocao de roles!!
+	!stopAquecerResfriar;
 	.print("Virei exploradora!").
 	
 +!changeStatus : age_to_sentinel
@@ -149,15 +152,33 @@ too_old :-
 
 +!suicide : .my_name(Me)
 <- 	.print("Time to die");
-	leaveMission(mExploradora);
-	removeRole(exploradora);
+	.findall(Mission,commit(Me,Mission,_),M)
+	if (not .empty(M)) {
+		!leaveMission(M);
+	};
+	.findall(Role,play(Me,Role,_),R)
+	if (not .empty(R)) {
+		!removeRole(R);
+	};
 	unRegisterBee;
-	drop_all_intentions;
-	-role(_);		// TEMP - retirar apos consertar remocao de roles!!
-	ag_killed(Me).
+	.kill_agent(Me).
+	
+-!suicide <- .wait(500); !suicide.
+
++!leaveMission([M|R])
+<-	leaveMission(M);
+	if(not .empty(R)) {
+		!leaveMission(R)
+	}.
+
++!removeRole([Role|R])
+<-	removeRole(Role);
+	if(not .empty(R)) {
+		!removeRole(R)
+	}.
 
 +!alimentarse: energia(E) & not satisfeita(E)
-<-	comer(5);
+<-	comer(1);
 	-+energia(E+10).
 
 -!alimentarse <- .wait(100); !!alimentarse.
@@ -254,13 +275,6 @@ too_old :-
 	
 +!aquecer : role(sentinela) <- .wait(100+math.random(200)); !!aquecer.
 
-+!aquecer : not role(sentinela) & energia(E) & not com_fome(E) & resfriando
-<-	lookupArtifact("Hive",AId);
-	focus(AId);
-	stop_resfriar;
-	-resfriando;
-	-+energia(E-1).
-
 +!aquecer.
 
 +!resfriar: aquecendo & energia(E) & not com_fome(E) & role(sentinela)
@@ -287,21 +301,22 @@ too_old :-
 	
 +!resfriar : role(sentinela)<- .wait(100+math.random(200)); !!resfriar.
 
-+!resfriarr : not role(sentinela) & energia(E) & not com_fome(E) & aquecendo
-<-	lookupArtifact("Hive",AId);
-	focus(AId);
-	stop_aquecendo;
-	-aquecendo;
-	-+energia(E-1).
-
 +!resfriar.
+
++!stopAquecerResfriar : role(exploradora) & aquecendo
+<- stop_aquecer; -aquecendo; !stopAquecerResfriar.
+
++!stopAquecerResfriar : role(exploradora) & resfriando
+<- stop_resfriar; -resfriando; !stopAquecerResfriar.
+
++!stopAquecerResfriar.
 
 /* Explorer Plans */
 	
 +!procurarPolen[scheme(Sch)] : energia(E) & not com_fome(E) & role(exploradora)
 <-	lookupArtifact("Map",AId);
 	focus(AId);
-	.findall(r(LEVEL, X, Y, WIDTH, HEIGHT), pollenField(LEVEL, X, Y, WIDTH, HEIGHT)[artifact_id(AId)], List);
+	.findall(r(X, Y, WIDTH, HEIGHT), pollenField(_, X, Y, WIDTH, HEIGHT)[artifact_id(AId)], List);
 	!flyToField(List);
 	if(collect) {
 		-collect;
@@ -317,7 +332,7 @@ too_old :-
 -!procurarPolen[error(ia_failed)] <- .print("Não consegui procurar!").
 -!procurarPolen[error_msg(M)]     <- .print("Error in: ",M).
 
-+!flyToField([r(Lvl,X0,Y0,W,H)|L])
++!flyToField([r(X0,Y0,W,H)|L])
 <-	.random(N);
 	if (N < 0.2) {
 		.random(R1);
