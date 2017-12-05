@@ -121,8 +121,8 @@ too_old :-
 +!startExploradora
 <-	.drop_all_intentions;
 	!!stopAquecerResfriar;
-	!!procurarPolen;
 	!!alimentarse;
+	!!procurarPolen;
 	!!updateDay.
 
 +!updateDay : hoje(H)
@@ -201,7 +201,7 @@ too_old :-
 
 +energia(E) : E <= 0 <- !suicide.
 
-/*   Baba Plans   */
+/* ---------- Baba Plans ---------- */
 
 +!fabricarMel : energia(E) & not com_fome(E) & role(baba)
 <-	!tryPollen;	
@@ -265,7 +265,7 @@ too_old :-
    
 +!evolveLarva.
 
-/* Sentinel Plans */
+/* ---------- Sentinel Plans ---------- */
 
 +!aquecer : resfriando & energia(E) & not com_fome(E) & role(sentinela)
 <- 	.wait(100+math.random(200));
@@ -327,7 +327,7 @@ too_old :-
 
 +!stopAquecerResfriar.
 
-/* Explorer Plans */
+/* ---------- Explorer Plans ---------- */
 	
 +!procurarPolen : energia(E) & not com_fome(E) & role(exploradora)
 <-	lookupArtifact("Map",AId);
@@ -348,8 +348,9 @@ too_old :-
 -!procurarPolen[error(ia_failed)] <- .print("Não consegui procurar!").
 -!procurarPolen[error_msg(M)]     <- .print("Error procurarPolen in: ",M); !!procurarPolen.
 
-+!flyToField([r(X0,Y0,W,H)|L])
-<-	.random(N);
++!flyToField([r(X0,Y0,W,H)|L]) : not flying
+<-	+flying;
+	.random(N);
 	if (N < 0.2) {
 		.random(R1);
 		X = X0 + math.floor(W*R1);
@@ -359,10 +360,14 @@ too_old :-
 		flyTo(X,Y);
 		+collect
 	} else { if(not .empty(L)) {
+		-flying;
 		!flyToField(L)
 	} else {
 		
-	}}.
+	}};
+	-flying.
+
++!flyToField(R) <- .wait(200); !flyToField(R).
 
 +!trazerPolen : role(exploradora)
 <-	!flyToHive;
@@ -373,8 +378,9 @@ too_old :-
 -!trazerPolen[error(ia_failed)] <- .print("I didn't in!").
 -!trazerPolen[error_msg(M)]     <- .print("Error in: ",M).
 
-+!flyToHive
-<-	lookupArtifact("Map",AId);
++!flyToHive : not flying
+<-	+flying;
+	lookupArtifact("Map",AId);
 	focus(AId);
 	?hive(X0,Y0,W,H)[artifact_id(AId)];
 	.random(R1);
@@ -382,7 +388,10 @@ too_old :-
 	.random(R2);
 	Y = Y0 + math.floor(H*R2);
 	//.print("Going to (", X, ",",Y,")");
-	flyTo(X,Y).
+	flyTo(X,Y);
+	-flying.
+	
++!flyToHive <- .wait(200); !flyToHive.
 
 +!estocarPolen : energia(E) & role(exploradora)
 <-	delivery;
