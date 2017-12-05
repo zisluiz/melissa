@@ -41,6 +41,7 @@ public class Parameters {
 	public static final int HIVE_HEIGHT = 150;
 	
 	/** Pollen fields colors, in % **/
+	public static final double POLLEN_SUPPLY_OVER = 0;
 	public static final double POLLEN_SUPPLY_LOW = 0.3;
 	public static final double POLLEN_SUPPLY_MEDIUM = 0.6;
 	
