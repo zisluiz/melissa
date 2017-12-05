@@ -60,6 +60,10 @@ public class EnvironmentApplication extends Application {
     private BooleanProperty stop = new SimpleBooleanProperty(false);
     private int second = 0;
     private int minute = 0;
+	public static Color colorBeeFeeder;
+	public static Color colorBeeSentinel;
+	public static Color colorBeeWorker;
+	public static Color colorBeeQueen;
 	
 	public EnvironmentApplication() {
 		System.out.println("Creating BeeEnvironment");
@@ -172,103 +176,108 @@ public class EnvironmentApplication extends Application {
 	
 	private Group createHiveInformation() {
 		Group group = new Group();
-		Rectangle rectangleInfo = createRectangle(70, 130, colorBlack, 726, 460);
-		group.getChildren().add(rectangleInfo);		
+//		Rectangle rectangleInfo = createRectangle(70, 130, colorBlack, 726, 460);
+//		group.getChildren().add(rectangleInfo);
+		int newX = 185;
 		
-		Text labelTemp = new Text(731, 473, "Temp: ");
+		Text labelTemp = new Text(731+newX, 473, "Temp: ");
 		labelTemp.setFill(colorWhite);
 		labelTemp.setFont(font);
-		labelNumberTemp = new Text(771, 473, "0");
+		labelNumberTemp = new Text(771+newX, 473, "0");
 		labelNumberTemp.setFill(colorWhite);
 		labelNumberTemp.setFont(font);
-		Text labelTemp2 = new Text(785, 473, "°");
+		Text labelTemp2 = new Text(785+newX, 473, "°");
 		labelTemp2.setFill(colorWhite);
 		labelTemp2.setFont(font);
 		group.getChildren().add(labelTemp);		
 		group.getChildren().add(labelNumberTemp);		
 		group.getChildren().add(labelTemp2);		
 		
-		Circle circleBeeQueen = new Circle(4, Color.web("rgb(158,76,158)", 1));
-		circleBeeQueen.setLayoutX(736);
+		colorBeeQueen = Color.web("rgb(158,76,158)", 1);
+		Circle circleBeeQueen = new Circle(4, colorBeeQueen);
+		circleBeeQueen.setLayoutX(736+newX);
 		circleBeeQueen.setLayoutY(486);		
 		group.getChildren().add(circleBeeQueen);	
-		labelNumberBeeQueen = new Text(746, 490, "0");
+		labelNumberBeeQueen = new Text(746+newX, 490, "0");
 		labelNumberBeeQueen.setFill(colorWhite);
 		labelNumberBeeQueen.setFont(font);	
 		group.getChildren().add(labelNumberBeeQueen);	
 		
-		Circle circleBeeFeeder = new Circle(4, Color.web("rgb(156,207,224)", 1));
-		circleBeeFeeder.setLayoutX(736);
+		colorBeeFeeder = Color.web("rgb(156,207,224)", 1);
+		Circle circleBeeFeeder = new Circle(4, colorBeeFeeder);
+		circleBeeFeeder.setLayoutX(736+newX);
 		circleBeeFeeder.setLayoutY(506);		
 		group.getChildren().add(circleBeeFeeder);	
-		labelNumberBeeFeeder = new Text(746, 510, "0");
+		labelNumberBeeFeeder = new Text(746+newX, 510, "0");
 		labelNumberBeeFeeder.setFill(colorWhite);
 		labelNumberBeeFeeder.setFont(font);	
 		group.getChildren().add(labelNumberBeeFeeder);	
 		
-		Circle circleBeeSentinel = new Circle(4, Color.web("rgb(60,61,205)", 1));
-		circleBeeSentinel.setLayoutX(736);
+		colorBeeSentinel = Color.web("rgb(60,61,205)", 1);
+		Circle circleBeeSentinel = new Circle(4, colorBeeSentinel);
+		circleBeeSentinel.setLayoutX(736+newX);
 		circleBeeSentinel.setLayoutY(526);		
 		group.getChildren().add(circleBeeSentinel);	
-		labelNumberBeeSentinel = new Text(746, 530, "0");
+		labelNumberBeeSentinel = new Text(746+newX, 530, "0");
 		labelNumberBeeSentinel.setFill(colorWhite);
 		labelNumberBeeSentinel.setFont(font);	
 		group.getChildren().add(labelNumberBeeSentinel);		
 		
-		Circle circleBeeWorker = new Circle(4, Color.web("rgb(255,128,35)", 1));
-		circleBeeWorker.setLayoutX(736);
+		colorBeeWorker = Color.web("rgb(255,128,35)", 1);
+		Circle circleBeeWorker = new Circle(4, colorBeeWorker);
+		circleBeeWorker.setLayoutX(736+newX);
 		circleBeeWorker.setLayoutY(546);		
 		group.getChildren().add(circleBeeWorker);	
-		labelNumberBeeWorker = new Text(746, 550, "0");
+		labelNumberBeeWorker = new Text(746+newX, 550, "0");
 		labelNumberBeeWorker.setFill(colorWhite);
 		labelNumberBeeWorker.setFont(font);	
 		group.getChildren().add(labelNumberBeeWorker);	
 		
 		Circle circleBeeLarva = new Circle(4, Color.web("rgb(193,193,193)", 1));
-		circleBeeLarva.setLayoutX(736);
+		circleBeeLarva.setLayoutX(736+newX);
 		circleBeeLarva.setLayoutY(566);		
 		group.getChildren().add(circleBeeLarva);	
-		labelNumberBeeLarva = new Text(746, 570, "0");
+		labelNumberBeeLarva = new Text(746+newX, 570, "0");
 		labelNumberBeeLarva.setFill(colorWhite);
 		labelNumberBeeLarva.setFont(font);	
 		group.getChildren().add(labelNumberBeeLarva);
 		
 
-		Rectangle rectangleHoney = createRectangle(25, 48,colorBlack, 666, 460);
+		Rectangle rectangleHoney = createRectangle(25, 48,colorBlack, 666+newX, 460);
 		rectangleHoney.setStrokeType(StrokeType.OUTSIDE);
 		Color greyBorder = Color.web("rgb(137,137,137)", 1);
 		rectangleHoney.setStroke(greyBorder);
 		rectangleHoney.setStrokeWidth(1);
 		group.getChildren().add(rectangleHoney);	
 		
-		Line line1Honey = new Line(666, 472, 691, 472);
+		Line line1Honey = new Line(666+newX, 472, 691+newX, 472);
 		line1Honey.setStrokeType(StrokeType.OUTSIDE);
 		line1Honey.setStroke(greyBorder);
 		line1Honey.setStrokeWidth(1);		
 		group.getChildren().add(line1Honey);	
 
-		Line line2Honey = new Line(666, 484, 691, 484);
+		Line line2Honey = new Line(666+newX, 484, 691+newX, 484);
 		line2Honey.setStrokeType(StrokeType.OUTSIDE);
 		line2Honey.setStroke(greyBorder);
 		line2Honey.setStrokeWidth(1);		
 		group.getChildren().add(line2Honey);	
 		
-		Line line3Honey = new Line(666, 496, 691, 496);
+		Line line3Honey = new Line(666+newX, 496, 691+newX, 496);
 		line3Honey.setStrokeType(StrokeType.OUTSIDE);
 		line3Honey.setStroke(greyBorder);
 		line3Honey.setStrokeWidth(1);		
 		group.getChildren().add(line3Honey);	
 		
-		rectangleHoneyGreen = createRectangle(25, 12, colorBlack, 666, 460);
+		rectangleHoneyGreen = createRectangle(25, 12, colorBlack, 666+newX, 460);
 		group.getChildren().add(rectangleHoneyGreen);	
 		
-		rectangleHoneyYellow = createRectangle(25, 10, colorBlack, 666, 473);
+		rectangleHoneyYellow = createRectangle(25, 10, colorBlack, 666+newX, 473);
 		group.getChildren().add(rectangleHoneyYellow);
 		
-		rectangleHoneyOrange = createRectangle(25, 10, colorBlack, 666, 485);
+		rectangleHoneyOrange = createRectangle(25, 10, colorBlack, 666+newX, 485);
 		group.getChildren().add(rectangleHoneyOrange);
 		
-		rectangleHoneyRed = createRectangle(25, 11, colorBlack, 666, 497);
+		rectangleHoneyRed = createRectangle(25, 11, colorBlack, 666+newX, 497);
 		group.getChildren().add(rectangleHoneyRed);	
 		
 		return group;

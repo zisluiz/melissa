@@ -1,5 +1,7 @@
 package model;
 
+import graphic.EnvironmentApplication;
+import javafx.scene.paint.Paint;
 import model.enumeration.BeeRole;
 
 public class Bee {
@@ -13,19 +15,19 @@ public class Bee {
 		this.id = id;
 		this.role = role;
 	}
-	
+
 	public void setPosition(int x, int y) {
 		this.position.setXY(x, y);
 	}
-	
+
 	public String getId() {
 		return id;
 	}
-	
+
 	public int getAge() {
 		return age;
 	}
-	
+
 	public Position getPosition() {
 		return position;
 	}
@@ -33,18 +35,31 @@ public class Bee {
 	public void setPollenCollected(int ammount) {
 		this.pollenCollected = ammount;
 	}
-	
+
 	public int takePollenCollected() {
 		int ammount = pollenCollected;
 		pollenCollected = 0;
 		return ammount;
 	}
-	
+
 	public BeeRole getRole() {
 		return role;
 	}
 
 	public void setRole(BeeRole newRole) {
 		this.role = newRole;
+	}
+
+	public Paint getColor() {
+		switch (role) {
+		case baba:
+			return EnvironmentApplication.colorBeeFeeder;
+		case sentinela:
+			return EnvironmentApplication.colorBeeSentinel;
+		case monarca:
+			return EnvironmentApplication.colorBeeQueen;			
+		default:
+			return EnvironmentApplication.colorBeeWorker;
+		}
 	}
 }

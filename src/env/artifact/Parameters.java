@@ -15,7 +15,7 @@ public class Parameters {
 	
 	/** Daily parameters */
 	public static final long DELAY_CHANGE_DAY = 10000;
-	public static final int DAILY_POLLEN_AMMOUNT_INCREASE = 5;
+	public static final int DAILY_POLLEN_AMMOUNT_INCREASE = 10;
 	
 	/** Temperature parameters */
 	public static final int AVERAGE_TEMPERATURE = 25;
@@ -41,6 +41,7 @@ public class Parameters {
 	public static final int HIVE_HEIGHT = 150;
 	
 	/** Pollen fields colors, in % **/
+	public static final double POLLEN_SUPPLY_OVER = 0;
 	public static final double POLLEN_SUPPLY_LOW = 0.3;
 	public static final double POLLEN_SUPPLY_MEDIUM = 0.6;
 	

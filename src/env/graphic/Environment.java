@@ -134,11 +134,11 @@ public class Environment {
 				beeGraphic.getCircle().setLayoutY(bee.getPosition().getY());
 				
 				if (removeNodeFinal) {
-					EnvironmentApplication.instance.removeBee(beeGraphic.getCircle());
+//					EnvironmentApplication.instance.removeBee(beeGraphic.getCircle());
 				}
 				
 				if (addeNodeFinal) {
-					EnvironmentApplication.instance.addBee(beeGraphic.getCircle());
+//					EnvironmentApplication.instance.addBee(beeGraphic.getCircle());
 				}
 			}
 		});
@@ -212,7 +212,9 @@ public class Environment {
 		
 		JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
 			@Override
-			public void run() {			
+			public void run() {
+				Circle circle = beeResolver.getBee(beeId).getCircle();
+				EnvironmentApplication.instance.addBee(circle);
 				map.updateBeeCount();		
 			}
 		});			
@@ -226,6 +228,8 @@ public class Environment {
 		JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
 			@Override
 			public void run() {			
+				Circle circle = beeResolver.getBee(beeId).getCircle();
+				circle.setFill(bee.getColor());				
 				EnvironmentApplication.getInstance().updateBeeCount();		
 			}
 		});			

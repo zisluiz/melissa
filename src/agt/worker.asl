@@ -194,7 +194,9 @@ too_old :-
 
 +!alimentarse: energia(E) & not satisfeita(E)
 <-	comer(1);
-	-+energia(E+10).
+	-+energia(E+10);
+	.wait(100); 
+	!!alimentarse.
 
 -!alimentarse <- .wait(100); !!alimentarse.
 +!alimentarse <- .wait(100); !!alimentarse.
@@ -398,10 +400,10 @@ too_old :-
 	-+energia(E-10);
 	!!procurarPolen.
 
-+!estocarPolen.
++!estocarPolen <- .wait(500); !!procurarPolen.
 
--!estocarPolen[error(ia_failed)].
--!estocarPolen[error_msg(M)]/* <- .print("Error: ", M) */.
+-!estocarPolen[error(ia_failed)] <- !!procurarPolen.
+-!estocarPolen[error_msg(M)] <- .print("Error: ", M); !!procurarPolen.
 
 +!coletarPolen : role(exploradora) <- collect.
 
