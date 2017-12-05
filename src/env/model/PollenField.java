@@ -22,7 +22,9 @@ public class PollenField {
 	}
 	
 	public PollenSupply getStatus() {
-		if (getAmmount() < maxAmmount * Parameters.POLLEN_SUPPLY_LOW)
+		if (getAmmount() <= Parameters.POLLEN_SUPPLY_OVER)
+			return PollenSupply.OVER;		
+		else if (getAmmount() < maxAmmount * Parameters.POLLEN_SUPPLY_LOW)
 			return PollenSupply.LOW;
 		else if (getAmmount() < maxAmmount * Parameters.POLLEN_SUPPLY_MEDIUM)
 			return PollenSupply.MEDIUM;
