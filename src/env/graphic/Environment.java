@@ -123,8 +123,8 @@ public class Environment {
 			addNode = true;
 		}
 		
-		final boolean removeNodeFinal = removeNode;
-		final boolean addeNodeFinal = addNode;
+//		final boolean removeNodeFinal = removeNode;
+//		final boolean addeNodeFinal = addNode;
 		
 		JavaFXConcurrent.getInstance().addUpdate(new Runnable() {
 			
@@ -133,13 +133,13 @@ public class Environment {
 				beeGraphic.getCircle().setLayoutX(bee.getPosition().getX());
 				beeGraphic.getCircle().setLayoutY(bee.getPosition().getY());
 				
-				if (removeNodeFinal) {
-//					EnvironmentApplication.instance.removeBee(beeGraphic.getCircle());
-				}
-				
-				if (addeNodeFinal) {
-//					EnvironmentApplication.instance.addBee(beeGraphic.getCircle());
-				}
+//				if (removeNodeFinal) {
+////					EnvironmentApplication.instance.removeBee(beeGraphic.getCircle());
+//				}
+//				
+//				if (addeNodeFinal) {
+////					EnvironmentApplication.instance.addBee(beeGraphic.getCircle());
+//				}
 			}
 		});
 	}
