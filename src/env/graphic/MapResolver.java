@@ -65,9 +65,6 @@ public class MapResolver {
 		circle.setLayoutX(newX);
 		circle.setLayoutY(newY);
 		
-		beeGraphic.getLabel().setX(newX);
-		beeGraphic.getLabel().setY(newY);
-		
 		beeGraphic.getBee().setPosition(newX, newY);
 		
 		if (hasContainer(beeGraphic.getBee().getPosition()))  {

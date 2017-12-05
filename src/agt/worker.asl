@@ -346,7 +346,7 @@ too_old :-
 +!procurarPolen.
 
 -!procurarPolen[error(ia_failed)] <- .print("Não consegui procurar!").
--!procurarPolen[error_msg(M)]     <- .print("Error in: ",M).
+-!procurarPolen[error_msg(M)]     <- .print("Error procurarPolen in: ",M); !!procurarPolen.
 
 +!flyToField([r(X0,Y0,W,H)|L])
 <-	.random(N);
@@ -397,10 +397,6 @@ too_old :-
 +!coletarPolen : role(exploradora) <- collect.
 
 +!coletarPolen.
-
--!coletarPolen[error_msg(M)]
-<-	.print("Error in: ",M);
-	!procurarPolen.
 
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }

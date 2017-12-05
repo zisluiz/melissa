@@ -1,18 +1,15 @@
 package graphic.model;
 
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Text;
 import model.Bee;
 
 public class BeeGraphic {
 	private Circle circle;
-	private Text label;
 	private Bee bee;
 	private BeeContainer insideContainer;
 
-	public BeeGraphic(Circle circle, Text label, Bee bee) {
+	public BeeGraphic(Circle circle, Bee bee) {
 		this.circle = circle;
-		this.label = label;
 		this.bee = bee;
 	}
 
@@ -20,10 +17,6 @@ public class BeeGraphic {
 		return bee;
 	}
 	
-	public Text getLabel() {
-		return label;
-	}
-
 	public Circle getCircle() {
 		return circle;
 	}

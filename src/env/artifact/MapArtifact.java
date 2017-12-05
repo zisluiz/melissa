@@ -8,7 +8,6 @@ import cartago.Artifact;
 import cartago.INTERNAL_OPERATION;
 import cartago.OPERATION;
 import cartago.ObsProperty;
-import cartago.OpFeedbackParam;
 import graphic.Environment;
 import model.PollenField;
 import model.Position;
