@@ -68,7 +68,7 @@ com_fome :-
 	.wait(10000);
 	!!porOvos[scheme(Sch)].
 	
-+!comer(X) : energia(E) <-	comer(math.floor(X/2)); -+energia(E+X).
++!comer(X) : energia(E) <-	comer(math.floor(X/10)); -+energia(E+X).
 -!comer(X).
 
 { include("$jacamoJar/templates/common-cartago.asl") }

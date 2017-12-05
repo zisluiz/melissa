@@ -54,7 +54,7 @@ too_old :-
       
 /*   Basic Plans  */
 +!born
-<-	.print("I'm borning!"); // Frase mais estranha possível...
+<-	//.print("I'm borning!"); // Frase mais estranha possível...
 	.abolish(nascimento(_));
 	.abolish(age(_));
 	joinWorkspace("colmeiaOrg",Workspace);
@@ -70,24 +70,18 @@ too_old :-
 	+hoje(D);
 	if (X < 18) {
 		+nascimento(D-math.floor(18*N));
-		?nascimento(A);
-		.print("I am ", A, " days old!")
 		adoptRole(baba);
 		commitMission(mBaba);
 		registerBee(baba);
 		+role(baba)
 	} else { if (X < 22) {
 		+nascimento(D-(18+math.floor(4*N)));
-		?nascimento(A);
-		.print("I am ", A, " days old!")
 		adoptRole(sentinela);
 		commitMission(mSentinela);
 		registerBee(sentinela);
 		+role(sentinela)
 	} else {
 		+nascimento(D-(22+math.floor(23*N)));
-		?nascimento(A);
-		.print("I am ", A, " days old!")
 		adoptRole(exploradora);
 		commitMission(mExploradora);
 		registerBee(exploradora);
@@ -106,7 +100,30 @@ too_old :-
 	commitMission(mBaba);
 	registerBee(baba);
 	+role(baba);
-	!!updateDay. 
+	!!startBaba. 
+
++!startBaba
+<-	.drop_all_intentions;
+	!!alimentarLarvas;
+	!!alimentarRainha;
+	!!alimentarse;
+	!!fabricarMel;
+	!!alimentarse;
+	!!updateDay.
+
++!startSentinela
+<-	.drop_all_intentions;
+	!!aquecer;
+	!!resfriar;
+	!!alimentarse;
+	!!updateDay.
+
++!startExploradora
+<-	.drop_all_intentions;
+	!!stopAquecerResfriar;
+	!!procurarPolen;
+	!!alimentarse;
+	!!updateDay.
 
 +!updateDay : hoje(H)
 <-	.wait(5000);
@@ -116,7 +133,7 @@ too_old :-
 	if (D \== H) {
 		-+hoje(D);
 		?energia(E);
-		-+energia(E-5);
+		-+energia(E-1);
 		!!changeStatus;
 	};
 	!updateDay.
@@ -135,8 +152,7 @@ too_old :-
 	commitMission(mExploradora);
 	-role(sentinela);
 	+role(exploradora);		// TEMP - retirar apos consertar remocao de roles!!
-	!stopAquecerResfriar;
-	.print("Virei exploradora!").
+	!startExploradora.
 	
 +!changeStatus : age_to_sentinel
 <-	changeRole(sentinela);
@@ -146,13 +162,12 @@ too_old :-
 	commitMission(mSentinela);
 	-role(baba);
 	+role(sentinela);		// TEMP - retirar apos consertar remocao de roles!!
-	.print("Virei sentinela!").
+	!startSentinela.
 
 +!changeStatus.
 
 +!suicide : .my_name(Me)
-<- 	.print("Time to die");
-	.findall(Mission,commit(Me,Mission,_),M)
+<- 	.findall(Mission,commit(Me,Mission,_),M)
 	if (not .empty(M)) {
 		!leaveMission(M);
 	};
@@ -194,7 +209,11 @@ too_old :-
 	-+energia(E-1);
 	!!fabricarMel.
 	
-+!fabricarMel.
++!fabricarMel <- .wait(100); !fabricarMel.
+
+-!fabricarMel
+<-	.wait(500);
+	!fabricarMel.
 
 +!tryPollen
 <- 	lookupArtifact("Hive",AId);
@@ -202,10 +221,6 @@ too_old :-
 	if(pollen(P)[artifact_id(AId)] & P>1) {
 		processPollen;
 	}.
-
--!fabricarMel
-<-	.wait(500);
-	!fabricarMel.
 
 +!alimentarRainha : energia(E) & role(baba)
 <-	.send(queen, achieve, comer(50));
@@ -225,8 +240,8 @@ too_old :-
 		}
 	}
 	.wait(300);
-	!!alimentarLarvas[scheme(Sch)]. //Assim !!alimentarLarvas[scheme(Sch)] não causa o bug de criar infinitas babas quando troca de role, mas dá o bug "im not obligged anymore", não sei como resolver
-	
+	!!alimentarLarvas[scheme(Sch)].
+
 +!alimentarLarvas.	
 	
 -!alimentarLarvas[error(ia_failed)] <- 
@@ -241,8 +256,9 @@ too_old :-
 //-!alimentarLarvas <- .wait(300); !!alimentarLarvas.
 
 +!evolveLarva : newBees(SEQ) & .my_name(N) & role(baba)
-<- .print("Larva is evolving");
-   .concat(N, SEQ, NEWBEE);
+<- //.print("Larva is evolving");
+   .concat(N, "_new", NSUFIX);
+   .concat(NSUFIX, SEQ, NEWBEE);
    .create_agent(NEWBEE,"worker.asl");
    .send(NEWBEE, achieve, born);
    -+newBees(SEQ+1).
@@ -313,20 +329,20 @@ too_old :-
 
 /* Explorer Plans */
 	
-+!procurarPolen[scheme(Sch)] : energia(E) & not com_fome(E) & role(exploradora)
++!procurarPolen : energia(E) & not com_fome(E) & role(exploradora)
 <-	lookupArtifact("Map",AId);
 	focus(AId);
 	.findall(r(X, Y, WIDTH, HEIGHT), pollenField(_, X, Y, WIDTH, HEIGHT)[artifact_id(AId)], List);
 	!flyToField(List);
 	if(collect) {
 		-collect;
-		!coletarPolen[scheme(Sch)];
-		!trazerPolen[scheme(Sch)]
+		!coletarPolen;
+		!trazerPolen
 	} else {
-		!!procurarPolen[scheme(Sch)]
+		!!procurarPolen
 	}.
 
-+!procurarPolen[scheme(Sch)] : role(exploradora) <- .wait(100); !!procurarPolen[scheme(Sch)].
++!procurarPolen : role(exploradora) <- .wait(100); !!procurarPolen.
 +!procurarPolen.
 
 -!procurarPolen[error(ia_failed)] <- .print("Não consegui procurar!").
@@ -348,9 +364,9 @@ too_old :-
 		
 	}}.
 
-+!trazerPolen[scheme(Sch)] : role(exploradora)
++!trazerPolen : role(exploradora)
 <-	!flyToHive;
-	!estocarPolen[scheme(Sch)].
+	!estocarPolen.
 	
 +!trazerPolen.
 
@@ -368,10 +384,10 @@ too_old :-
 	//.print("Going to (", X, ",",Y,")");
 	flyTo(X,Y).
 
-+!estocarPolen[scheme(Sch)] : energia(E) & role(exploradora)
++!estocarPolen : energia(E) & role(exploradora)
 <-	delivery;
-	-+energia(E-20);
-	!!procurarPolen[scheme(Sch)].
+	-+energia(E-10);
+	!!procurarPolen.
 
 +!estocarPolen.
 
@@ -382,9 +398,9 @@ too_old :-
 
 +!coletarPolen.
 
--!coletarPolen[scheme(Sch),error_msg(M)]
+-!coletarPolen[error_msg(M)]
 <-	.print("Error in: ",M);
-	!procurarPolen[scheme(Sch)].
+	!procurarPolen.
 
 { include("$jacamoJar/templates/common-cartago.asl") }
 { include("$jacamoJar/templates/common-moise.asl") }
