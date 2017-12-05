@@ -113,7 +113,7 @@ too_old :-
 +!changeStatus : too_old
 <-	.random(N);
 	if(N < 0.5) {
-		!suicide
+		!!suicide;
 	}.
 	
 +!changeStatus : age_to_explorer
@@ -150,8 +150,8 @@ too_old :-
 <-	comer(5);
 	-+energia(E+10).
 
--!alimentarse <- .wait(100); !alimentarse.
-+!alimentarse <- .wait(100); !alimentarse.
+-!alimentarse <- .wait(100); !!alimentarse.
++!alimentarse <- .wait(100); !!alimentarse.
 
 +energia(E) : E <= 0 <- !suicide.
 
@@ -161,7 +161,7 @@ too_old :-
 <-	!tryPollen;	
 	.wait(100);
 	-+energia(E-1);
-	!fabricarMel.
+	!!fabricarMel.
 	
 +!fabricarMel.
 
@@ -169,7 +169,7 @@ too_old :-
 <- 	lookupArtifact("Hive",AId);
 	focus(AId);
 	if(pollen(P)[artifact_id(AId)] & P>1) {
-		processPollen
+		processPollen;
 	}.
 
 -!fabricarMel
@@ -194,18 +194,18 @@ too_old :-
 		}
 	}
 	.wait(300);
-	!alimentarLarvas[scheme(Sch)]. //Assim !!alimentarLarvas[scheme(Sch)] não causa o bug de criar infinitas babas quando troca de role, mas dá o bug "im not obligged anymore", não sei como resolver
+	!!alimentarLarvas[scheme(Sch)]. //Assim !!alimentarLarvas[scheme(Sch)] não causa o bug de criar infinitas babas quando troca de role, mas dá o bug "im not obligged anymore", não sei como resolver
 	
 +!alimentarLarvas.	
 	
 -!alimentarLarvas[error(ia_failed)] <- 
 	.print("Não consegui alimentar as larvas!");
 	.wait(300);
-	!alimentarLarvas[scheme(Sch)].
+	!!alimentarLarvas[scheme(Sch)].
 -!alimentarLarvas[error_msg(M)] <- 
 	//.print("Não consegui alimentar as larvas! Erro: ",M);
 	.wait(300);
-	!alimentarLarvas[scheme(Sch)].	
+	!!alimentarLarvas[scheme(Sch)].	
 	
 //-!alimentarLarvas <- .wait(300); !!alimentarLarvas.
 
@@ -229,7 +229,7 @@ too_old :-
 		-resfriando;
 		-+energia(E-1)
 	};
-	!aquecer.
+	!!aquecer.
 
 +!aquecer : not aquecendo & energia(E) & not com_fome(E) & role(sentinela)
 <- 	.wait(100+math.random(200));
@@ -240,9 +240,9 @@ too_old :-
 		+aquecendo;
 		-+energia(E-1)
 	};
-	!aquecer.
+	!!aquecer.
 	
-+!aquecer : role(sentinela) <- .wait(100+math.random(200)); !aquecer.
++!aquecer : role(sentinela) <- .wait(100+math.random(200)); !!aquecer.
 
 +!aquecer : not role(sentinela) & energia(E) & not com_fome(E) & resfriando
 <-	lookupArtifact("Hive",AId);
@@ -262,7 +262,7 @@ too_old :-
 		-aquecendo;
 		-+energia(E-1)
 	};
-	!resfriar.
+	!!resfriar.
 
 +!resfriar: not resfriando & energia(E) & not com_fome(E) & role(sentinela)
 <- 	.wait(100+math.random(200));
@@ -273,9 +273,9 @@ too_old :-
 		+resfriando;
 		-+energia(E-1)
 	};
-	!resfriar;.
+	!!resfriar.
 	
-+!resfriar : role(sentinela)<- .wait(100+math.random(200)); !resfriar.
++!resfriar : role(sentinela)<- .wait(100+math.random(200)); !!resfriar.
 
 +!resfriarr : not role(sentinela) & energia(E) & not com_fome(E) & aquecendo
 <-	lookupArtifact("Hive",AId);
@@ -298,10 +298,10 @@ too_old :-
 		!coletarPolen[scheme(Sch)];
 		!trazerPolen[scheme(Sch)]
 	} else {
-		!procurarPolen[scheme(Sch)]
+		!!procurarPolen[scheme(Sch)]
 	}.
 
-+!procurarPolen[scheme(Sch)] : role(exploradora) <- .wait(100); !procurarPolen[scheme(Sch)].
++!procurarPolen[scheme(Sch)] : role(exploradora) <- .wait(100); !!procurarPolen[scheme(Sch)].
 +!procurarPolen.
 
 -!procurarPolen[error(ia_failed)] <- .print("Não consegui procurar!").
@@ -346,7 +346,7 @@ too_old :-
 +!estocarPolen[scheme(Sch)] : energia(E) & role(exploradora)
 <-	delivery;
 	-+energia(E-20);
-	!procurarPolen[scheme(Sch)].
+	!!procurarPolen[scheme(Sch)].
 
 +!estocarPolen.
 
