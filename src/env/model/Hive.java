@@ -5,9 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import com.sun.javafx.geom.Rectangle;
-
 import artifact.Parameters;
+import javafx.scene.shape.Rectangle;
 import model.enumeration.BeeRole;
 import model.enumeration.HoneySupply;
 import model.exception.InsufficientHoneyException;

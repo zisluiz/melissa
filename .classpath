@@ -5,6 +5,6 @@
 	<classpathentry excluding="*.xml" kind="src" path="src/org"/>
 	<classpathentry kind="src" path="src/env"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JaCaMo"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk-10.0.2"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -116,7 +116,7 @@ public class EnvironmentApplication extends Application {
 		labelExtTemp.setFont(font);
 		root.getChildren().add(labelExtTemp);
 		
-		extTemp = new Text(780, 44, "25°");
+		extTemp = new Text(780, 44, "25â„ƒ");
 		extTemp.setFill(colorWhite);
 		extTemp.setFont(font);
 		root.getChildren().add(extTemp);		
@@ -186,7 +186,7 @@ public class EnvironmentApplication extends Application {
 		labelNumberTemp = new Text(771+newX, 473, "0");
 		labelNumberTemp.setFill(colorWhite);
 		labelNumberTemp.setFont(font);
-		Text labelTemp2 = new Text(785+newX, 473, "°");
+		Text labelTemp2 = new Text(785+newX, 473, "â„ƒ");
 		labelTemp2.setFill(colorWhite);
 		labelTemp2.setFont(font);
 		group.getChildren().add(labelTemp);		
@@ -311,7 +311,7 @@ public class EnvironmentApplication extends Application {
 	}
 	
 	public void updateIntTemperature(int ammount) {
-		labelNumberTemp.setText(ammount+"°");
+		labelNumberTemp.setText(ammount+"â„ƒ");
 	}
 
 	public void updateLarvaCount() {
@@ -393,7 +393,7 @@ public class EnvironmentApplication extends Application {
 	}
 
 	public void updateExtTemp(int newTemp) {
-		extTemp.setText(newTemp+"°");
+		extTemp.setText(newTemp+"â„ƒ");
 	}
 
 	public void removeBee(Node node) {
